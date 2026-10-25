@@ -1,0 +1,4 @@
+{
+  "open_l2":   {"higher_is_better": false, "family": "open_loop"},
+  "navsim_v1": {"higher_is_better": true,  "family": "nonreactive"}
+}

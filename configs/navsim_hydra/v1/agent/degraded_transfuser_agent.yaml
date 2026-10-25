@@ -1,0 +1,33 @@
+# Population A wrapper around TransFuser for the NAVSIM v1.1 devkit (Latent TransFuser with
+# agent.base_agent.config.latent=true). base_agent mirrors the devkit's own
+# navsim/planning/script/config/common/agent/transfuser_agent.yaml at v1.1, where the trajectory
+# sampling sits inside the TransFuser config. Do not copy the v2 layout here: v1.1's
+# TransfuserAgent has no trajectory_sampling argument.
+#
+# Found through: hydra.searchpath=[pkg://navsim.planning.script.config.common,file://<repo>/configs/navsim_hydra/v1]
+# wete.cli.navsim_v1 adds that override and the ones below; you never type them.
+_target_: wete.navsim.degraded_agent.DegradedAgent
+_convert_: 'all'
+
+degradation: none
+level: 0
+value: null              # explicit parameter from pilot calibration; null = default level table
+used_cameras: null       # cameras the model reads; null = every camera the base loads
+log_dir: ${output_dir}/plans
+also_drop_lidar: false
+stale_ego_status: false
+
+base_agent:
+  _target_: navsim.agents.transfuser.transfuser_agent.TransfuserAgent
+  _convert_: 'all'
+  config:
+    _target_: navsim.agents.transfuser.transfuser_config.TransfuserConfig
+    _convert_: 'all'
+    trajectory_sampling:
+      _target_: nuplan.planning.simulation.trajectory.trajectory_sampling.TrajectorySampling
+      _convert_: 'all'
+      time_horizon: 4
+      interval_length: 0.5
+    latent: False
+  checkpoint_path: null
+  lr: 1e-4

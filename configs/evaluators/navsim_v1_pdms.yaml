@@ -1,0 +1,28 @@
+# NAVSIM v1 (non-reactive pseudo-simulation), PDM Score on navtest.
+# Devkit: autonomousvision/navsim, branch v1.1, pinned in configs/third_party.env.
+
+evaluator:
+  id: navsim_v1_pdms
+  family: pseudo_sim_v1
+  devkit_root: ${paths.third_party}/navsim_v1
+  nuplan_devkit_root: ${paths.third_party}/nuplan-devkit
+
+  split: navtest                 # devkit train_test_split config; navtest is a filter over OpenScene "test"
+  navsim_log_path: ${paths.openscene}/navsim_logs/test
+  sensor_blobs_path: ${paths.openscene}/sensor_blobs/test
+
+  metric_cache:
+    dir: ${paths.exp}/metric_cache/navsim_v1_${evaluator.split}
+    worker:
+      # Devkit default for caching. If Ray does not start on the compute nodes, switch to
+      #   name: single_machine_thread_pool
+      #   use_process_pool: true
+      name: ray_distributed_no_torch
+
+  scoring:
+    worker:
+      # What the devkit's own TransFuser evaluation script uses. The agent runs on CPU in
+      # NAVSIM v1.1, so this stage needs cores, not a GPU. Set use_process_pool: true if the
+      # smoke test shows poor scaling across threads.
+      name: single_machine_thread_pool
+      use_process_pool: false

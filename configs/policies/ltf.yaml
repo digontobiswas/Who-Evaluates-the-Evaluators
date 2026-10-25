@@ -1,0 +1,30 @@
+# Latent TransFuser baseline of NAVSIM (camera + ego status, no LiDAR), trained on navtrain.
+# Weights: https://huggingface.co/autonomousvision/navsim_baselines (Apache-2.0), 3 training seeds.
+# This is the only NAVSIM baseline HUGSIM ships a client for, because it needs no LiDAR.
+
+policy:
+  family: ltf
+  seed: 0                                    # 0, 1 or 2
+  id: ltf_seed${policy.seed}
+  navsim_agent: transfuser_agent
+  # Hydra agent config used when the policy is degraded (configs/navsim_hydra/v1/agent/).
+  degraded_agent: degraded_transfuser_agent
+  navsim_overrides:
+    - agent.config.latent=true
+  checkpoint: ${paths.checkpoints}/navsim_baselines/ltf/ltf_seed_${policy.seed}.ckpt
+
+  # Same sensor config as TransFuser: all eight cameras and the LiDAR sweep of the current
+  # frame are loaded, so the files must be on disk. The latent variant replaces the LiDAR
+  # input with a positional encoding and uses only the three front cameras.
+  sensors:
+    cameras: [cam_f0, cam_l0, cam_l1, cam_l2, cam_r0, cam_r1, cam_r2, cam_b0]
+    used_cameras: [cam_l0, cam_f0, cam_r0]
+    lidar: true
+    history_frames: 1
+
+  reference:
+    pdms: 83.8
+    submetrics: {NC: 97.4, DAC: 92.8, TTC: 92.4, Comfort: 100.0, EP: 79.0}
+    source: "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)"
+    note: >-
+      Seed-to-seed spread is not reported for LTF; the paper reports 0.56 PDMS for TransFuser.

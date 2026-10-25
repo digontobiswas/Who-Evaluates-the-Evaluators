@@ -1,0 +1,7 @@
+{
+  "open_l2":     {"higher_is_better": false, "family": "open_loop"},
+  "navsim_v1":   {"higher_is_better": true,  "family": "nonreactive"},
+  "navsim_v2":   {"higher_is_better": true,  "family": "pseudo_sim"},
+  "hugsim":      {"higher_is_better": true,  "family": "closed_loop", "reference": true},
+  "world_model": {"higher_is_better": true,  "family": "world_model"}
+}

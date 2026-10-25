@@ -1,0 +1,25 @@
+# Ego Status MLP baseline of NAVSIM (blind: velocity, acceleration and driving command only).
+# Weights: https://huggingface.co/autonomousvision/navsim_baselines (Apache-2.0), 3 training seeds.
+# Needs no sensor files at all, which makes it the cheapest end-to-end check of an installation.
+
+policy:
+  family: ego_status_mlp
+  seed: 0                                    # 0, 1 or 2
+  id: ego_status_mlp_seed${policy.seed}
+  navsim_agent: ego_status_mlp_agent
+  # Hydra agent config used when the policy is degraded (configs/navsim_hydra/v1/agent/).
+  degraded_agent: degraded_ego_status_mlp_agent
+  navsim_overrides: []
+  checkpoint: ${paths.checkpoints}/navsim_baselines/ego_status_mlp/ego_status_mlp_seed_${policy.seed}.ckpt
+
+  sensors:
+    cameras: []
+    lidar: false
+    history_frames: 1
+
+  reference:
+    pdms: 65.6
+    submetrics: {NC: 93.0, DAC: 77.3, TTC: 83.6, Comfort: 100.0, EP: 62.8}
+    source: "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)"
+    note: >-
+      Seed-to-seed spread is not reported for this baseline.

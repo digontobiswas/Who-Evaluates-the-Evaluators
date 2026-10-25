@@ -1,0 +1,20 @@
+# Smoke test of the stage 1 job: same code path as the full run, on the first few navtest
+# scenarios whose sensor files are on disk. Works with a single camera shard and a single
+# LiDAR shard downloaded. Its average is NOT comparable with the published PDMS.
+
+extends:
+  - stage1_pdms_transfuser_navtest.yaml
+
+experiment:
+  name: stage1_pdms_${policy.id}_smoke
+
+scenarios:
+  mode: subset
+  max_scenarios: 64
+  max_logs: 4
+
+evaluator:
+  metric_cache:
+    # Separate from the full-split cache: the devkit keeps one metadata file per cache
+    # directory, and a subset run would overwrite the full one.
+    dir: ${paths.exp}/metric_cache/navsim_v1_${evaluator.split}_smoke

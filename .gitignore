@@ -1,0 +1,58 @@
+# --- cluster-specific settings (copied from configs/hpc/cluster.env.example) ---
+configs/hpc/cluster.env
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+.venv/
+venv/
+venvs/
+
+# --- data, weights, caches: these live under $WETE_ROOT on scratch, never in git ---
+data/
+checkpoints/
+third_party/
+cache/
+exp/
+wheelhouse/
+*.ckpt
+*.pth
+*.pt
+*.safetensors
+*.pkl
+*.tgz
+*.tar.gz
+*.zip
+
+# --- SLURM and probe output ---
+slurm-*.out
+slurm-*.err
+*.out
+*.err
+hpc_probe_*.txt
+
+# --- results: small summaries are tracked, everything else is ignored ---
+results/**
+!results/.gitkeep
+!results/**/
+!results/**/summary.json
+!results/**/per_scenario.csv
+!results/**/resolved_config.yaml
+!results/toy_validation/validation.json
+!results/analysis/**/*.json
+!results/analysis/**/*.csv
+!results/analysis/**/*.png
+!results/analysis/**/*.tex
+
+# --- editors and OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+~$*

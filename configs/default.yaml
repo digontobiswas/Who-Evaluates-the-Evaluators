@@ -1,0 +1,30 @@
+# Project-wide defaults. Every path comes from an environment variable exported by
+# scripts/env.sh, which in turn reads configs/hpc/cluster.env. No path is written in code.
+
+paths:
+  repo: ${oc.env:WETE_REPO}
+  root: ${oc.env:WETE_ROOT}
+  data: ${oc.env:WETE_DATA_ROOT}
+  exp: ${oc.env:WETE_EXP_ROOT}
+  checkpoints: ${oc.env:WETE_CKPT_ROOT}
+  third_party: ${oc.env:WETE_THIRD_PARTY}
+  openscene: ${oc.env:OPENSCENE_DATA_ROOT}
+  maps: ${oc.env:NUPLAN_MAPS_ROOT}
+
+navsim:
+  map_version: nuplan-maps-v1.0
+
+# Degree of parallelism for devkit worker pools. Inside a SLURM job this is the number of
+# cores allocated to the job; outside one it falls back to a small number.
+workers: ${oc.decode:${oc.env:SLURM_CPUS_PER_TASK,4}}
+
+# Population A degradation applied to the policy (wete.navsim.degraded_agent.DegradedAgent).
+# name: none | camera_dropout | image_noise | stale_obs | history_removal | lateral_noise | late_braking
+# The level table is wete.degradations.LEVELS; `value` replaces the table entry (pilot calibration).
+# wrap: true runs a level-0 policy through the wrapper as well, so that its plans and open-loop
+# L2 are logged. Stage 1 reproductions keep the defaults and run the devkit's agent untouched.
+degradation:
+  name: none
+  level: 0
+  value: null
+  wrap: false

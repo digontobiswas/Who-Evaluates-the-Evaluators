@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wete"
+version = "0.1.0"
+description = "Who Evaluates the Evaluators? An audit harness for driving-policy evaluators."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "pandas",
+    "pyyaml",
+    "omegaconf>=2.2",
+    "scipy",
+    "scikit-learn",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+wm = ["opencv-python"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"

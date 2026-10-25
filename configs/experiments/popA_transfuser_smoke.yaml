@@ -1,0 +1,25 @@
+# Smoke test of the Population A path on the first 64 navtest scenarios whose sensor files are on
+# disk (the same subset as the stage 1 smoke job, and its metric cache). Checks that the wrapper
+# loads under the v1.1 devkit, that every scenario stays valid, and how much slower it is.
+#
+#   clean through the wrapper:   (no overrides)
+#   one degradation:             OVERRIDES="degradation.name=stale_obs degradation.level=3"
+#
+# Numbers from this job are not comparable with anything published: it is a 64-scenario subset.
+
+extends:
+  - popA_transfuser_navtest.yaml
+
+experiment:
+  name: popA_${policy.id}_${degradation.name}_L${degradation.level}_smoke
+  out_dir: ${paths.exp}/runs_smoke/navsim_v1/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA_smoke/${policy.id}/${degradation.name}__L${degradation.level}
+
+scenarios:
+  mode: subset
+  max_scenarios: 64
+  max_logs: 4
+
+evaluator:
+  metric_cache:
+    dir: ${paths.exp}/metric_cache/navsim_v1_${evaluator.split}_smoke

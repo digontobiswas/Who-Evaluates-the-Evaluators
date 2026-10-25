@@ -1,0 +1,24 @@
+# Population A on NAVSIM v1 (navtest, PDMS): one base policy, one degradation, one level per job.
+# The level is chosen with overrides, for example
+#   OVERRIDES="degradation.name=camera_dropout degradation.level=2"
+# and the clean level-0 run (through the same wrapper, so its plans are logged) needs none.
+# scripts/submit_population_a.sh submits the whole grid for one base policy.
+#
+# Needs the full navtest metric cache (built by the stage 1 run) and all sensor shards.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v1_pdms.yaml
+  - ../policies/transfuser.yaml
+
+experiment:
+  name: popA_${policy.id}_${degradation.name}_L${degradation.level}_navtest
+  # Layout read by `python -m wete.collect`: runs/<evaluator>/A/<base>/<degradation>__L<level>
+  out_dir: ${paths.exp}/runs/navsim_v1/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA/${policy.id}/${degradation.name}__L${degradation.level}
+
+scenarios:
+  mode: full
+
+degradation:
+  wrap: true
