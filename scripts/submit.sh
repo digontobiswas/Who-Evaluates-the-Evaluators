@@ -86,6 +86,24 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# git does not work inside jobs on this cluster, so record the commits here, on the login node.
+commit_of() {
+    local dir="$1" head
+    head="$(cd "$dir" 2>/dev/null && git rev-parse HEAD 2>/dev/null)" || return 0
+    [ -n "$head" ] || return 0
+    if [ -n "$(cd "$dir" && git status --porcelain --untracked-files=no 2>/dev/null)" ]; then
+        head="$head-dirty"
+    fi
+    echo "$head"
+}
+COMMIT_VARS=(
+    "WETE_GIT_COMMIT=$(commit_of "$WETE_REPO")"
+    "WETE_NAVSIM_V1_COMMIT=$(commit_of "$WETE_THIRD_PARTY/navsim_v1")"
+    "WETE_NAVSIM_V2_COMMIT=$(commit_of "$WETE_THIRD_PARTY/navsim_v2")"
+    "WETE_NUPLAN_COMMIT=$(commit_of "$WETE_THIRD_PARTY/nuplan-devkit")"
+)
+echo "[submit] ${COMMIT_VARS[0]}"
+
 mkdir -p "$WETE_SLURM_LOGS"
 cd "$WETE_SLURM_LOGS"
 
@@ -108,6 +126,6 @@ if [ "$DRY_RUN" = 1 ]; then
 fi
 
 command -v sbatch >/dev/null 2>&1 || die "sbatch not found. Run this on the cluster login node."
-env "WETE_REPO=$WETE_REPO" ${JOB_VARS[@]+"${JOB_VARS[@]}"} sbatch "${SBATCH_ARGS[@]}" "$JOB_PATH"
+env "WETE_REPO=$WETE_REPO" "${COMMIT_VARS[@]}" ${JOB_VARS[@]+"${JOB_VARS[@]}"} sbatch "${SBATCH_ARGS[@]}" "$JOB_PATH"
 echo "[submit] output will be written to $WETE_SLURM_LOGS/<job-name>-<job-id>.out"
 echo "[submit] check the queue with: squeue -u $USER"

@@ -56,7 +56,7 @@ case "$CONFIG" in
 esac
 
 echo "[job] host=$(hostname) job=${SLURM_JOB_ID:-none} partition=${SLURM_JOB_PARTITION:-none} cpus=${SLURM_CPUS_PER_TASK:-unset}"
-echo "[job] repo=$WETE_REPO commit=$(cd "$WETE_REPO" && git rev-parse HEAD 2>/dev/null || echo unknown)"
+echo "[job] repo=$WETE_REPO commit=${WETE_GIT_COMMIT:-unknown} (recorded at submission)"
 echo "[job] python=$(command -v python) config=$CONFIG_PATH"
 echo "[job] started $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 

@@ -57,3 +57,15 @@ def test_bad_override_and_missing_file(tmp_path):
 def test_require_lists_missing_keys():
     with pytest.raises(config_lib.ConfigError, match="a.c"):
         config_lib.require({"a": {"b": 1, "c": None}}, ["a.b", "a.c"])
+
+
+def test_git_commit_falls_back_to_submit_time_value(tmp_path, monkeypatch):
+    from wete import provenance
+
+    not_a_repo = tmp_path / "plain_dir"
+    not_a_repo.mkdir()
+    monkeypatch.setenv("WETE_TEST_COMMIT", "abc123")
+    assert provenance.git_commit(not_a_repo, "WETE_TEST_COMMIT") == "submit:abc123"
+    monkeypatch.delenv("WETE_TEST_COMMIT")
+    assert provenance.git_commit(not_a_repo, "WETE_TEST_COMMIT") is None
+    assert provenance.git_commit(not_a_repo) is None

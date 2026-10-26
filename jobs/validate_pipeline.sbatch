@@ -27,7 +27,7 @@ EXPORT="$WETE_REPO/results/toy_validation"
 mkdir -p "$OUT" "$EXPORT"
 
 echo "[job] host=$(hostname) job=${SLURM_JOB_ID:-none} cpus=${SLURM_CPUS_PER_TASK:-unset}"
-echo "[job] repo commit=$(cd "$WETE_REPO" && git rev-parse HEAD 2>/dev/null || echo unknown)"
+echo "[job] repo commit=${WETE_GIT_COMMIT:-unknown} (recorded at submission)"
 echo "[job] python=$(command -v python) $(python --version 2>&1)"
 
 cd "$WETE_REPO"

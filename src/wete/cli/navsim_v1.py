@@ -290,9 +290,15 @@ def stage_report(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], tim
             "sha256": provenance.sha256_of(Path(cfg["policy"]["checkpoint"])),
         },
         "code": {
-            "repo": provenance.git_commit(Path(cfg["paths"]["repo"])) if cfg["paths"].get("repo") else None,
-            "navsim_devkit": provenance.git_commit(Path(cfg["evaluator"]["devkit_root"])),
-            "nuplan_devkit": provenance.git_commit(Path(cfg["evaluator"]["nuplan_devkit_root"]))
+            "repo": provenance.git_commit(Path(cfg["paths"]["repo"]), "WETE_GIT_COMMIT")
+            if cfg["paths"].get("repo")
+            else None,
+            "navsim_devkit": provenance.git_commit(
+                Path(cfg["evaluator"]["devkit_root"]),
+                "WETE_NAVSIM_V2_COMMIT" if Path(cfg["evaluator"]["devkit_root"]).name == "navsim_v2"
+                else "WETE_NAVSIM_V1_COMMIT",
+            ),
+            "nuplan_devkit": provenance.git_commit(Path(cfg["evaluator"]["nuplan_devkit_root"]), "WETE_NUPLAN_COMMIT")
             if cfg["evaluator"].get("nuplan_devkit_root")
             else None,
         },

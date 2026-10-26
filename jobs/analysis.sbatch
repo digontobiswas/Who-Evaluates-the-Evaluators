@@ -40,7 +40,7 @@ META_PATH="${META:-configs/meta.navsim_v1.json}"
 case "$META_PATH" in /*) ;; *) META_PATH="$WETE_REPO/$META_PATH" ;; esac
 
 echo "[job] host=$(hostname) job=${SLURM_JOB_ID:-none} cpus=${SLURM_CPUS_PER_TASK:-unset}"
-echo "[job] repo commit=$(cd "$WETE_REPO" && git rev-parse HEAD 2>/dev/null || echo unknown)"
+echo "[job] repo commit=${WETE_GIT_COMMIT:-unknown} (recorded at submission)"
 echo "[job] runs=$RUN_ROOT meta=$META_PATH out=$OUT"
 [ -d "$RUN_ROOT" ] || { echo "[job] ERROR: $RUN_ROOT does not exist" >&2; exit 1; }
 mkdir -p "$OUT" "$EXPORT"

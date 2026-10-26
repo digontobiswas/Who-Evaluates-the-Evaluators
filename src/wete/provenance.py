@@ -12,11 +12,16 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 
-def git_commit(directory: Path) -> Optional[str]:
+def git_commit(directory: Path, fallback_env: Optional[str] = None) -> Optional[str]:
     """Commit hash of a checkout, with ``-dirty`` appended if it has local changes.
 
     Uses ``cwd`` rather than ``git -C``: the git shipped with CentOS 7 predates ``-C``.
+    On PARAM Shakti git works on the login nodes but not inside jobs, so ``scripts/submit.sh``
+    records the commits at submission time; ``fallback_env`` names the variable holding that
+    value, used (with a ``submit:`` prefix) when git fails here.
     """
+    fallback = os.environ.get(fallback_env) if fallback_env else None
+    fallback = f"submit:{fallback}" if fallback else None
     try:
         commit = subprocess.run(
             ["git", "rev-parse", "HEAD"],
@@ -33,7 +38,7 @@ def git_commit(directory: Path) -> Optional[str]:
             text=True,
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
-        return None
+        return fallback
     return f"{commit}-dirty" if status else commit
 
 
