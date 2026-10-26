@@ -1,0 +1,77 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_0.ckpt",
+    "sha256": "d08e97ba6beb937412697d619171553041622859e026a06935a2e0e118e6309d",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:43f42a584f500fde09299c4051bb612f7d9abbf5"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-10-26T18:44:46Z",
+  "degradation": {
+    "level": 2,
+    "name": "stale_obs",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_ltf_seed0_stale_obs_L2_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn130",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1214962",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__stale_obs@L2.plans.jsonl"
+    ],
+    "mean_ade": 0.8719004868610549,
+    "mean_fde": 2.179906309441616,
+    "mean_l2_1s": 0.13822618554935934,
+    "mean_l2_2s": 0.5336887994617192,
+    "mean_l2_3s": 1.2399717314986152,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "ltf_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.7269783636544466,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9999176683681871,
+      "drivable_area_compliance": 0.8410999506010209,
+      "driving_direction_compliance": 0.9159805697348922,
+      "ego_progress": 0.6929815565411258,
+      "no_at_fault_collisions": 0.9352461715791207,
+      "score": 0.7269783636544466,
+      "time_to_collision_within_bound": 0.8561666392227893
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 72.69783636544466,
+    "score_sem": 0.0034819947098976406,
+    "score_std": 0.38374678088862985
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.2521530446222138,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1/A/ltf_seed0/stale_obs__L2/pdm_score/2026.10.27.00.14.35.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3734.7565853595734,
+    "select": 59.37020015716553
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_0.ckpt",
+    "sha256": "d08e97ba6beb937412697d619171553041622859e026a06935a2e0e118e6309d",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:43f42a584f500fde09299c4051bb612f7d9abbf5"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-10-26T18:09:55Z",
+  "degradation": {
+    "level": 3,
+    "name": "camera_dropout",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_ltf_seed0_camera_dropout_L3_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "hm020",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1214957",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "effective_k": [
+      3
+    ],
+    "files": [
+      "TransfuserAgent__camera_dropout@L3.plans.jsonl"
+    ],
+    "mean_ade": 1.9278084411075558,
+    "mean_fde": 5.159624160013718,
+    "mean_l2_1s": 0.23301180336091568,
+    "mean_l2_2s": 1.051135105258438,
+    "mean_l2_3s": 2.73057303711648,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "ltf_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.2960288794935825,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9999176683681871,
+      "drivable_area_compliance": 0.5385312036884571,
+      "driving_direction_compliance": 0.6833937098633295,
+      "ego_progress": 0.2855380989068318,
+      "no_at_fault_collisions": 0.67417256710028,
+      "score": 0.29602887949358253,
+      "time_to_collision_within_bound": 0.5504692903013337
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 29.60288794935825,
+    "score_sem": 0.0037898487710388705,
+    "score_std": 0.41767503603807876
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 2.9530956384720954,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1/A/ltf_seed0/camera_dropout__L3/pdm_score/2026.10.26.23.39.30.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 4112.972110271454,
+    "select": 45.12828731536865
+  }
+}
