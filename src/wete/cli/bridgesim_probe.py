@@ -13,7 +13,6 @@ comparable with the 421-scenario leaderboard.
 from __future__ import annotations
 
 import argparse
-import csv
 import importlib
 import json
 import math
@@ -28,6 +27,7 @@ import yaml
 
 from wete import config as config_lib
 from wete import provenance
+from wete.closed_loop import bridgesim
 
 # BridgeSim adapter class for each --model-type we use (bridgesim/evaluation/models/).
 ADAPTERS = {
@@ -184,7 +184,7 @@ def step_convert(cfg: Dict[str, Any], out_dir: Path) -> Dict[str, Any]:
     proc = subprocess.run(command, capture_output=True, text=True, cwd=ev["root"])
     (out_dir / "logs").mkdir(parents=True, exist_ok=True)
     (out_dir / "logs" / "convert.log").write_text(proc.stdout + "\n" + proc.stderr)
-    scenarios = sorted(p.name for p in scenario_dir.glob("sd_*") if list((p / f"{p.name}_0").glob("*.pkl")))
+    scenarios = bridgesim.converted_scenarios(scenario_dir)
     result.update({
         "logs_converted": chosen,
         "returncode": proc.returncode,
@@ -196,40 +196,22 @@ def step_convert(cfg: Dict[str, Any], out_dir: Path) -> Dict[str, Any]:
     return result
 
 
-def _read_average_row(run_dir: Path) -> Optional[Dict[str, str]]:
-    files = sorted(run_dir.rglob("driving_score_summary.csv"))
-    if not files:
-        return None
-    with open(files[-1], newline="") as handle:
-        rows = [r for r in csv.DictReader(handle) if r.get("frame_id") == "AVERAGE"]
-    return rows[-1] if rows else None
+_read_average_row = bridgesim.read_average_row
 
 
 def step_evaluate(cfg: Dict[str, Any], out_dir: Path, scenarios: List[str]) -> Dict[str, Any]:
     ev, probe = cfg["evaluator"], cfg["probe"]
     run = ev["run"]
-    evaluator_script = Path(ev["root"]) / "bridgesim/evaluation/unified_evaluator.py"
     results: Dict[str, Any] = {}
     for model in probe["models"]:
         rows = []
         for scenario in scenarios[: int(probe["scenarios_per_model"])]:
             run_dir = out_dir / "runs" / model["name"] / scenario
             run_dir.mkdir(parents=True, exist_ok=True)
-            command = [
-                sys.executable, str(evaluator_script),
-                "--model-type", model["model_type"],
-                "--checkpoint", str(model["checkpoint"]),
-                "--scenario-path", str(out_dir / "scenarios" / scenario),
-                "--output-dir", str(run_dir),
-                "--traffic-mode", run["traffic_mode"],
-                "--eval-mode", run["eval_mode"],
-                "--controller", run["controller"],
-                "--sim-dt", str(run["sim_dt"]),
-                "--replan-rate", str(int(run["replan_rate"])),
-                "--ego-replay-frames", str(int(run["ego_replay_frames"])),
-                "--eval-frames", str(int(run["eval_frames"])),
-                "--no-save-perframe",
-            ]
+            command = bridgesim.evaluator_command(
+                ev["root"], model["model_type"], Path(model["checkpoint"]),
+                out_dir / "scenarios" / scenario, run_dir, run,
+            )
             start = time.time()
             try:
                 proc = subprocess.run(command, capture_output=True, text=True, cwd=ev["root"],

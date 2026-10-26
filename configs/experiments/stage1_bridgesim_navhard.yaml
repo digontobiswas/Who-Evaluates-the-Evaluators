@@ -1,0 +1,33 @@
+# Stage 1 check of the closed-loop evaluator: reproduce the BridgeSim-NavHard leaderboard
+# (421 scenarios) for the navsim_baselines checkpoints. Seed 0 is the checkpoint BridgeSim
+# hosts and reports; seeds 1-2 are ours.
+#
+#   policy:  OVERRIDES="policy.family=ltf"   (transfuser | ltf | ego_status_mlp)
+#   seed:    OVERRIDES="policy.seed=1"
+#
+# Steps (jobs/bridgesim.sbatch): convert once (CPU), evaluate in shards (GPU), report (CPU).
+
+extends:
+  - ../default.yaml
+  - ../evaluators/bridgesim.yaml
+
+policy:
+  family: transfuser
+  seed: 0
+  id: ${policy.family}_seed${policy.seed}
+  checkpoint: ${paths.checkpoints}/navsim_baselines/${policy.family}/${policy.family}_seed_${policy.seed}.ckpt
+
+scenarios:
+  dir: ${paths.exp}/bridgesim/scenarios/navhard
+  # BridgeSim's list of the 421 scenarios its converter produces for NavHard.
+  expected_list: ${evaluator.root}/converters/openscene/converted_list/navhard421.txt
+
+experiment:
+  name: stage1_bridgesim_navhard_${policy.id}
+  # Layout read later by `python -m wete.collect`: runs/<evaluator>/A/<policy>/<degradation>__L<level>
+  out_dir: ${paths.exp}/runs/bridgesim/A/${policy.id}/none__L0
+  export_dir: ${paths.repo}/results/${experiment.name}
+
+run_parallel: 3                  # scenarios evaluated at once on one GPU
+timeout_s_per_scenario: 1200
+extra_evaluator_args: []         # e.g. ["--enable-runtime-lidar"]; a non-empty list disables the comparison
