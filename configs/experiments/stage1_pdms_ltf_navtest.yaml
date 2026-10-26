@@ -1,0 +1,22 @@
+# Stage 1 check: does the published ltf checkpoint reproduce its published PDMS on navtest?
+# Full split (about 12k scenarios). Needs the complete OpenScene "test" sensor download.
+#
+# Other seeds:      policy.seed=1
+# Other baselines:  copy this file and swap the policy file in `extends`.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v1_pdms.yaml
+  - ../policies/ltf.yaml
+
+experiment:
+  name: stage1_pdms_${policy.id}_navtest
+  out_dir: ${paths.exp}/${experiment.name}
+  # Small result files copied here so they can be committed; the numbers we quote come from them.
+  export_dir: ${paths.repo}/results/${experiment.name}
+
+scenarios:
+  mode: full            # the devkit's navtest filter, untouched
+
+check:
+  tolerance_pdms: 1.0   # stage 1 go/no-go: within about 1 PDMS point of the published value
