@@ -143,6 +143,21 @@ Runs land in `$WETE_EXP_ROOT/runs/navsim_v1/A/<policy>/<degradation>__L<level>/`
 `adapters/hugsim/` and `adapters/world_model/` are kept as written by the senior team. Neither can
 run on PARAM Shakti as things stand (docs/FEASIBILITY.md, sections 4 and 5).
 
+## Closed-loop evaluator: BridgeSim
+
+HUGSIM cannot be installed on PARAM Shakti (docs/FEASIBILITY.md, section 4). BridgeSim (CoRL 2026)
+evaluates the same NAVSIM checkpoints closed loop in MetaDrive and needs no compiled code. It gets
+its own venv: the NAVSIM pins unchanged plus MetaDrive's dependencies
+(`requirements/bridgesim-cp39-manylinux2014.lock.txt`).
+
+```bash
+bash scripts/setup_bridgesim.sh                      # login node: venv, BridgeSim checkout, MetaDrive assets
+bash scripts/submit.sh gpu jobs/bridgesim_probe.sbatch   # one GPU, ~30 min: render, checkpoints, convert, 2x3 runs
+```
+
+The probe's scores cover a few scenarios and are not comparable with the 421-scenario
+BridgeSim-NavHard leaderboard (`configs/evaluators/bridgesim.yaml` holds its published values).
+
 ## Configuration
 
 An experiment is one YAML file. It may list other files under `extends`; those merge first, in

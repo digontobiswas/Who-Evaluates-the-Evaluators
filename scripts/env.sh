@@ -38,6 +38,7 @@ fi
 export WETE_ROOT
 export WETE_VENV_ROOT="${WETE_VENV_ROOT:-$WETE_ROOT/venvs}"
 export WETE_VENV="$WETE_VENV_ROOT/navsim"
+export WETE_BRIDGESIM_VENV="$WETE_VENV_ROOT/bridgesim"
 export WETE_TOOLS="$WETE_ROOT/tools"
 export WETE_THIRD_PARTY="$WETE_ROOT/third_party"
 export WETE_DATA_ROOT="$WETE_ROOT/data"
@@ -72,16 +73,17 @@ wete_load_modules() {
     done
 }
 
-# Activate the NAVSIM virtual environment.
+# Activate a virtual environment: the NAVSIM one by default, or the directory given.
 wete_activate() {
-    if [ ! -f "$WETE_VENV/bin/activate" ]; then
-        _wete_fail "Virtual environment not found at $WETE_VENV. Run: bash scripts/setup_env.sh" || return 1
+    local venv="${1:-$WETE_VENV}"
+    if [ ! -f "$venv/bin/activate" ]; then
+        _wete_fail "Virtual environment not found at $venv. Run scripts/setup_env.sh (NAVSIM) or scripts/setup_bridgesim.sh (BridgeSim)." || return 1
     fi
     # The activate script reads variables that may be unset; tolerate that under `set -u`.
     local restore_nounset=0
     case $- in *u*) restore_nounset=1; set +u ;; esac
     # shellcheck disable=SC1091
-    . "$WETE_VENV/bin/activate"
+    . "$venv/bin/activate"
     if [ "$restore_nounset" = 1 ]; then set -u; fi
     # The relocatable CPython has no system certificate store configured; point OpenSSL at
     # the certifi bundle so that plain urllib downloads verify correctly too.
@@ -107,4 +109,15 @@ wete_use_navsim() {
         _wete_fail "NAVSIM $version devkit not found at $NAVSIM_DEVKIT_ROOT. Run: bash scripts/setup_env.sh" || return 1
     fi
     export PYTHONPATH="$WETE_REPO/src:$NAVSIM_DEVKIT_ROOT:$WETE_THIRD_PARTY/nuplan-devkit"
+}
+
+# Activate the BridgeSim environment and put BridgeSim, its vendored MetaDrive, the nuPlan devkit
+# and this repository on PYTHONPATH. No NAVSIM devkit: BridgeSim ships its own copy of the agents.
+wete_use_bridgesim() {
+    wete_activate "$WETE_BRIDGESIM_VENV" || return 1
+    export BRIDGESIM_ROOT="$WETE_THIRD_PARTY/bridgesim"
+    if [ ! -d "$BRIDGESIM_ROOT/bridgesim" ]; then
+        _wete_fail "BridgeSim not found at $BRIDGESIM_ROOT. Run: bash scripts/setup_bridgesim.sh" || return 1
+    fi
+    export PYTHONPATH="$WETE_REPO/src:$BRIDGESIM_ROOT:$BRIDGESIM_ROOT/metadrive:$WETE_THIRD_PARTY/nuplan-devkit"
 }

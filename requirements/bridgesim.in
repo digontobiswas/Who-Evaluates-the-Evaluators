@@ -1,0 +1,22 @@
+# Input for requirements/bridgesim-cp39-manylinux2014.lock.txt: the BridgeSim closed-loop
+# evaluator (VAIL-UCLA/BridgeSim, pinned in configs/third_party.env).
+#
+# BridgeSim's own environment (mdsn.yml) pins torch 2.7.1 and numpy 2.0.2, which have no wheels
+# for glibc 2.17. We keep the NAVSIM set unchanged (constraint file below) and add only what
+# BridgeSim and its vendored MetaDrive import for NAVSIM policies. BridgeSim and MetaDrive
+# themselves are source checkouts on PYTHONPATH, not pip installs.
+-r navsim.in
+-c navsim-cp39-manylinux2014.lock.txt
+panda3d==1.10.16
+panda3d-gltf==0.15.0
+panda3d-simplepbr==0.13.1
+gymnasium==1.1.1
+pygame==2.6.1
+mediapy==1.2.6
+PyOpenGL==3.1.6
+glfw==2.10.0
+pyrr==0.10.3
+progressbar==2.5
+yapf
+lxml
+Pygments

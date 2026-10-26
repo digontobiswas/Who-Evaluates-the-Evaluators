@@ -1,0 +1,29 @@
+# Stage 1 feasibility probe for the closed-loop evaluator (one GPU job, about 30 minutes):
+#   environment  versions, GPU visible to torch
+#   render       can Panda3D open an offscreen buffer on a compute node (default display, EGL)
+#   checkpoints  do the navsim_baselines checkpoints load into BridgeSim's model classes,
+#                every parameter, not just the ones strict=False lets through
+#   convert      how many NavHard logs we have; convert the scenarios of the first few logs
+#   evaluate     closed-loop runs of TransFuser and LTF (seed 0) on a few scenarios, timed
+# The scores of a handful of scenarios are not comparable with the 421-scenario leaderboard.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/bridgesim.yaml
+
+experiment:
+  name: stage1_bridgesim_probe
+  out_dir: ${paths.exp}/bridgesim/probe
+  export_dir: ${paths.repo}/results/stage1_bridgesim_probe
+
+probe:
+  convert_logs: 3
+  scenarios_per_model: 3
+  timeout_s_per_run: 1800
+  models:
+    - {name: transfuser, model_type: transfuser, checkpoint: "${paths.checkpoints}/navsim_baselines/transfuser/transfuser_seed_0.ckpt"}
+    - {name: ltf, model_type: ltf, checkpoint: "${paths.checkpoints}/navsim_baselines/ltf/ltf_seed_0.ckpt"}
+  checkpoint_checks:
+    - {model_type: transfuser, checkpoint: "${paths.checkpoints}/navsim_baselines/transfuser/transfuser_seed_0.ckpt"}
+    - {model_type: ltf, checkpoint: "${paths.checkpoints}/navsim_baselines/ltf/ltf_seed_0.ckpt"}
+    - {model_type: egomlp, checkpoint: "${paths.checkpoints}/navsim_baselines/ego_status_mlp/ego_status_mlp_seed_0.ckpt"}

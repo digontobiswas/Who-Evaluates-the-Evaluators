@@ -101,6 +101,7 @@ COMMIT_VARS=(
     "WETE_NAVSIM_V1_COMMIT=$(commit_of "$WETE_THIRD_PARTY/navsim_v1")"
     "WETE_NAVSIM_V2_COMMIT=$(commit_of "$WETE_THIRD_PARTY/navsim_v2")"
     "WETE_NUPLAN_COMMIT=$(commit_of "$WETE_THIRD_PARTY/nuplan-devkit")"
+    "WETE_BRIDGESIM_COMMIT=$(commit_of "$WETE_THIRD_PARTY/bridgesim")"
 )
 echo "[submit] ${COMMIT_VARS[0]}"
 
