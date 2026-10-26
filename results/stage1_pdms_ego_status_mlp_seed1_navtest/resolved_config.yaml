@@ -1,0 +1,63 @@
+paths:
+  repo: /scratch/scratch26/biswabandhurj/wete
+  root: /scratch/scratch26/biswabandhurj/wete_work
+  data: /scratch/scratch26/biswabandhurj/wete_work/data
+  exp: /scratch/scratch26/biswabandhurj/wete_work/exp
+  checkpoints: /scratch/scratch26/biswabandhurj/wete_work/checkpoints
+  third_party: /scratch/scratch26/biswabandhurj/wete_work/third_party
+  openscene: /scratch/scratch26/biswabandhurj/wete_work/data/openscene
+  maps: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/maps
+navsim:
+  map_version: nuplan-maps-v1.0
+workers: 40
+degradation:
+  name: none
+  level: 0
+  value: null
+  wrap: false
+evaluator:
+  id: navsim_v1_pdms
+  family: pseudo_sim_v1
+  devkit_root: /scratch/scratch26/biswabandhurj/wete_work/third_party/navsim_v1
+  nuplan_devkit_root: /scratch/scratch26/biswabandhurj/wete_work/third_party/nuplan-devkit
+  split: navtest
+  navsim_log_path: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/navsim_logs/test
+  sensor_blobs_path: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/sensor_blobs/test
+  metric_cache:
+    dir: /scratch/scratch26/biswabandhurj/wete_work/exp/metric_cache/navsim_v1_navtest
+    worker:
+      name: ray_distributed_no_torch
+  scoring:
+    worker:
+      name: single_machine_thread_pool
+      use_process_pool: false
+policy:
+  family: ego_status_mlp
+  seed: 1
+  id: ego_status_mlp_seed1
+  navsim_agent: ego_status_mlp_agent
+  degraded_agent: degraded_ego_status_mlp_agent
+  navsim_overrides: []
+  checkpoint: /scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ego_status_mlp/ego_status_mlp_seed_1.ckpt
+  sensors:
+    cameras: []
+    lidar: false
+    history_frames: 1
+  reference:
+    pdms: 65.6
+    submetrics:
+      NC: 93.0
+      DAC: 77.3
+      TTC: 83.6
+      Comfort: 100.0
+      EP: 62.8
+    source: NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)
+    note: Seed-to-seed spread is not reported for this baseline.
+experiment:
+  name: stage1_pdms_ego_status_mlp_seed1_navtest
+  out_dir: /scratch/scratch26/biswabandhurj/wete_work/exp/stage1_pdms_ego_status_mlp_seed1_navtest
+  export_dir: /scratch/scratch26/biswabandhurj/wete/results/stage1_pdms_ego_status_mlp_seed1_navtest
+scenarios:
+  mode: full
+check:
+  tolerance_pdms: 1.0

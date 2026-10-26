@@ -1,0 +1,73 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_0.ckpt",
+    "sha256": "cfe7e2410a3409b3291e20b6b765e6b1a53cccd7ba5471f17dd0acb00e38faf3",
+    "size_bytes": 672447984
+  },
+  "code": {
+    "navsim_devkit": null,
+    "nuplan_devkit": null,
+    "repo": null
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": -0.610046322996979,
+    "reference_note": "The paper reports a standard deviation of 0.56 PDMS across three TransFuser training seeds, and the model card says the leaderboard was populated with three seeds per model. A single seed can therefore sit about half a point from 84.0; the three-seed mean is the fairer check.",
+    "reference_pdms": 84.0,
+    "reference_source": "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": true
+  },
+  "created_utc": "2026-10-26T08:58:10Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": false
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "stage1_pdms_transfuser_seed0_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn157",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1214685",
+    "slurm_partition": "medium"
+  },
+  "policy": "transfuser_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.8338995367700301,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9996706734727482,
+      "drivable_area_compliance": 0.9207146385641364,
+      "driving_direction_compliance": 0.9792524287831385,
+      "ego_progress": 0.7857990691793133,
+      "no_at_fault_collisions": 0.9777704594105056,
+      "score": 0.8338995367700301,
+      "time_to_collision_within_bound": 0.9275481640046106
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 83.38995367700302,
+    "score_sem": 0.002653207807327597,
+    "score_std": 0.2924070941855268
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.7958048082982363,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/stage1_pdms_transfuser_seed0_navtest/pdm_score/2026.10.26.14.28.04.csv",
+  "split": "navtest",
+  "timings_s": {
+    "cache": 1448.7724556922913,
+    "score": 3199.8484151363373,
+    "select": 39.547760248184204
+  }
+}

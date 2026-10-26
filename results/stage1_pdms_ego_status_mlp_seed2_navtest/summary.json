@@ -1,0 +1,72 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ego_status_mlp/ego_status_mlp_seed_2.ckpt",
+    "sha256": "7c5625790c86e7a5c3e10b436676e82542807f25b29e50937150d734118396a7",
+    "size_bytes": 6518530
+  },
+  "code": {
+    "navsim_devkit": null,
+    "nuplan_devkit": null,
+    "repo": null
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": 0.6917632778862952,
+    "reference_note": "Seed-to-seed spread is not reported for this baseline.",
+    "reference_pdms": 65.6,
+    "reference_source": "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": true
+  },
+  "created_utc": "2026-10-26T12:23:09Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": false
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "stage1_pdms_ego_status_mlp_seed2_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn308",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1214840",
+    "slurm_partition": "medium"
+  },
+  "policy": "ego_status_mlp_seed2",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.662917632778863,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9995883418409353,
+      "drivable_area_compliance": 0.7820681705911411,
+      "driving_direction_compliance": 0.9023958504857567,
+      "ego_progress": 0.6324434292003835,
+      "no_at_fault_collisions": 0.9300181129589988,
+      "score": 0.662917632778863,
+      "time_to_collision_within_bound": 0.8370657006421868
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 66.29176327788629,
+    "score_sem": 0.003761506384033431,
+    "score_std": 0.4145514529536125
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 5.486412233533964,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/stage1_pdms_ego_status_mlp_seed2_navtest/pdm_score/2026.10.26.17.53.01.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 2213.83291721344,
+    "select": 12.605961322784424
+  }
+}

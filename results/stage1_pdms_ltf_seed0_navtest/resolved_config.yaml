@@ -1,0 +1,77 @@
+paths:
+  repo: /scratch/scratch26/biswabandhurj/wete
+  root: /scratch/scratch26/biswabandhurj/wete_work
+  data: /scratch/scratch26/biswabandhurj/wete_work/data
+  exp: /scratch/scratch26/biswabandhurj/wete_work/exp
+  checkpoints: /scratch/scratch26/biswabandhurj/wete_work/checkpoints
+  third_party: /scratch/scratch26/biswabandhurj/wete_work/third_party
+  openscene: /scratch/scratch26/biswabandhurj/wete_work/data/openscene
+  maps: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/maps
+navsim:
+  map_version: nuplan-maps-v1.0
+workers: 40
+degradation:
+  name: none
+  level: 0
+  value: null
+  wrap: false
+evaluator:
+  id: navsim_v1_pdms
+  family: pseudo_sim_v1
+  devkit_root: /scratch/scratch26/biswabandhurj/wete_work/third_party/navsim_v1
+  nuplan_devkit_root: /scratch/scratch26/biswabandhurj/wete_work/third_party/nuplan-devkit
+  split: navtest
+  navsim_log_path: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/navsim_logs/test
+  sensor_blobs_path: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/sensor_blobs/test
+  metric_cache:
+    dir: /scratch/scratch26/biswabandhurj/wete_work/exp/metric_cache/navsim_v1_navtest
+    worker:
+      name: ray_distributed_no_torch
+  scoring:
+    worker:
+      name: single_machine_thread_pool
+      use_process_pool: false
+policy:
+  family: ltf
+  seed: 0
+  id: ltf_seed0
+  navsim_agent: transfuser_agent
+  degraded_agent: degraded_transfuser_agent
+  navsim_overrides:
+  - agent.config.latent=true
+  checkpoint: /scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_0.ckpt
+  sensors:
+    cameras:
+    - cam_f0
+    - cam_l0
+    - cam_l1
+    - cam_l2
+    - cam_r0
+    - cam_r1
+    - cam_r2
+    - cam_b0
+    used_cameras:
+    - cam_l0
+    - cam_f0
+    - cam_r0
+    lidar: true
+    history_frames: 1
+  reference:
+    pdms: 83.8
+    submetrics:
+      NC: 97.4
+      DAC: 92.8
+      TTC: 92.4
+      Comfort: 100.0
+      EP: 79.0
+    source: NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)
+    note: Seed-to-seed spread is not reported for LTF; the paper reports 0.56 PDMS
+      for TransFuser.
+experiment:
+  name: stage1_pdms_ltf_seed0_navtest
+  out_dir: /scratch/scratch26/biswabandhurj/wete_work/exp/stage1_pdms_ltf_seed0_navtest
+  export_dir: /scratch/scratch26/biswabandhurj/wete/results/stage1_pdms_ltf_seed0_navtest
+scenarios:
+  mode: full
+check:
+  tolerance_pdms: 1.0

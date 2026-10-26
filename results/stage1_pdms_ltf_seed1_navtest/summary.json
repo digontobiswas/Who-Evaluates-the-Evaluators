@@ -1,0 +1,72 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_1.ckpt",
+    "sha256": "4802deb7e579e025295051f91a0f1cb45e69319139465521e29617c5358a2f70",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": null,
+    "nuplan_devkit": null,
+    "repo": null
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": -0.7202290805290232,
+    "reference_note": "Seed-to-seed spread is not reported for LTF; the paper reports 0.56 PDMS for TransFuser.",
+    "reference_pdms": 83.8,
+    "reference_source": "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": true
+  },
+  "created_utc": "2026-10-26T12:27:38Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": false
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "stage1_pdms_ltf_seed1_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn266",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1214836",
+    "slurm_partition": "medium"
+  },
+  "policy": "ltf_seed1",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.8307977091947099,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9999176683681871,
+      "drivable_area_compliance": 0.9188210110324386,
+      "driving_direction_compliance": 0.977811625226412,
+      "ego_progress": 0.7791676949757486,
+      "no_at_fault_collisions": 0.9766178165651244,
+      "score": 0.8307977091947097,
+      "time_to_collision_within_bound": 0.929853449695373
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 83.07977091947097,
+    "score_sem": 0.002685609899537517,
+    "score_std": 0.2959780928847118
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.7182166343815726,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/stage1_pdms_ltf_seed1_navtest/pdm_score/2026.10.26.17.57.29.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3266.6197788715363,
+    "select": 39.27643299102783
+  }
+}
