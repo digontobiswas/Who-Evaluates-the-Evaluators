@@ -221,15 +221,23 @@ def read_world_model(d: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
     return df[["scenario", "score"]], ft
 
 
+# Which BridgeSim column is the closed-loop score (set with --bridgesim-score).
+#   DS           driving score = EPDMS (without ego progress) x route completion. Default.
+#   EPDMS_no_ep  BridgeSim's EPDMS column. It leaves out ego progress, so a policy that drives less
+#                and therefore commits fewer infractions scores higher; observed for image noise
+#                on LTF (27 Oct). Kept for comparison, not as the reference.
+BRIDGESIM_SCORE = "DS"
+
+
 def read_bridgesim(d: Path) -> pd.DataFrame:
-    """per_scenario.csv written by wete.cli.bridgesim_run (report): EPDMS without ego progress, as
-    on BridgeSim's leaderboard, in [0, 1]. Only a complete run's file is written there."""
+    """per_scenario.csv written by wete.cli.bridgesim_run (report), column BRIDGESIM_SCORE, in
+    [0, 1]. Only a complete run's file is written there."""
     f = d / "per_scenario.csv"
     if not f.exists():
         return pd.DataFrame()
     df = pd.read_csv(f)
     return pd.DataFrame({"scenario": df.scenario.astype(str),
-                         "score": pd.to_numeric(df["EPDMS_no_ep"], errors="coerce")})
+                         "score": pd.to_numeric(df[BRIDGESIM_SCORE], errors="coerce")})
 
 
 READERS = {"navsim_v1": read_navsim_v1, "navsim_v2": read_navsim_v2, "bridgesim": read_bridgesim,
@@ -273,9 +281,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--bridgesim-score", default="DS", choices=["DS", "EPDMS_no_ep", "RC"],
+                    help="BridgeSim column used as the closed-loop score (default DS)")
     ap.add_argument("--hugsim-logged-paths", help="JSON {scene: [[x,y(,z)],...]} of recorded ego "
                     "positions in the frame of info['ego_pos']; enables the deviation feature")
     a = ap.parse_args(argv)
+    global BRIDGESIM_SCORE
+    BRIDGESIM_SCORE = a.bridgesim_score
+    print(f"bridgesim score column: {BRIDGESIM_SCORE}")
     if a.hugsim_logged_paths:
         LOGGED_PATHS.update({k: np.asarray(v, float) for k, v in
                              json.loads(Path(a.hugsim_logged_paths).read_text()).items()})

@@ -17,6 +17,7 @@
 #   NO_REFERENCE  1 = provisional summary without a reference evaluator; monotonicity is then
 #                 not tested and H1-H4 are skipped. Required while only NAVSIM rows exist.
 #   B             bootstrap resamples (default 1000)
+#   BRIDGESIM_SCORE  BridgeSim column used as the closed-loop score: DS (default) or EPDMS_no_ep
 
 set -euo pipefail
 
@@ -46,7 +47,7 @@ echo "[job] runs=$RUN_ROOT meta=$META_PATH out=$OUT"
 mkdir -p "$OUT" "$EXPORT"
 
 cd "$WETE_REPO"
-python -m wete.collect --root "$RUN_ROOT" --out "$OUT"
+python -m wete.collect --root "$RUN_ROOT" --out "$OUT" --bridgesim-score "${BRIDGESIM_SCORE:-DS}"
 
 EXTRA=()
 [ "${NO_REFERENCE:-0}" = 1 ] && EXTRA+=(--no-reference)

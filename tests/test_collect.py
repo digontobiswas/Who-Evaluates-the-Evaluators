@@ -109,3 +109,17 @@ def test_analysis_without_reference_is_explicitly_provisional(tmp_path):
     assert "provisional" in rep and rep["hypotheses"] == {}
     m = pd.read_csv(tmp_path / "res" / "discriminative_matrix.csv")
     assert set(m.evaluator) == {"navsim_v1", "open_l2"} and not m.retained.any()
+
+
+def test_bridgesim_score_column_is_selectable(tmp_path):
+    d = tmp_path / "runs" / "bridgesim" / "A" / "ltf_seed0" / "none__L0"
+    d.mkdir(parents=True)
+    (d / "per_scenario.csv").write_text("scenario,DS,EPDMS_no_ep,RC\nsd_a,0.4,0.8,0.5\n")
+    old = C.BRIDGESIM_SCORE
+    try:
+        C.BRIDGESIM_SCORE = "DS"
+        assert C.read_bridgesim(d).score.tolist() == [0.4]
+        C.BRIDGESIM_SCORE = "EPDMS_no_ep"
+        assert C.read_bridgesim(d).score.tolist() == [0.8]
+    finally:
+        C.BRIDGESIM_SCORE = old
