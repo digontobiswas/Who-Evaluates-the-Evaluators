@@ -188,16 +188,22 @@ def summarize(rows: List[Dict[str, Any]], expected: List[str]) -> Dict[str, Any]
     }
     means: Dict[str, float] = {}
     nan_counts: Dict[str, int] = {}
+    sems: Dict[str, float] = {}
     for column in bridgesim.METRICS:
         if column in frame:
             values = pd.to_numeric(frame[column], errors="coerce")
             means[column] = float(values.mean()) if values.notna().any() else float("nan")
             nan_counts[column] = int(values.isna().sum())
+            n = int(values.notna().sum())
+            sems[column] = float(values.std(ddof=1) / math.sqrt(n)) if n > 1 else float("nan")
     out["mean"] = means
+    out["sem"] = sems
     out["num_blank_values"] = nan_counts
     out["epdms"] = 100.0 * means.get("EPDMS_no_ep", float("nan"))
     out["ds"] = 100.0 * means.get("DS", float("nan"))
     out["rc"] = 100.0 * means.get("RC", float("nan"))
+    out["epdms_sem"] = 100.0 * sems.get("EPDMS_no_ep", float("nan"))
+    out["ds_sem"] = 100.0 * sems.get("DS", float("nan"))
     out["complete"] = bool(out["num_missing"] == 0 and len(expected) > 0)
     return out
 
@@ -229,7 +235,12 @@ def action_report(cfg: Dict[str, Any]) -> Dict[str, Any]:
         "machine": provenance.machine(),
     }
     reference = (cfg["evaluator"].get("reference") or {}).get(cfg["policy"]["family"])
-    if reference and result["complete"] and not summary["extra_evaluator_args"]:
+    # Compare only runs that follow the leaderboard protocol; a variant with extra evaluator
+    # options opts in explicitly when it is a candidate for the protocol the leaderboard used.
+    compare = cfg.get("compare_with_reference")
+    if compare is None:
+        compare = not summary["extra_evaluator_args"]
+    if reference and result["complete"] and compare:
         summary["comparison"] = {
             "source": cfg["evaluator"]["reference"].get("source"),
             "reference": reference,

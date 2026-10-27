@@ -1,0 +1,17 @@
+# Variant of stage1_bridgesim_navhard.yaml with MetaDrive's runtime ray LiDAR switched on.
+#
+# Without it, BridgeSim gives TransFuser an all-zero LiDAR image (lidar_utils.make_lidar_bev),
+# so TransFuser drives without the LiDAR it was trained with. The README does not say whether the
+# leaderboard enabled it. This run tests that: if TransFuser moves to the published 68.17 EPDMS
+# with LiDAR on, that is the protocol the leaderboard used. LTF is camera only and is unaffected.
+
+extends:
+  - stage1_bridgesim_navhard.yaml
+
+experiment:
+  name: stage1_bridgesim_navhard_runtime_lidar_${policy.id}
+  out_dir: ${paths.exp}/runs_variants/bridgesim/runtime_lidar/${policy.id}
+  export_dir: ${paths.repo}/results/${experiment.name}
+
+extra_evaluator_args: ["--enable-runtime-lidar"]   # BridgeSim defaults: 720 lasers, 50 m, 1.2 m high
+compare_with_reference: true

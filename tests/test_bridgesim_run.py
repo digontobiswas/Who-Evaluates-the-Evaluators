@@ -41,3 +41,11 @@ def test_evaluator_command_carries_the_protocol(tmp_path):
     joined = " ".join(cmd)
     assert "--model-type ltf" in joined and "--replan-rate 5" in joined and "--eval-frames 80" in joined
     assert cmd[1].endswith("bridgesim/evaluation/unified_evaluator.py")
+
+
+def test_summary_reports_standard_errors(tmp_path):
+    _summary_csv(tmp_path / "a", 0.4, 0.6, 0.5)
+    _summary_csv(tmp_path / "b", 0.6, 0.8, 0.7)
+    rows = [{"scenario": s, **bridgesim.read_average_row(tmp_path / s)} for s in ("a", "b")]
+    out = R.summarize(rows, ["a", "b"])
+    assert math.isclose(out["epdms_sem"], 10.0) and math.isclose(out["ds_sem"], 10.0)

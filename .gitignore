@@ -49,6 +49,8 @@ results/**
 !results/analysis/**/*.csv
 !results/analysis/**/*.png
 !results/analysis/**/*.tex
+!results/tables/
+!results/tables/*
 
 # --- editors and OS ---
 .vscode/
