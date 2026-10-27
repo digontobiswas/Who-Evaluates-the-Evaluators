@@ -158,6 +158,22 @@ bash scripts/submit.sh gpu jobs/bridgesim_probe.sbatch   # one GPU, ~30 min: ren
 The probe's scores cover a few scenarios and are not comparable with the 421-scenario
 BridgeSim-NavHard leaderboard (`configs/evaluators/bridgesim.yaml` holds its published values).
 
+### Population A in BridgeSim (reference evaluator)
+
+`wete.cli.bridgesim_degraded_eval` runs BridgeSim's own evaluator with the model adapter wrapped
+(`src/wete/closed_loop/degraded_adapter.py`): camera dropout, image noise and stale observation on
+the camera frames, lateral noise, late braking and latency on the plan. Latency re-expresses the
+delayed plan in the current ego frame and drops its elapsed part. Nothing in BridgeSim is modified.
+
+```bash
+bash scripts/submit_population_a_bridgesim.sh --dry-run transfuser ltf    # 36 GPU jobs + 2 short CPU jobs
+bash scripts/submit_population_a_bridgesim.sh transfuser ltf
+```
+
+Each run writes its own report when its last scenario is scored. Collect and analyse with
+`META=configs/meta.bridgesim.json` (BridgeSim marked as reference), and build the tables with
+`python -m wete.cli.export_tables`.
+
 ## Configuration
 
 An experiment is one YAML file. It may list other files under `extends`; those merge first, in

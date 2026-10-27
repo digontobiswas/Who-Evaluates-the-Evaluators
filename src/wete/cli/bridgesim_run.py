@@ -129,6 +129,7 @@ def _run_one(cfg: Dict[str, Any], scenario: str) -> Dict[str, Any]:
         ev["root"], bridgesim.MODEL_TYPES[policy["family"]], Path(policy["checkpoint"]),
         Path(cfg["scenarios"]["dir"]) / scenario, run_dir, ev["run"],
         extra=[str(x) for x in (cfg.get("extra_evaluator_args") or [])],
+        degradation=cfg.get("degradation"),
     )
     start = time.time()
     with open(run_dir / "evaluator.log", "w") as log:
@@ -171,6 +172,11 @@ def action_evaluate(cfg: Dict[str, Any], shard: int, num_shards: int) -> Dict[st
               "failed": [r["scenario"] for r in rows if r["status"] == "failed"]}
     _write_json(Path(cfg["experiment"]["out_dir"]) / "shards" / f"shard_{shard}_of_{num_shards}.json", result)
     print(f"[bridgesim] evaluate: {json.dumps(result)}", flush=True)
+    # The shard that completes the run writes the report, so no separate report job is needed.
+    out_dir = Path(cfg["experiment"]["out_dir"])
+    if all(bridgesim.read_average_row(out_dir / "scenarios" / s) is not None for s in expected):
+        print("[bridgesim] every expected scenario is scored; writing the report", flush=True)
+        action_report(cfg)
     return result
 
 
@@ -226,6 +232,7 @@ def action_report(cfg: Dict[str, Any]) -> Dict[str, Any]:
         "checkpoint": {"path": cfg["policy"]["checkpoint"],
                        "sha256": provenance.sha256_of(Path(cfg["policy"]["checkpoint"]))},
         "protocol": cfg["evaluator"]["run"],
+        "degradation": {k: (cfg.get("degradation") or {}).get(k) for k in ("name", "level", "value", "wrap")},
         "extra_evaluator_args": cfg.get("extra_evaluator_args") or [],
         "result": result,
         "code": {
@@ -240,6 +247,8 @@ def action_report(cfg: Dict[str, Any]) -> Dict[str, Any]:
     compare = cfg.get("compare_with_reference")
     if compare is None:
         compare = not summary["extra_evaluator_args"]
+    if str((cfg.get("degradation") or {}).get("name", "none")) != "none":
+        compare = False  # a degraded policy is not the published one
     if reference and result["complete"] and compare:
         summary["comparison"] = {
             "source": cfg["evaluator"]["reference"].get("source"),

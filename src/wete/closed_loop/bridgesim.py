@@ -27,10 +27,23 @@ def evaluator_command(
     output_dir: Path,
     run: Mapping[str, Any],
     extra: Iterable[str] = (),
+    degradation: Optional[Mapping[str, Any]] = None,
 ) -> List[str]:
-    """Command line for bridgesim/evaluation/unified_evaluator.py with the configured protocol."""
+    """Command line for bridgesim/evaluation/unified_evaluator.py with the configured protocol.
+
+    With a ``degradation`` (name, level, value) the same arguments go to
+    ``wete.cli.bridgesim_degraded_eval``, which runs BridgeSim's evaluator with the model adapter
+    wrapped. ``wrap: true`` sends a level-0 run through the wrapper too."""
+    if degradation and (str(degradation.get("name", "none")) != "none" or degradation.get("wrap")):
+        entry = [sys.executable, "-m", "wete.cli.bridgesim_degraded_eval",
+                 "--degradation", str(degradation.get("name", "none")),
+                 "--level", str(int(degradation.get("level", 0)))]
+        if degradation.get("value") is not None:
+            entry += ["--value", repr(float(degradation["value"]))]
+    else:
+        entry = [sys.executable, str(Path(root) / "bridgesim/evaluation/unified_evaluator.py")]
     return [
-        sys.executable, str(Path(root) / "bridgesim/evaluation/unified_evaluator.py"),
+        *entry,
         "--model-type", model_type,
         "--checkpoint", str(checkpoint),
         "--scenario-path", str(scenario_path),

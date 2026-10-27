@@ -1,0 +1,17 @@
+# Second run of the clean policy, through the Population A wrapper at level 0. Two checks at once:
+# - run-to-run variation of BridgeSim (is the simulator deterministic for a fixed policy?)
+# - the wrapper changes nothing at level 0
+# Compare its per_scenario.csv with the stage 1 run of the same policy.
+
+extends:
+  - stage1_bridgesim_navhard.yaml
+
+experiment:
+  name: stage1_bridgesim_navhard_wrapped_rerun_${policy.id}
+  out_dir: ${paths.exp}/runs_variants/bridgesim/wrapped_rerun/${policy.id}
+  export_dir: ${paths.repo}/results/${experiment.name}
+
+degradation:
+  wrap: true
+compare_with_reference: true
+run_parallel: 6

@@ -110,6 +110,30 @@ def bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
     return rows
 
 
+def popa_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
+    rows = []
+    for path in sorted(results.glob("popA_bridgesim/*/*/summary.json")):
+        s = _load(path)
+        r, d = s["result"], s.get("degradation") or {}
+        rows.append({
+            "policy": s["policy"],
+            "degradation": d.get("name") or "none",
+            "level": d.get("level") or 0,
+            "parameter": d.get("value"),
+            "epdms": r["epdms"],
+            "epdms_sem": r.get("epdms_sem"),
+            "ds": r["ds"],
+            "ds_sem": r.get("ds_sem"),
+            "rc": r["rc"],
+            "num_scored": r["num_scored"],
+            "num_expected": r["num_expected"],
+            "complete": r["complete"],
+            **{f"mean_{k}": v for k, v in (r.get("mean") or {}).items()},
+            "source_file": str(path),
+        })
+    return sorted(rows, key=lambda x: (x["policy"], x["degradation"] != "none", x["degradation"], x["level"]))
+
+
 README = """Summary tables built from the summary.json files of the cluster jobs (wete.cli.export_tables).
 
 stage1_navsim_navtest.csv
@@ -123,6 +147,12 @@ popA_navsim_navtest.csv
   L2 of the executed plan against the logged trajectory (metres). Descriptive only: whether each
   degradation is a valid ground-truth ordering is decided by the monotonicity test on the
   closed-loop reference evaluator, which has not run yet.
+
+popA_bridgesim_navhard.csv
+  Population A in BridgeSim (closed loop, 421 NavHard scenarios): the same policies and
+  degradations as popA_navsim_navtest.csv, plus latency, which exists only in closed loop.
+  EPDMS, DS and RC in percent with per-scenario standard errors. BridgeSim is the reference
+  evaluator: the monotonicity test that validates each degradation runs on these scores.
 
 bridgesim_navhard.csv
   Closed-loop evaluation in BridgeSim (MetaDrive) on the 421 BridgeSim-NavHard scenarios.
@@ -145,7 +175,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     written = []
     for name, rows in (("stage1_navsim_navtest.csv", stage1_rows(results)),
                        ("popA_navsim_navtest.csv", popa_rows(results)),
-                       ("bridgesim_navhard.csv", bridgesim_rows(results))):
+                       ("bridgesim_navhard.csv", bridgesim_rows(results)),
+                       ("popA_bridgesim_navhard.csv", popa_bridgesim_rows(results))):
         if rows:
             pd.DataFrame(rows).to_csv(out / name, index=False, float_format="%.4f")
             written.append(f"{name}: {len(rows)} rows")

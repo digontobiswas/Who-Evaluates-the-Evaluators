@@ -1,0 +1,17 @@
+# Population A in BridgeSim (closed loop, 421 NavHard scenarios): one base policy, one
+# degradation, one level per job. This is the reference evaluator for the monotonicity test (G2).
+#
+#   OVERRIDES="policy.family=ltf degradation.name=latency degradation.level=2"
+#
+# scripts/submit_population_a_bridgesim.sh submits the whole grid. The clean level-0 run is the
+# stage 1 run already on disk (same directory), so it is reused, not repeated.
+
+extends:
+  - stage1_bridgesim_navhard.yaml
+
+experiment:
+  name: popA_bridgesim_${policy.id}_${degradation.name}_L${degradation.level}
+  out_dir: ${paths.exp}/runs/bridgesim/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA_bridgesim/${policy.id}/${degradation.name}__L${degradation.level}
+
+run_parallel: 6            # one job per run on one V100: 421 scenarios, 6 at a time

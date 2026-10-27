@@ -13,6 +13,7 @@ Evaluator payloads:
   navsim_v2    per_scenario.csv from wete_navsim.run_pdm_score_per_scenario
   hugsim       <scene>_<mode>/eval.json (+ wete_trace.jsonl)
   world_model  scores.csv with columns scenario, score[, consistency]
+  bridgesim    per_scenario.csv from wete.cli.bridgesim_run (EPDMS_no_ep per scenario)
 
 Outputs: scores.csv (long format), features.csv, behavior.csv (plan displacement
 level 3 vs clean, for behaviour-conditioned reliability labels), collect_report.json (counts of
@@ -220,7 +221,18 @@ def read_world_model(d: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
     return df[["scenario", "score"]], ft
 
 
-READERS = {"navsim_v1": read_navsim_v1, "navsim_v2": read_navsim_v2,
+def read_bridgesim(d: Path) -> pd.DataFrame:
+    """per_scenario.csv written by wete.cli.bridgesim_run (report): EPDMS without ego progress, as
+    on BridgeSim's leaderboard, in [0, 1]. Only a complete run's file is written there."""
+    f = d / "per_scenario.csv"
+    if not f.exists():
+        return pd.DataFrame()
+    df = pd.read_csv(f)
+    return pd.DataFrame({"scenario": df.scenario.astype(str),
+                         "score": pd.to_numeric(df["EPDMS_no_ep"], errors="coerce")})
+
+
+READERS = {"navsim_v1": read_navsim_v1, "navsim_v2": read_navsim_v2, "bridgesim": read_bridgesim,
            "hugsim": read_hugsim, "world_model": read_world_model}
 # derived evaluators: (name, source evaluator dir, reader)
 DERIVED = [("open_l2", "navsim_v1", read_open_l2)]   # L2 is logged during the navtest run

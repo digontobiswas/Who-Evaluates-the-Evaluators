@@ -44,3 +44,16 @@ def test_tables_copy_values_from_summaries(tmp_path):
     bs = pd.read_csv(tmp_path / "tables" / "bridgesim_navhard.csv")
     assert bs.epdms[0] == 67.72 and bs.published_epdms[0] == 69.29 and bs.extra_evaluator_args[0] == "none"
     assert (tmp_path / "tables" / "README.txt").is_file()
+
+
+def test_population_a_bridgesim_table(tmp_path):
+    res = tmp_path / "results"
+    for spec, deg, level, epdms in (("none__L0", None, None, 63.3), ("latency__L2", "latency", 2, 41.0)):
+        _write(res / "popA_bridgesim" / "transfuser_seed0" / spec / "summary.json", {
+            "policy": "transfuser_seed0",
+            "degradation": {"name": deg, "level": level, "value": None, "wrap": False},
+            "result": {"epdms": epdms, "epdms_sem": 1.0, "ds": 40.0, "ds_sem": 1.1, "rc": 63.8,
+                       "num_scored": 421, "num_expected": 421, "complete": True, "mean": {}}})
+    X.main(["--results", str(res), "--out", str(tmp_path / "tables")])
+    t = pd.read_csv(tmp_path / "tables" / "popA_bridgesim_navhard.csv")
+    assert list(t.degradation) == ["none", "latency"] and list(t.level) == [0, 2]
