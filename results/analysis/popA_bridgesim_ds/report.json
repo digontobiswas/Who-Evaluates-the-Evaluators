@@ -1,0 +1,174 @@
+{
+  "config": {
+    "B": 1000,
+    "mono_threshold": 0.95,
+    "mono_require_all_refs": true,
+    "h_margin": 0.1,
+    "h3_auroc": 0.7,
+    "theta": 0.5,
+    "behavior_eps": 0.1,
+    "n_sub": 25,
+    "eff_grid": [
+      10,
+      25,
+      50,
+      100,
+      200,
+      400,
+      800
+    ],
+    "seed": 0,
+    "allow_no_reference": false
+  },
+  "monotonicity": {
+    "tested": true,
+    "references": [
+      "bridgesim"
+    ],
+    "retained": [
+      "latency",
+      "lateral_noise"
+    ],
+    "discarded": [
+      "camera_dropout",
+      "image_noise",
+      "stale_obs",
+      "late_braking"
+    ]
+  },
+  "sample_efficiency": {
+    "open_l2": {
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.9716666666666667,
+            "p_full_order": 0.845
+          },
+          "25": {
+            "tau": 0.9975,
+            "p_full_order": 0.985
+          },
+          "50": {
+            "tau": 0.9991666666666668,
+            "p_full_order": 0.995
+          },
+          "100": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 25
+      }
+    },
+    "navsim_v1": {
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.8425,
+            "p_full_order": 0.53
+          },
+          "25": {
+            "tau": 0.9275,
+            "p_full_order": 0.65
+          },
+          "50": {
+            "tau": 0.955,
+            "p_full_order": 0.77
+          },
+          "100": {
+            "tau": 0.9791666666666665,
+            "p_full_order": 0.9
+          },
+          "200": {
+            "tau": 0.9933333333333334,
+            "p_full_order": 0.965
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      }
+    },
+    "bridgesim": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.8341666666666666,
+            "p_full_order": 0.445
+          },
+          "25": {
+            "tau": 0.945,
+            "p_full_order": 0.735
+          },
+          "50": {
+            "tau": 0.985,
+            "p_full_order": 0.92
+          },
+          "100": {
+            "tau": 0.9966666666666667,
+            "p_full_order": 0.98
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 50
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.8041666666666666,
+            "p_full_order": 0.33
+          },
+          "25": {
+            "tau": 0.89,
+            "p_full_order": 0.455
+          },
+          "50": {
+            "tau": 0.9191666666666667,
+            "p_full_order": 0.6
+          },
+          "100": {
+            "tau": 0.9433333333333332,
+            "p_full_order": 0.68
+          },
+          "200": {
+            "tau": 0.995,
+            "p_full_order": 0.97
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 200
+      }
+    }
+  },
+  "agreement": {},
+  "reliability": {},
+  "hypotheses": {}
+}
