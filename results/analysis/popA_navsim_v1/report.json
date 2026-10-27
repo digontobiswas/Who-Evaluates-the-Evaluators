@@ -1,0 +1,369 @@
+{
+  "config": {
+    "B": 1000,
+    "mono_threshold": 0.95,
+    "mono_require_all_refs": true,
+    "h_margin": 0.1,
+    "h3_auroc": 0.7,
+    "theta": 0.5,
+    "behavior_eps": 0.1,
+    "n_sub": 25,
+    "eff_grid": [
+      10,
+      25,
+      50,
+      100,
+      200,
+      400,
+      800
+    ],
+    "seed": 0,
+    "allow_no_reference": true
+  },
+  "provisional": "No reference evaluator: monotonicity was not tested, so no degradation is validated as ground truth. Matrix cells are descriptive only.",
+  "monotonicity": {
+    "tested": false,
+    "references": [],
+    "retained": [],
+    "discarded": []
+  },
+  "sample_efficiency": {
+    "open_l2": {
+      "camera_dropout": {
+        "curve": {
+          "10": {
+            "tau": 0.8333333333333333,
+            "p_full_order": 0.355
+          },
+          "25": {
+            "tau": 0.9275,
+            "p_full_order": 0.675
+          },
+          "50": {
+            "tau": 0.9625,
+            "p_full_order": 0.795
+          },
+          "100": {
+            "tau": 0.9908333333333335,
+            "p_full_order": 0.945
+          },
+          "200": {
+            "tau": 0.9983333333333333,
+            "p_full_order": 0.99
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      },
+      "image_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.425,
+            "p_full_order": 0.08
+          },
+          "25": {
+            "tau": 0.6683333333333334,
+            "p_full_order": 0.245
+          },
+          "50": {
+            "tau": 0.7633333333333333,
+            "p_full_order": 0.295
+          },
+          "100": {
+            "tau": 0.8383333333333333,
+            "p_full_order": 0.4
+          },
+          "200": {
+            "tau": 0.9,
+            "p_full_order": 0.515
+          },
+          "400": {
+            "tau": 0.9441666666666667,
+            "p_full_order": 0.72
+          },
+          "800": {
+            "tau": 0.9575,
+            "p_full_order": 0.755
+          }
+        },
+        "n_for_p90": null
+      },
+      "stale_obs": {
+        "curve": {
+          "10": {
+            "tau": 0.7341666666666667,
+            "p_full_order": 0.405
+          },
+          "25": {
+            "tau": 0.8941666666666667,
+            "p_full_order": 0.59
+          },
+          "50": {
+            "tau": 0.9658333333333333,
+            "p_full_order": 0.82
+          },
+          "100": {
+            "tau": 0.995,
+            "p_full_order": 0.975
+          },
+          "200": {
+            "tau": 0.9991666666666665,
+            "p_full_order": 0.995
+          },
+          "400": {
+            "tau": 0.9991666666666665,
+            "p_full_order": 0.995
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.9725,
+            "p_full_order": 0.875
+          },
+          "25": {
+            "tau": 0.9975,
+            "p_full_order": 0.985
+          },
+          "50": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "100": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 25
+      },
+      "late_braking": {
+        "curve": {
+          "10": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "25": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "50": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "100": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 10
+      }
+    },
+    "navsim_v1": {
+      "camera_dropout": {
+        "curve": {
+          "10": {
+            "tau": 0.67,
+            "p_full_order": 0.165
+          },
+          "25": {
+            "tau": 0.7633333333333333,
+            "p_full_order": 0.28
+          },
+          "50": {
+            "tau": 0.8533333333333333,
+            "p_full_order": 0.42
+          },
+          "100": {
+            "tau": 0.9225,
+            "p_full_order": 0.635
+          },
+          "200": {
+            "tau": 0.9741666666666667,
+            "p_full_order": 0.85
+          },
+          "400": {
+            "tau": 0.9916666666666666,
+            "p_full_order": 0.95
+          },
+          "800": {
+            "tau": 0.9991666666666668,
+            "p_full_order": 0.995
+          }
+        },
+        "n_for_p90": 400
+      },
+      "image_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.43916666666666665,
+            "p_full_order": 0.08
+          },
+          "25": {
+            "tau": 0.6008333333333333,
+            "p_full_order": 0.1
+          },
+          "50": {
+            "tau": 0.6975,
+            "p_full_order": 0.12
+          },
+          "100": {
+            "tau": 0.7891666666666666,
+            "p_full_order": 0.28
+          },
+          "200": {
+            "tau": 0.8666666666666666,
+            "p_full_order": 0.42
+          },
+          "400": {
+            "tau": 0.9016666666666667,
+            "p_full_order": 0.495
+          },
+          "800": {
+            "tau": 0.9333333333333335,
+            "p_full_order": 0.605
+          }
+        },
+        "n_for_p90": null
+      },
+      "stale_obs": {
+        "curve": {
+          "10": {
+            "tau": 0.5375,
+            "p_full_order": 0.15
+          },
+          "25": {
+            "tau": 0.795,
+            "p_full_order": 0.385
+          },
+          "50": {
+            "tau": 0.9041666666666667,
+            "p_full_order": 0.575
+          },
+          "100": {
+            "tau": 0.97,
+            "p_full_order": 0.83
+          },
+          "200": {
+            "tau": 0.9975,
+            "p_full_order": 0.985
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 200
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.8216666666666665,
+            "p_full_order": 0.54
+          },
+          "25": {
+            "tau": 0.9266666666666665,
+            "p_full_order": 0.645
+          },
+          "50": {
+            "tau": 0.9533333333333333,
+            "p_full_order": 0.785
+          },
+          "100": {
+            "tau": 0.9841666666666667,
+            "p_full_order": 0.91
+          },
+          "200": {
+            "tau": 0.9975,
+            "p_full_order": 0.985
+          },
+          "400": {
+            "tau": 0.9991666666666665,
+            "p_full_order": 0.995
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      },
+      "late_braking": {
+        "curve": {
+          "10": {
+            "tau": 0.8047821773229381,
+            "p_full_order": 0.39
+          },
+          "25": {
+            "tau": 0.9141666666666666,
+            "p_full_order": 0.585
+          },
+          "50": {
+            "tau": 0.9608333333333333,
+            "p_full_order": 0.785
+          },
+          "100": {
+            "tau": 0.9866666666666667,
+            "p_full_order": 0.92
+          },
+          "200": {
+            "tau": 0.9958333333333332,
+            "p_full_order": 0.975
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      }
+    }
+  },
+  "agreement": {},
+  "reliability": {},
+  "hypotheses": {}
+}

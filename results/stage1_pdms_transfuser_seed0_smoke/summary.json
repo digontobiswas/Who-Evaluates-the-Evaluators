@@ -1,0 +1,66 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_0.ckpt",
+    "sha256": "cfe7e2410a3409b3291e20b6b765e6b1a53cccd7ba5471f17dd0acb00e38faf3",
+    "size_bytes": 672447984
+  },
+  "code": {
+    "navsim_devkit": null,
+    "nuplan_devkit": null,
+    "repo": null
+  },
+  "comparison": null,
+  "comparison_note": "No comparison with the published PDMS: it is defined on the full split, and this run covers a subset.",
+  "created_utc": "2026-10-26T11:00:56Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": false
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "stage1_pdms_transfuser_seed0_smoke",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn331",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1214830",
+    "slurm_partition": "medium"
+  },
+  "policy": "transfuser_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.9403764212729248,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 1.0,
+      "drivable_area_compliance": 1.0,
+      "driving_direction_compliance": 1.0,
+      "ego_progress": 0.9194034110550198,
+      "no_at_fault_collisions": 1.0,
+      "score": 0.940376421272925,
+      "time_to_collision_within_bound": 0.9375
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 64,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 64,
+    "num_unexpected": 0,
+    "num_valid": 64,
+    "pdms": 94.0376421272925,
+    "score_sem": 0.01259490983201708,
+    "score_std": 0.10075927865613664
+  },
+  "scenario_mode": "subset",
+  "scenarios_per_second": 0.2778083847545757,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/stage1_pdms_transfuser_seed0_smoke/pdm_score/2026.10.26.16.30.48.csv",
+  "split": "navtest",
+  "timings_s": {
+    "cache": 147.60407066345215,
+    "score": 230.37461614608765,
+    "select": 1.0462901592254639
+  }
+}

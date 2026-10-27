@@ -1,0 +1,232 @@
+{
+  "checkpoints": {
+    "egomlp": {
+      "all_loaded": true,
+      "checkpoint": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ego_status_mlp/ego_status_mlp_seed_0.ckpt",
+      "checkpoint_tensors": 8,
+      "loaded_from_checkpoint": 8,
+      "model_tensors": 8,
+      "not_loaded": [],
+      "num_not_loaded": 0
+    },
+    "ltf": {
+      "all_loaded": true,
+      "checkpoint": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_0.ckpt",
+      "checkpoint_tensors": 669,
+      "loaded_from_checkpoint": 669,
+      "model_tensors": 669,
+      "not_loaded": [],
+      "num_not_loaded": 0
+    },
+    "transfuser": {
+      "all_loaded": true,
+      "checkpoint": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_0.ckpt",
+      "checkpoint_tensors": 668,
+      "loaded_from_checkpoint": 668,
+      "model_tensors": 668,
+      "not_loaded": [],
+      "num_not_loaded": 0
+    }
+  },
+  "code": {
+    "bridgesim": "ea5d45f571ad934e09152e3f9c0fbe7d4c2f37db",
+    "repo": "58363bf5f35051b7160e01831e26ae6816a18897"
+  },
+  "convert": {
+    "error_tail": null,
+    "logs_converted": [
+      "2021.05.25.14.16.10_veh-35_01100_01664",
+      "2021.05.25.14.16.10_veh-35_01690_02183",
+      "2021.05.25.14.16.10_veh-35_03373_03550"
+    ],
+    "missing_logs_example": [],
+    "navhard_logs_on_disk": 76,
+    "navhard_logs_required": 76,
+    "navhard_tokens": 450,
+    "num_scenarios": 6,
+    "returncode": 0,
+    "scenarios": [
+      "sd_197f2dea642850e7",
+      "sd_43162b00fe4550b8",
+      "sd_4a919f7ea2f65200",
+      "sd_697882c22eb65ca7",
+      "sd_d715fbc6ea0551f8",
+      "sd_e1f6c044f4235462"
+    ],
+    "seconds": 35.7
+  },
+  "created_utc": "2026-10-26T14:24:25Z",
+  "environment": {
+    "cuda_available": true,
+    "gpu": "Tesla V100-PCIE-16GB",
+    "numpy": "1.23.4",
+    "panda3d": "1.10.16",
+    "python": "3.9.25",
+    "torch": "2.0.1+cu117",
+    "torch_cuda": "11.7"
+  },
+  "evaluate": {
+    "ltf": [
+      {
+        "average_row": {
+          "DAC": "1.0",
+          "DDC": "1.0",
+          "DS": "0.848507",
+          "EC": "0.709677",
+          "EPDMS_no_ep": "0.947214",
+          "HC": "1.0",
+          "LK": "1.0",
+          "NC": "1.0",
+          "RC": "0.895793",
+          "TL": "1.0",
+          "TTC": "1.0",
+          "frame_id": "AVERAGE",
+          "valid": ""
+        },
+        "error_tail": null,
+        "returncode": 0,
+        "scenario": "sd_197f2dea642850e7",
+        "seconds": 36.6
+      },
+      {
+        "average_row": {
+          "DAC": "0.8",
+          "DDC": "1.0",
+          "DS": "0.366782",
+          "EC": "0.155556",
+          "EPDMS_no_ep": "0.630303",
+          "HC": "0.6",
+          "LK": "1.0",
+          "NC": "1.0",
+          "RC": "0.581914",
+          "TL": "1.0",
+          "TTC": "1.0",
+          "frame_id": "AVERAGE",
+          "valid": ""
+        },
+        "error_tail": null,
+        "returncode": 0,
+        "scenario": "sd_43162b00fe4550b8",
+        "seconds": 33.5
+      },
+      {
+        "average_row": {
+          "DAC": "1.0",
+          "DDC": "1.0",
+          "DS": "0.82885",
+          "EC": "0.7",
+          "EPDMS_no_ep": "0.845455",
+          "HC": "0.9875",
+          "LK": "0.4625",
+          "NC": "1.0",
+          "RC": "0.98036",
+          "TL": "1.0",
+          "TTC": "1.0",
+          "frame_id": "AVERAGE",
+          "valid": ""
+        },
+        "error_tail": null,
+        "returncode": 0,
+        "scenario": "sd_4a919f7ea2f65200",
+        "seconds": 37.3
+      }
+    ],
+    "transfuser": [
+      {
+        "average_row": {
+          "DAC": "1.0",
+          "DDC": "1.0",
+          "DS": "0.825075",
+          "EC": "0.612903",
+          "EPDMS_no_ep": "0.923754",
+          "HC": "1.0",
+          "LK": "0.967742",
+          "NC": "1.0",
+          "RC": "0.893176",
+          "TL": "1.0",
+          "TTC": "1.0",
+          "frame_id": "AVERAGE",
+          "valid": ""
+        },
+        "error_tail": null,
+        "returncode": 0,
+        "scenario": "sd_197f2dea642850e7",
+        "seconds": 73.4
+      },
+      {
+        "average_row": {
+          "DAC": "0.62963",
+          "DDC": "1.0",
+          "DS": "0.137957",
+          "EC": "0.296296",
+          "EPDMS_no_ep": "0.390572",
+          "HC": "0.851852",
+          "LK": "1.0",
+          "NC": "1.0",
+          "RC": "0.353216",
+          "TL": "1.0",
+          "TTC": "0.666667",
+          "frame_id": "AVERAGE",
+          "valid": ""
+        },
+        "error_tail": null,
+        "returncode": 0,
+        "scenario": "sd_43162b00fe4550b8",
+        "seconds": 30.5
+      },
+      {
+        "average_row": {
+          "DAC": "0.7375",
+          "DDC": "1.0",
+          "DS": "0.591917",
+          "EC": "0.7125",
+          "EPDMS_no_ep": "0.660227",
+          "HC": "0.9875",
+          "LK": "0.825",
+          "NC": "1.0",
+          "RC": "0.896536",
+          "TL": "1.0",
+          "TTC": "1.0",
+          "frame_id": "AVERAGE",
+          "valid": ""
+        },
+        "error_tail": null,
+        "returncode": 0,
+        "scenario": "sd_4a919f7ea2f65200",
+        "seconds": 37.0
+      }
+    ]
+  },
+  "experiment": "stage1_bridgesim_probe",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "gpu002",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "20",
+    "slurm_job_id": "1215005",
+    "slurm_partition": "gpu"
+  },
+  "note": "Feasibility probe on a handful of scenarios; not comparable with the leaderboard.",
+  "render": {
+    "default": {
+      "error_tail": null,
+      "ok": true,
+      "pipe": "eglGraphicsPipe",
+      "renderer": "Tesla V100-PCIE-16GB/PCIe/SSE2 | NVIDIA Corporation"
+    },
+    "p3headlessgl": {
+      "error_tail": null,
+      "ok": true,
+      "pipe": "eglGraphicsPipe",
+      "renderer": "Tesla V100-PCIE-16GB/PCIe/SSE2 | NVIDIA Corporation"
+    }
+  },
+  "timings_s": {
+    "checkpoints": 125.6,
+    "convert": 36.1,
+    "environment": 56.4,
+    "evaluate": 248.2,
+    "render": 5.6
+  }
+}
