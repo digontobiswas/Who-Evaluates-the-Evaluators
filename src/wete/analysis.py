@@ -50,6 +50,10 @@ DEFAULT_CFG = {
     # True only for a provisional summary when no closed-loop reference has been run yet:
     # monotonicity is then NOT tested, nothing counts as retained, and H1-H4 are skipped.
     "allow_no_reference": False,
+    # Specificity arm (benign tail perturbations), fixed before any specificity run (28 Oct 2026):
+    "spec_margin": 0.01,       # equivalence margin on the reference score scale (1 DS point)
+    "spec_ratio": 0.25,        # a penalty counts if >= this fraction of the harmful twin's drop
+    "spec_threshold": 0.95,    # P(drop > 0) needed for a penalty to count
 }
 
 
@@ -138,7 +142,7 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     if not refs:
         report["provisional"] = ("No reference evaluator: monotonicity was not tested, so no degradation "
                                  "is validated as ground truth. Matrix cells are descriptive only.")
-    degs_all = [d for d in D.LEVELS if d in set(dfA.degradation)]
+    degs_all = [d for d in D.LEVELS if d in set(dfA.degradation) and d not in D.BENIGN]
 
     # ---- 1. Monotonicity on reference evaluator(s) -----------------------
     mono_rows = []
@@ -222,6 +226,12 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
             curve = St.sample_efficiency(list(fams.values()), cfg["eff_grid"], R=200, rng=rng)
             eff[e][d] = {"curve": curve, "n_for_p90": St.scenarios_to_stability(curve, 0.9)}
     report["sample_efficiency"] = eff
+
+    # ---- 4b. Specificity arm --------------------------------------------
+    spec_rows, spec_summary = specificity(dfA, meta, evaluators, refs, cfg, rng)
+    if spec_rows:
+        pd.DataFrame(spec_rows).to_csv(out / "specificity.csv", index=False)
+    report["specificity"] = spec_summary
 
     # ---- 5. Agreement on Populations B and C -----------------------------
     agreement = {}
@@ -326,6 +336,82 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
         report["plot_error"] = repr(ex)
     (out / "report.json").write_text(json.dumps(report, indent=2, default=_json_default))
     return report
+
+
+def specificity(dfA: pd.DataFrame, meta: Dict[str, Dict], evaluators: Sequence[str],
+                refs: Sequence[str], cfg: Dict, rng: np.random.Generator) -> Tuple[List[Dict], Dict]:
+    """Benign perturbations (D.BENIGN): does an evaluator penalise a change of the plan that does
+    not change what the car executes?
+
+    Per (evaluator, base, benign perturbation, level), on scenarios shared with the clean run and
+    the harmful twin: paired drop = clean - perturbed (oriented, higher = better), bootstrapped
+    over scenarios (B draws, same indices for the twin).
+
+    * Reference evaluator: the perturbation is VALIDATED as benign if, for every base and level,
+      the 90% bootstrap CI of the mean drop lies inside +-spec_margin (TOST at alpha 0.05).
+    * Every evaluator: a level is a FALSE ALARM if P(drop > 0) > spec_threshold and the drop is at
+      least spec_ratio of the harmful twin's drop at the same level. Verdict per (evaluator,
+      perturbation): 'penalises benign' if any base/level is a false alarm, else 'specific'.
+      Only interpreted for perturbations validated on the reference."""
+    rows: List[Dict] = []
+    benign = [d for d in D.BENIGN if d in set(dfA.degradation)]
+    if not benign:
+        return rows, {}
+    for e in evaluators:
+        hib = meta[e]["higher_is_better"]
+        for d in benign:
+            twin = D.BENIGN[d]
+            for b in sorted(dfA[dfA.evaluator == e].base.unique()):
+                S, sc = family_matrix(dfA, e, b, d, hib)
+                if S is None:
+                    continue
+                T, tsc = family_matrix(dfA, e, b, twin, hib)
+                common = [x for x in sc if x in set(tsc)] if T is not None else list(sc)
+                spos = {x: i for i, x in enumerate(sc)}
+                S = S[:, [spos[x] for x in common]]
+                if T is not None:
+                    tpos = {x: i for i, x in enumerate(tsc)}
+                    T = T[:, [tpos[x] for x in common]]
+                n = S.shape[1]
+                idx = rng.integers(0, n, size=(cfg["B"], n))
+                for lvl in range(1, S.shape[0]):
+                    drop = S[0] - S[lvl]
+                    draws = drop[idx].mean(axis=1)
+                    lo90, hi90 = np.quantile(draws, [0.05, 0.95])
+                    row = {"evaluator": e, "reference": e in refs, "base": b, "perturbation": d,
+                           "twin": twin, "level": lvl, "n_scenarios": n, "mean_drop": float(drop.mean()),
+                           "ci90_lo": float(lo90), "ci90_hi": float(hi90),
+                           "p_drop_pos": float((draws > 0).mean()),
+                           "equivalent": bool(-cfg["spec_margin"] < lo90 and hi90 < cfg["spec_margin"]),
+                           "twin_mean_drop": np.nan, "ratio": np.nan, "ratio_lo": np.nan, "ratio_hi": np.nan}
+                    if T is not None and lvl < T.shape[0]:
+                        tdrop = T[0] - T[lvl]
+                        tdraws = tdrop[idx].mean(axis=1)
+                        row["twin_mean_drop"] = float(tdrop.mean())
+                        if tdrop.mean() > 0:
+                            with np.errstate(divide="ignore", invalid="ignore"):
+                                rdraws = np.where(tdraws > 0, draws / tdraws, np.nan)
+                            row["ratio"] = float(drop.mean() / tdrop.mean())
+                            if np.isfinite(rdraws).any():
+                                row["ratio_lo"], row["ratio_hi"] = (float(v) for v in np.nanquantile(rdraws, [0.025, 0.975]))
+                    row["false_alarm"] = bool(row["p_drop_pos"] > cfg["spec_threshold"]
+                                              and np.isfinite(row["ratio"]) and row["ratio"] >= cfg["spec_ratio"])
+                    rows.append(row)
+    df = pd.DataFrame(rows)
+    summary: Dict = {"margin": cfg["spec_margin"], "ratio": cfg["spec_ratio"],
+                     "threshold": cfg["spec_threshold"], "validated": {}, "verdicts": {}}
+    for d in benign:
+        r = df[(df.perturbation == d) & df.reference]
+        summary["validated"][d] = bool(len(r)) and bool(r.equivalent.all()) if refs else None
+    for (e, d), g in df.groupby(["evaluator", "perturbation"]):
+        if g.ratio.isna().all():
+            v = "no harmful twin to compare"
+        else:
+            v = "penalises benign" if g.false_alarm.any() else "specific"
+        summary["verdicts"].setdefault(e, {})[d] = {
+            "verdict": v, "validated_on_reference": summary["validated"].get(d),
+            "max_ratio": float(g.ratio.max()) if g.ratio.notna().any() else None}
+    return rows, summary
 
 
 def _json_default(o):
@@ -447,7 +533,8 @@ def main(argv=None):
     rep = run(load_table(a.scores), load_meta(a.meta), a.out, feats,
               {"B": a.B, "seed": a.seed, "allow_no_reference": a.no_reference}, beh)
     print(json.dumps({"provisional": rep.get("provisional"), "monotonicity": rep["monotonicity"],
-                      "hypotheses": rep["hypotheses"]}, indent=2, default=_json_default))
+                      "specificity": rep.get("specificity"), "hypotheses": rep["hypotheses"]},
+                     indent=2, default=_json_default))
 
 
 if __name__ == "__main__":

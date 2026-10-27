@@ -22,6 +22,12 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
+from wete import degradations as D
+
+
+def _arm(name: str) -> str:
+    return "specificity" if name in D.BENIGN else "population_a"
+
 
 def _load(path: Path) -> Dict[str, Any]:
     with open(path) as handle:
@@ -60,6 +66,7 @@ def popa_rows(results: Path) -> List[Dict[str, Any]]:
         r, d, ol = s["result"], s["degradation"], s.get("open_loop") or {}
         rows.append({
             "policy": s["policy"],
+            "arm": _arm(d["name"]),
             "degradation": d["name"],
             "level": d["level"],
             "parameter": d.get("value"),
@@ -117,6 +124,7 @@ def popa_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
         r, d = s["result"], s.get("degradation") or {}
         rows.append({
             "policy": s["policy"],
+            "arm": _arm(d.get("name") or "none"),
             "degradation": d.get("name") or "none",
             "level": d.get("level") or 0,
             "parameter": d.get("value"),
@@ -159,6 +167,10 @@ bridgesim_navhard.csv
   EPDMS, DS (driving score) and RC (route completion) in percent, averaged over scenarios the way
   BridgeSim's leaderboard does. published_*: BridgeSim README leaderboard (commit ea5d45f).
   extra_evaluator_args shows protocol variants (e.g. runtime LiDAR on).
+
+Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
+lateral_noise / late_braking only beyond the first 1.5 s and 10 m of the plan (the part BridgeSim's
+replanning controller never executes). A correct closed-loop score should not move under them.
 
 Per-scenario data for every run: results/<experiment>/per_scenario.csv (and results/popA/...).
 Columns mean_* are the evaluator's sub-metrics as fractions in [0, 1].

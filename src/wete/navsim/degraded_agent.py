@@ -27,6 +27,9 @@ history_removal  removed past frames are replaced by the oldest kept one. A no-o
                  single-frame agents (TransFuser and LTF read only the current frame).
 lateral_noise    smooth lateral drift on the output trajectory, direction fixed per token.
 late_braking     arc-length stretch of the output trajectory.
+tail_lateral,    specificity arm: the two operators above applied only beyond the first 1.5 s and
+tail_stretch     10 m of the plan (degradations.tail_anchor), the part a replanning closed-loop
+                 controller never executes.
 latency          not available: NAVSIM is single-shot. Raises.
 
 Every executed plan is appended to ``<log_dir>/<agent name>.plans.jsonl`` with open-loop L2
@@ -206,11 +209,7 @@ class DegradedAgent(AbstractAgent):
         d, p = self.spec.degradation, self.spec.param
         if self.spec.is_identity or D.ACTS_ON[d] != "output":
             return traj
-        poses = traj.poses
-        if d == "lateral_noise":
-            poses = D.lateral_noise(poses, p, D.scenario_rng(token, d))
-        elif d == "late_braking":
-            poses = D.late_braking(poses, p)
+        poses = D.apply_output(traj.poses, self.spec, token, traj.trajectory_sampling.interval_length)
         return Trajectory(np.asarray(poses, dtype=np.float32), traj.trajectory_sampling)
 
     def compute_trajectory(self, agent_input: AgentInput, scene: Optional[Scene] = None) -> Trajectory:

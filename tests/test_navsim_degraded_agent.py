@@ -285,6 +285,20 @@ def test_output_degradations(nv):
     assert abs(tr.poses[-1, 1]) == pytest.approx(1.5, rel=1e-5)
 
 
+def test_benign_tail_perturbations(nv):
+    """Specificity arm: the first 1.5 s / 10 m of the plan stay exactly as the policy made it."""
+    _, clean = agent(nv)
+    ref = np.asarray(clean.compute_trajectory(make_input(nv.dc), make_scene(nv.dc)).poses)
+    _, ag = agent(nv, "tail_lateral", 3)
+    tr = np.asarray(ag.compute_trajectory(make_input(nv.dc), make_scene(nv.dc)).poses)
+    np.testing.assert_allclose(tr[:3], ref[:3])
+    assert abs(tr[-1, 1]) == pytest.approx(1.5, rel=1e-5)
+    _, ag = agent(nv, "tail_stretch", 3)
+    tr = np.asarray(ag.compute_trajectory(make_input(nv.dc), make_scene(nv.dc)).poses)
+    np.testing.assert_allclose(tr[:3], ref[:3])
+    assert tr[-1, 0] == pytest.approx(ref[2, 0] + 1.7 * (ref[-1, 0] - ref[2, 0]), rel=1e-5)
+
+
 def test_rejects_latency_and_bad_levels(nv):
     base = FakeTransFuser(nv.dc, nv.version)
     with pytest.raises(ValueError):

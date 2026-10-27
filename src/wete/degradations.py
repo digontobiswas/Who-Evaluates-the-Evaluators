@@ -47,7 +47,30 @@ LEVELS: Dict[str, List[float]] = {
     "lateral_noise": [0.0, 0.3, 0.8, 1.5],
     # longitudinal stretch of the planned trajectory (late / weak braking)
     "late_braking": [0.0, 0.15, 0.40, 0.70],
+    # Specificity arm (benign): the same two output operators, applied only to the tail of the
+    # plan that a replanning closed-loop controller never executes (see `tail_anchor`). Same
+    # parameters as their harmful counterparts so the two can be compared level by level.
+    "tail_lateral": [0.0, 0.3, 0.8, 1.5],
+    "tail_stretch": [0.0, 0.15, 0.40, 0.70],
 }
+
+# Benign perturbation -> the harmful degradation it mirrors.
+BENIGN: Dict[str, str] = {"tail_lateral": "lateral_noise", "tail_stretch": "late_braking"}
+
+# Where the unexecuted tail starts: the first waypoint that is both at least TAIL_T_CUT seconds
+# and at least TAIL_S_CUT metres (arc length) ahead. Chosen from BridgeSim's protocol (commit
+# ea5d45f), before any specificity run:
+#   * the plan is replaced every 0.5 s (replan_rate 5 x sim_dt 0.1), so at most the waypoints up
+#     to 0.4 s after the replan are consumed;
+#   * PurePursuitController sets the target speed from the first 10 waypoints at 0.1 s, i.e. up
+#     to 0.4 + 1.0 = 1.4 s of the plan  ->  TAIL_T_CUT = 1.5 s;
+#   * it steers towards the waypoint whose distance is closest to Lf = 4 + 0.1 v metres. With up
+#     to 0.4 s consumed, the tail starts at least TAIL_S_CUT - 0.4 v metres from the car, which is
+#     > Lf + 1 m for v <= 10 m/s; above that the 1.5 s cut gives >= 1.1 v > Lf + 1 m.
+# Under that protocol the executed controls are unchanged, so a closed-loop score should not
+# move. Whether it does not is TESTED on the reference evaluator (equivalence test), not assumed.
+TAIL_T_CUT = 1.5
+TAIL_S_CUT = 10.0
 
 FAILURE_CLASS: Dict[str, str] = {
     "camera_dropout": "perception",
@@ -57,6 +80,8 @@ FAILURE_CLASS: Dict[str, str] = {
     "history_removal": "memory",
     "lateral_noise": "control",
     "late_braking": "control",
+    "tail_lateral": "benign",
+    "tail_stretch": "benign",
 }
 
 ACTS_ON: Dict[str, str] = {
@@ -67,6 +92,8 @@ ACTS_ON: Dict[str, str] = {
     "history_removal": "input",
     "lateral_noise": "output",
     "late_braking": "output",
+    "tail_lateral": "output",
+    "tail_stretch": "output",
 }
 
 CLOSED_LOOP_ONLY = {"latency"}
@@ -260,6 +287,94 @@ def late_braking(traj: np.ndarray, stretch: float) -> np.ndarray:
     return out[:, : np.asarray(traj).shape[-1]]
 
 
+def tail_anchor(traj: np.ndarray, dt: float, t_cut: float = TAIL_T_CUT,
+                s_cut: float = TAIL_S_CUT) -> Optional[int]:
+    """Index of the last waypoint left unchanged by the tail operators: the first waypoint at
+    least `t_cut` seconds and `s_cut` metres (arc length from the origin) ahead. Waypoint i is at
+    time (i + 1) * dt. None if no waypoint qualifies or it is the last one (nothing to change)."""
+    xy = np.asarray(traj, dtype=np.float64)[:, :2]
+    s = np.cumsum(np.hypot(*np.diff(np.vstack([[0.0, 0.0], xy]), axis=0).T))
+    t = (np.arange(len(xy)) + 1) * float(dt)
+    ok = np.where((t >= t_cut - 1e-9) & (s >= s_cut))[0]
+    if len(ok) == 0 or ok[0] >= len(xy) - 1:
+        return None
+    return int(ok[0])
+
+
+def _keep_head(original: np.ndarray, changed: np.ndarray, a: int) -> np.ndarray:
+    """Waypoints 0..a (positions and headings) stay exactly as the policy produced them."""
+    changed[: a + 1] = original[: a + 1]
+    return changed
+
+
+def tail_lateral(traj: np.ndarray, peak_m: float, rng: np.random.Generator, dt: float,
+                 t_cut: float = TAIL_T_CUT, s_cut: float = TAIL_S_CUT) -> np.ndarray:
+    """Benign twin of `lateral_noise`: a lateral drift that is zero up to the anchor waypoint and
+    grows linearly to `peak_m` at the last waypoint. Pass the `lateral_noise` rng so the direction
+    matches the harmful operator on the same scenario."""
+    shape = np.asarray(traj).shape[-1]
+    out = _as_xyh(traj)
+    sign = 1.0 if rng.random() < 0.5 else -1.0   # drawn first, as in lateral_noise
+    a = tail_anchor(out, dt, t_cut, s_cut)
+    if peak_m <= 0 or a is None:
+        return out[:, :shape]
+    orig = out.copy()
+    n = len(out)
+    ramp = np.zeros(n)
+    ramp[a + 1:] = (np.arange(a + 1, n) - a) / (n - 1 - a)
+    off = sign * peak_m * ramp
+    h = orig[:, 2]
+    out[:, 0] += -np.sin(h) * off
+    out[:, 1] += np.cos(h) * off
+    out[:, 2] = _headings(out[:, :2])
+    return _keep_head(orig, out, a)[:, :shape]
+
+
+def tail_stretch(traj: np.ndarray, stretch: float, dt: float,
+                 t_cut: float = TAIL_T_CUT, s_cut: float = TAIL_S_CUT) -> np.ndarray:
+    """Benign twin of `late_braking`: beyond the anchor waypoint (arc length s_a), arc length
+    s becomes s_a + (1 + stretch) (s - s_a); waypoints up to the anchor are unchanged."""
+    shape = np.asarray(traj).shape[-1]
+    out = _as_xyh(traj)
+    a = tail_anchor(out, dt, t_cut, s_cut)
+    if stretch <= 0 or a is None:
+        return out[:, :shape]
+    orig = out.copy()
+    pts = np.vstack([[0.0, 0.0], out[:, :2]])
+    s = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(pts, axis=0).T))])
+    s_a = s[a + 1]
+    s_new = np.where(s[1:] > s_a, s_a + (1.0 + stretch) * (s[1:] - s_a), s[1:])
+    x = np.interp(s_new, s, pts[:, 0])
+    y = np.interp(s_new, s, pts[:, 1])
+    beyond = s_new > s[-1]
+    if beyond.any():
+        hend = orig[-1, 2]
+        extra = s_new[beyond] - s[-1]
+        x[beyond] = pts[-1, 0] + np.cos(hend) * extra
+        y[beyond] = pts[-1, 1] + np.sin(hend) * extra
+    out[:, 0], out[:, 1] = x, y
+    out[:, 2] = _headings(out[:, :2])
+    return _keep_head(orig, out, a)[:, :shape]
+
+
+def apply_output(traj: np.ndarray, spec: "DegradationSpec", scenario_id: str, dt: float) -> np.ndarray:
+    """Every stateless output-side operator, in one place for the NAVSIM agent and the BridgeSim
+    adapter. `dt`: time between waypoints (s), waypoint i at (i + 1) * dt. Latency is stateful
+    and handled by the closed-loop adapters."""
+    d, p = spec.degradation, spec.param
+    if spec.is_identity:
+        return np.asarray(traj)
+    if d == "lateral_noise":
+        return lateral_noise(traj, p, scenario_rng(scenario_id, d))
+    if d == "late_braking":
+        return late_braking(traj, p)
+    if d == "tail_lateral":
+        return tail_lateral(traj, p, scenario_rng(scenario_id, "lateral_noise"), dt)
+    if d == "tail_stretch":
+        return tail_stretch(traj, p, dt)
+    return np.asarray(traj)
+
+
 class LatencyQueue:
     """FIFO that returns the plan produced `delay` steps ago (closed loop only).
     Until the queue is full it returns the oldest plan available, i.e. the
@@ -323,7 +438,7 @@ def population_a_specs(degradations: Optional[Sequence[str]] = None,
     """All (degradation, level) specs, with a single shared level-0 entry.
     `levels` overrides the default parameter table (index 0 = clean value)."""
     table = {**LEVELS, **(levels or {})}
-    degs = list(degradations or LEVELS)
+    degs = list(degradations or [d for d in LEVELS if d not in BENIGN])
     if not closed_loop:
         degs = [d for d in degs if d not in CLOSED_LOOP_ONLY]
     specs = [DegradationSpec()]

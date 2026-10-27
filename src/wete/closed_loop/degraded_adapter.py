@@ -20,6 +20,8 @@ input side (prepare_input, every frame, via wete.wrappers.ClosedLoopDegrader)
 output side (parse_output, every replan)
     lateral_noise   smooth lateral drift of the plan, direction fixed per scenario
     late_braking    arc-length stretch of the plan
+    tail_lateral,   specificity arm: lateral_noise / late_braking applied only beyond the first
+    tail_stretch    1.5 s and 10 m of the plan, which this protocol's controller never executes
     latency         the plan executed now is the one produced k replans ago. It is re-expressed
                     from the ego frame it was produced in to the current ego frame (through world
                     coordinates), and its first k*replan_interval seconds, which lie in the past,
@@ -43,7 +45,8 @@ from wete.wrappers import ClosedLoopDegrader
 
 # BridgeSim camera names for NAVSIM policies (bridgesim/utils/camera_utils.NAVSIM_CAM_CONFIGS).
 DROPOUT_PRIORITY = ["CAM_F0", "CAM_L0", "CAM_R0", "CAM_L1", "CAM_R1", "CAM_B0", "CAM_L2", "CAM_R2"]
-SUPPORTED = {"none", "camera_dropout", "image_noise", "stale_obs", "lateral_noise", "late_braking", "latency"}
+SUPPORTED = {"none", "camera_dropout", "image_noise", "stale_obs", "lateral_noise", "late_braking", "latency",
+             "tail_lateral", "tail_stretch"}
 
 
 def ego_to_world(plan_fl: np.ndarray, position: Sequence[float], heading: float) -> np.ndarray:
@@ -95,14 +98,10 @@ class DegradedAdapter:
         parsed = self._base.parse_output(model_output, ego_state)
         traj = np.asarray(parsed["trajectory"], dtype=np.float64)        # [left, forward]
         fl = traj[:, [1, 0]]                                               # [forward, left]
-        d, p = self.spec.degradation, self.spec.param
-        if not self.spec.is_identity:
-            if d == "lateral_noise":
-                fl = D.lateral_noise(fl, p, D.scenario_rng(self.scenario_id, d))
-            elif d == "late_braking":
-                fl = D.late_braking(fl, p)
-            elif d == "latency":
-                fl = self._delayed(fl, ego_state)
+        if self.spec.degradation == "latency" and not self.spec.is_identity:
+            fl = self._delayed(fl, ego_state)
+        else:
+            fl = D.apply_output(fl, self.spec, self.scenario_id, float(self._base.get_waypoint_dt()))
         out = dict(parsed)
         out["trajectory"] = fl[:, [1, 0]]
         self._log(fl)

@@ -7,12 +7,21 @@
 #     e.g. bash scripts/submit_population_a_bridgesim.sh transfuser ltf
 #
 # 18 GPU jobs per family. Your QoS runs 4 GPUs at a time and allows 100 queued jobs.
+#
+# DEGRADATIONS="a b" replaces the default list; SKIP_CLEAN=1 leaves out the clean report job.
+# Specificity arm (6 GPU jobs per family):
+#     SKIP_CLEAN=1 DEGRADATIONS="tail_lateral tail_stretch" \
+#         bash scripts/submit_population_a_bridgesim.sh transfuser ltf
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG=configs/experiments/popA_bridgesim_navhard.yaml
-DEGRADATIONS=(camera_dropout image_noise stale_obs lateral_noise late_braking latency)
+if [ -n "${DEGRADATIONS:-}" ]; then
+    read -r -a DEGRADATIONS <<< "$DEGRADATIONS"
+else
+    DEGRADATIONS=(camera_dropout image_noise stale_obs lateral_noise late_braking latency)
+fi
 
 DRY=()
 if [ "${1:-}" = "--dry-run" ]; then
@@ -23,8 +32,10 @@ fi
 
 count=0
 for family in "$@"; do
-    bash "$SCRIPT_DIR/submit.sh" ${DRY[@]+"${DRY[@]}"} cpu jobs/bridgesim.sbatch ACTION=report CONFIG=$CONFIG \
-        "OVERRIDES=policy.family=$family degradation.name=none degradation.level=0" -- --time=00:30:00
+    if [ "${SKIP_CLEAN:-0}" != "1" ]; then
+        bash "$SCRIPT_DIR/submit.sh" ${DRY[@]+"${DRY[@]}"} cpu jobs/bridgesim.sbatch ACTION=report CONFIG=$CONFIG \
+            "OVERRIDES=policy.family=$family degradation.name=none degradation.level=0" -- --time=00:30:00
+    fi
     for deg in "${DEGRADATIONS[@]}"; do
         for level in 1 2 3; do
             bash "$SCRIPT_DIR/submit.sh" ${DRY[@]+"${DRY[@]}"} gpu jobs/bridgesim.sbatch ACTION=evaluate CONFIG=$CONFIG \
