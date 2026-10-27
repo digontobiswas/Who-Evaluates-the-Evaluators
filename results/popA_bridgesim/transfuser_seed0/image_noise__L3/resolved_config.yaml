@@ -1,0 +1,60 @@
+paths:
+  repo: /scratch/scratch26/biswabandhurj/wete
+  root: /scratch/scratch26/biswabandhurj/wete_work
+  data: /scratch/scratch26/biswabandhurj/wete_work/data
+  exp: /scratch/scratch26/biswabandhurj/wete_work/exp
+  checkpoints: /scratch/scratch26/biswabandhurj/wete_work/checkpoints
+  third_party: /scratch/scratch26/biswabandhurj/wete_work/third_party
+  openscene: /scratch/scratch26/biswabandhurj/wete_work/data/openscene
+  maps: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/maps
+navsim:
+  map_version: nuplan-maps-v1.0
+workers: 20
+degradation:
+  name: image_noise
+  level: 3
+  value: null
+  wrap: false
+evaluator:
+  id: bridgesim_closed_loop
+  family: closed_loop
+  root: /scratch/scratch26/biswabandhurj/wete_work/third_party/bridgesim
+  navsim_log_path: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/navsim_logs/test
+  map_root: /scratch/scratch26/biswabandhurj/wete_work/data/openscene/maps
+  scene_filter: /scratch/scratch26/biswabandhurj/wete_work/third_party/bridgesim/converters/openscene/filter/navhard_two_stage.yaml
+  conversion:
+    num_future_frames_extract: 40
+    interpolate: true
+  run:
+    eval_mode: closed_loop
+    traffic_mode: log_replay
+    controller: pure_pursuit
+    sim_dt: 0.1
+    replan_rate: 5
+    ego_replay_frames: 20
+    eval_frames: 80
+  reference:
+    source: BridgeSim README at ea5d45f, BridgeSim-NavHard leaderboard (421 scenarios)
+    transfuser:
+      epdms: 68.17
+      ds: 41.46
+      rc: 61.28
+    ltf:
+      epdms: 69.29
+      ds: 50.1
+      rc: 70.64
+policy:
+  family: transfuser
+  seed: 0
+  id: transfuser_seed0
+  checkpoint: /scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_0.ckpt
+scenarios:
+  dir: /scratch/scratch26/biswabandhurj/wete_work/exp/bridgesim/scenarios/navhard
+  expected_list: /scratch/scratch26/biswabandhurj/wete_work/third_party/bridgesim/converters/openscene/converted_list/navhard421.txt
+experiment:
+  name: popA_bridgesim_transfuser_seed0_image_noise_L3
+  out_dir: /scratch/scratch26/biswabandhurj/wete_work/exp/runs/bridgesim/A/transfuser_seed0/image_noise__L3
+  export_dir: /scratch/scratch26/biswabandhurj/wete/results/popA_bridgesim/transfuser_seed0/image_noise__L3
+run_parallel: 6
+timeout_s_per_scenario: 1200
+extra_evaluator_args: []

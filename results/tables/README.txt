@@ -12,6 +12,12 @@ popA_navsim_navtest.csv
   degradation is a valid ground-truth ordering is decided by the monotonicity test on the
   closed-loop reference evaluator, which has not run yet.
 
+popA_bridgesim_navhard.csv
+  Population A in BridgeSim (closed loop, 421 NavHard scenarios): the same policies and
+  degradations as popA_navsim_navtest.csv, plus latency, which exists only in closed loop.
+  EPDMS, DS and RC in percent with per-scenario standard errors. BridgeSim is the reference
+  evaluator: the monotonicity test that validates each degradation runs on these scores.
+
 bridgesim_navhard.csv
   Closed-loop evaluation in BridgeSim (MetaDrive) on the 421 BridgeSim-NavHard scenarios.
   EPDMS, DS (driving score) and RC (route completion) in percent, averaged over scenarios the way
