@@ -24,5 +24,9 @@ bridgesim_navhard.csv
   BridgeSim's leaderboard does. published_*: BridgeSim README leaderboard (commit ea5d45f).
   extra_evaluator_args shows protocol variants (e.g. runtime LiDAR on).
 
+Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
+lateral_noise / late_braking only beyond the first 1.5 s and 10 m of the plan (the part BridgeSim's
+replanning controller never executes). A correct closed-loop score should not move under them.
+
 Per-scenario data for every run: results/<experiment>/per_scenario.csv (and results/popA/...).
 Columns mean_* are the evaluator's sub-metrics as fractions in [0, 1].
