@@ -1,0 +1,84 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_1.ckpt",
+    "sha256": "cea40f12ad637ae2abba0a131e57a4ef97661c9aeed50a7d9824756ee513c145",
+    "size_bytes": 672447984
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:469db1b41a5eaeb9987dfecf08cc03d0040ea4e7"
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": -0.0636253414360084,
+    "reference_note": "The paper reports a standard deviation of 0.56 PDMS across three TransFuser training seeds, and the model card says the leaderboard was populated with three seeds per model. A single seed can therefore sit about half a point from 84.0; the three-seed mean is the fairer check.",
+    "reference_pdms": 84.0,
+    "reference_source": "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": true
+  },
+  "created_utc": "2026-10-30T07:57:18Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popB_transfuser_seed1_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn252",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1217719",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__clean.plans.jsonl"
+    ],
+    "mean_ade": 0.6531904315200926,
+    "mean_fde": 1.605057235667774,
+    "mean_l2_1s": 0.11243185703398174,
+    "mean_l2_2s": 0.41478037275845553,
+    "mean_l2_3s": 0.9235744924382177,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "transfuser_seed1",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.83936374658564,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9998353367363741,
+      "drivable_area_compliance": 0.9279598221636752,
+      "driving_direction_compliance": 0.9794994236785773,
+      "ego_progress": 0.7901313848655696,
+      "no_at_fault_collisions": 0.9767413140128437,
+      "score": 0.83936374658564,
+      "time_to_collision_within_bound": 0.9277128272682365
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 83.93637465856399,
+    "score_sem": 0.002589614750095485,
+    "score_std": 0.28539857377326955
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.309478498034079,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1/B/transfuser_seed1/pdm_score/2026.10.30.13.27.08.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3670.0646362304688,
+    "select": 239.57432079315186
+  }
+}

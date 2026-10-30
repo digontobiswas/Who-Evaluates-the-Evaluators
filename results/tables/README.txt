@@ -24,6 +24,11 @@ bridgesim_navhard.csv
   BridgeSim's leaderboard does. published_*: BridgeSim README leaderboard (commit ea5d45f).
   extra_evaluator_args shows protocol variants (e.g. runtime LiDAR on).
 
+popB_navsim_navtest.csv, popB_bridgesim_navhard.csv
+  Population B: the public navsim_baselines checkpoints (TransFuser, LTF, Ego Status MLP, seeds
+  0-2), undegraded, on NAVSIM v1 navtest (PDMS and open-loop L2) and in BridgeSim NavHard (EPDMS,
+  DS, RC). TransFuser and LTF seed 0 are the Population A clean runs (same numbers).
+
 Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
 lateral_noise / late_braking only beyond the first 1.5 s and 10 m of the plan (the part BridgeSim's
 replanning controller never executes). A correct closed-loop score should not move under them.

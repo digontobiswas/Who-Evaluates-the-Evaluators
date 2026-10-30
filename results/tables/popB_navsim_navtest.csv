@@ -1,0 +1,10 @@
+policy,pdms,pdms_sem,num_valid,num_expected,complete,open_loop_ade_m,open_loop_l2_1s_m,open_loop_l2_2s_m,open_loop_l2_3s_m,mean_comfort,mean_drivable_area_compliance,mean_driving_direction_compliance,mean_ego_progress,mean_no_at_fault_collisions,mean_score,mean_time_to_collision_within_bound,source_file
+ego_status_mlp_seed0,65.5165,0.3785,12146,12146,True,0.8826,0.1183,0.4986,1.2368,0.9997,0.7731,0.9068,0.6265,0.9303,0.6552,0.8363,results/popB/ego_status_mlp_seed0/summary.json
+ego_status_mlp_seed1,67.3885,0.3715,12146,12146,True,0.8880,0.1306,0.5047,1.2439,0.9999,0.7927,0.9042,0.6370,0.9323,0.6739,0.8472,results/popB/ego_status_mlp_seed1/summary.json
+ego_status_mlp_seed2,66.2918,0.3762,12146,12146,True,0.8785,0.1184,0.4946,1.2314,0.9996,0.7821,0.9024,0.6324,0.9300,0.6629,0.8371,results/popB/ego_status_mlp_seed2/summary.json
+ltf_seed0,84.1357,0.2568,12146,12146,True,0.6693,0.1237,0.4241,0.9446,0.9998,0.9279,0.9816,0.7892,0.9778,0.8414,0.9331,results/popA/ltf_seed0/none__L0/summary.json
+ltf_seed1,83.0798,0.2686,12146,12146,True,0.6895,0.1240,0.4358,0.9746,0.9999,0.9188,0.9778,0.7792,0.9766,0.8308,0.9299,results/popB/ltf_seed1/summary.json
+ltf_seed2,83.3409,0.2655,12146,12146,True,0.6685,0.1119,0.4202,0.9458,0.9999,0.9221,0.9774,0.7815,0.9759,0.8334,0.9300,results/popB/ltf_seed2/summary.json
+transfuser_seed0,83.3900,0.2653,12146,12146,True,0.6587,0.1207,0.4197,0.9296,0.9997,0.9207,0.9793,0.7858,0.9778,0.8339,0.9275,results/popA/transfuser_seed0/none__L0/summary.json
+transfuser_seed1,83.9364,0.2590,12146,12146,True,0.6532,0.1124,0.4148,0.9236,0.9998,0.9280,0.9795,0.7901,0.9767,0.8394,0.9277,results/popB/transfuser_seed1/summary.json
+transfuser_seed2,84.2937,0.2538,12146,12146,True,0.6519,0.1149,0.4145,0.9198,0.9998,0.9299,0.9803,0.7903,0.9788,0.8429,0.9313,results/popB/transfuser_seed2/summary.json

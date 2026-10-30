@@ -1,0 +1,84 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_1.ckpt",
+    "sha256": "4802deb7e579e025295051f91a0f1cb45e69319139465521e29617c5358a2f70",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:469db1b41a5eaeb9987dfecf08cc03d0040ea4e7"
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": -0.720229080529009,
+    "reference_note": "Seed-to-seed spread is not reported for LTF; the paper reports 0.56 PDMS for TransFuser.",
+    "reference_pdms": 83.8,
+    "reference_source": "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": true
+  },
+  "created_utc": "2026-10-30T08:24:56Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popB_ltf_seed1_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn321",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1217723",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__clean.plans.jsonl"
+    ],
+    "mean_ade": 0.6894977612677964,
+    "mean_fde": 1.6844786538846368,
+    "mean_l2_1s": 0.12401588896723847,
+    "mean_l2_2s": 0.4358225488069982,
+    "mean_l2_3s": 0.9745905325810488,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "ltf_seed1",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.8307977091947099,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9999176683681871,
+      "drivable_area_compliance": 0.9188210110324386,
+      "driving_direction_compliance": 0.977811625226412,
+      "ego_progress": 0.7791676949757486,
+      "no_at_fault_collisions": 0.9766178165651244,
+      "score": 0.8307977091947099,
+      "time_to_collision_within_bound": 0.929853449695373
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 83.07977091947099,
+    "score_sem": 0.002685609899537517,
+    "score_std": 0.2959780928847118
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.2817715302524517,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1/B/ltf_seed1/pdm_score/2026.10.30.13.54.47.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3701.049840927124,
+    "select": 40.20207381248474
+  }
+}
