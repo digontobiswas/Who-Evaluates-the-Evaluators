@@ -1,0 +1,777 @@
+{
+  "B": 1000,
+  "seed": 0,
+  "population_b": {
+    "policies": [
+      "ego_status_mlp_seed0",
+      "ego_status_mlp_seed1",
+      "ego_status_mlp_seed2",
+      "ltf_seed0",
+      "ltf_seed1",
+      "ltf_seed2",
+      "transfuser_seed0",
+      "transfuser_seed1",
+      "transfuser_seed2"
+    ],
+    "evaluators": [
+      "open_l2",
+      "navsim_v1",
+      "bridgesim"
+    ],
+    "n_shared": 341,
+    "n_full": {
+      "open_l2": 12146,
+      "navsim_v1": 12146,
+      "bridgesim": 421
+    },
+    "agreement": [
+      {
+        "pair": "open_l2|navsim_v1",
+        "n_scenarios": 341,
+        "tau": 0.5555555555555556,
+        "tau_lo": 0.2777777777777778,
+        "tau_hi": 0.7777777777777778,
+        "rho": 0.75,
+        "rho_lo": 0.5,
+        "rho_hi": 0.9004166666666663
+      },
+      {
+        "pair": "open_l2|bridgesim",
+        "n_scenarios": 341,
+        "tau": 0.2222222222222222,
+        "tau_lo": -0.1111111111111111,
+        "tau_hi": 0.3333333333333333,
+        "rho": 0.19999999999999998,
+        "rho_lo": -0.26666666666666666,
+        "rho_hi": 0.39999999999999997
+      },
+      {
+        "pair": "navsim_v1|bridgesim",
+        "n_scenarios": 341,
+        "tau": 0.3333333333333333,
+        "tau_lo": 0.0,
+        "tau_hi": 0.5555555555555556,
+        "rho": 0.43333333333333335,
+        "rho_lo": -0.049999999999999996,
+        "rho_hi": 0.7166666666666667
+      }
+    ],
+    "policy_means": {
+      "open_l2": {
+        "ego_status_mlp_seed0": 1.1144268738796506,
+        "ego_status_mlp_seed1": 1.1155170007721764,
+        "ego_status_mlp_seed2": 1.1252388290037947,
+        "ltf_seed0": 0.6963345499913867,
+        "ltf_seed1": 0.7777240608546014,
+        "ltf_seed2": 0.7664784162086103,
+        "transfuser_seed0": 0.7017741924707168,
+        "transfuser_seed1": 0.7099512503230885,
+        "transfuser_seed2": 0.7311373181233255
+      },
+      "navsim_v1": {
+        "ego_status_mlp_seed0": 0.3878985920441194,
+        "ego_status_mlp_seed1": 0.423157860776119,
+        "ego_status_mlp_seed2": 0.38347550169697975,
+        "ltf_seed0": 0.6479255869691818,
+        "ltf_seed1": 0.6013888562823119,
+        "ltf_seed2": 0.6318012629503326,
+        "transfuser_seed0": 0.5897863907641286,
+        "transfuser_seed1": 0.6161304223444118,
+        "transfuser_seed2": 0.6237470297113012
+      },
+      "bridgesim": {
+        "ego_status_mlp_seed0": 0.410026859237537,
+        "ego_status_mlp_seed1": 0.42346903812316683,
+        "ego_status_mlp_seed2": 0.3986570645161289,
+        "ltf_seed0": 0.5247498826979472,
+        "ltf_seed1": 0.504946829912024,
+        "ltf_seed2": 0.5238058504398826,
+        "transfuser_seed0": 0.4030806099706746,
+        "transfuser_seed1": 0.4017637419354836,
+        "transfuser_seed2": 0.389655
+      }
+    },
+    "family_contrasts": [
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "open_l2",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": -0.3715485588670076,
+        "lo": -0.44097106337711806,
+        "hi": -0.30433630782435867,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "open_l2",
+        "scope": "full",
+        "n_scenarios": 12146,
+        "mean": -0.2072424717538806,
+        "lo": -0.21854244515420893,
+        "hi": -0.1954897405853472,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "navsim_v1",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": -0.22886125056153586,
+        "lo": -0.2769532316674137,
+        "hi": -0.18469819785197675,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "navsim_v1",
+        "scope": "full",
+        "n_scenarios": 12146,
+        "mean": -0.1711986623681681,
+        "lo": -0.17777667608203462,
+        "hi": -0.1651608802044614,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "bridgesim",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": -0.10711653372434018,
+        "lo": -0.12385624494134895,
+        "hi": -0.08926548538611925,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "bridgesim",
+        "scope": "full",
+        "n_scenarios": 421,
+        "mean": -0.10267345447347584,
+        "lo": -0.11788863946951703,
+        "hi": -0.08680468586698337,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "open_l2",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": -0.4041066475794969,
+        "lo": -0.4760733776124723,
+        "hi": -0.3384207812391785,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "open_l2",
+        "scope": "full",
+        "n_scenarios": 12146,
+        "mean": -0.22841338495404245,
+        "lo": -0.23818701080355142,
+        "hi": -0.21702704370967577,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "navsim_v1",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": -0.21171062943420743,
+        "lo": -0.25313847950970625,
+        "hi": -0.1672818234955746,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "navsim_v1",
+        "scope": "full",
+        "n_scenarios": 12146,
+        "mean": -0.17474419471535196,
+        "lo": -0.18121345733197858,
+        "hi": -0.16857588328316442,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "bridgesim",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": 0.012551203323558156,
+        "lo": -0.0015052113391984324,
+        "hi": 0.027743302712609965,
+        "p_positive": 0.962,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "bridgesim",
+        "scope": "full",
+        "n_scenarios": 421,
+        "mean": 0.01681714964370546,
+        "lo": 0.0027303364410134565,
+        "hi": 0.030899646199524938,
+        "p_positive": 0.994,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "open_l2",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": -0.032558088712489316,
+        "lo": -0.06445321125014358,
+        "hi": -0.0011169552790287526,
+        "p_positive": 0.022,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "open_l2",
+        "scope": "full",
+        "n_scenarios": 12146,
+        "mean": -0.02117091320016186,
+        "lo": -0.026176257969902476,
+        "hi": -0.01687116667408881,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "navsim_v1",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": 0.017150621127328403,
+        "lo": -0.012692479279418429,
+        "hi": 0.04803724560194246,
+        "p_positive": 0.853,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "navsim_v1",
+        "scope": "full",
+        "n_scenarios": 12146,
+        "mean": -0.003545532347183826,
+        "lo": -0.006927722171128205,
+        "hi": 0.00018631380200006233,
+        "p_positive": 0.029,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "bridgesim",
+        "scope": "shared",
+        "n_scenarios": 341,
+        "mean": 0.11966773704789833,
+        "lo": 0.10013687316715542,
+        "hi": 0.13887289679863146,
+        "p_positive": 1.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "bridgesim",
+        "scope": "full",
+        "n_scenarios": 421,
+        "mean": 0.1194906041171813,
+        "lo": 0.10171066977434678,
+        "hi": 0.13820269552652414,
+        "p_positive": 1.0,
+        "units": "oriented: positive = first family better"
+      }
+    ],
+    "contrast_correlation": [
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "pair": "open_l2|navsim_v1",
+        "n_scenarios": 341,
+        "spearman": 0.34243187712363604,
+        "sign_agreement": 0.7433333333333333,
+        "n_both_nonzero": 300
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "pair": "open_l2|bridgesim",
+        "n_scenarios": 341,
+        "spearman": 0.05143797911200288,
+        "sign_agreement": 0.6832844574780058,
+        "n_both_nonzero": 341
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "pair": "navsim_v1|bridgesim",
+        "n_scenarios": 341,
+        "spearman": 0.08086590045552476,
+        "sign_agreement": 0.6733333333333333,
+        "n_both_nonzero": 300
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "pair": "open_l2|navsim_v1",
+        "n_scenarios": 341,
+        "spearman": 0.3401162512890935,
+        "sign_agreement": 0.7796610169491526,
+        "n_both_nonzero": 295
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "pair": "open_l2|bridgesim",
+        "n_scenarios": 341,
+        "spearman": 0.08212808197827673,
+        "sign_agreement": 0.5542521994134897,
+        "n_both_nonzero": 341
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "pair": "navsim_v1|bridgesim",
+        "n_scenarios": 341,
+        "spearman": 0.1847222245725834,
+        "sign_agreement": 0.535593220338983,
+        "n_both_nonzero": 295
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "pair": "open_l2|navsim_v1",
+        "n_scenarios": 341,
+        "spearman": 0.29342592228466235,
+        "sign_agreement": 0.6103448275862069,
+        "n_both_nonzero": 290
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "pair": "open_l2|bridgesim",
+        "n_scenarios": 341,
+        "spearman": 0.06710095058242467,
+        "sign_agreement": 0.4750733137829912,
+        "n_both_nonzero": 341
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "pair": "navsim_v1|bridgesim",
+        "n_scenarios": 341,
+        "spearman": 0.035993736627780236,
+        "sign_agreement": 0.4896551724137931,
+        "n_both_nonzero": 290
+      }
+    ]
+  },
+  "population_a_level3": [
+    {
+      "base": "ltf_seed0",
+      "degradation": "camera_dropout",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 1.1447180356920255,
+      "mean_drop_full": 1.2584674804174294,
+      "spearman_with_bridgesim": -0.025480511698428406
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "camera_dropout",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.3706036970954515,
+      "mean_drop_full": 0.5453279213540415,
+      "spearman_with_bridgesim": 0.06992420841938846
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "camera_dropout",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.23315684457478006,
+      "mean_drop_full": 0.2377528123515439
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "image_noise",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.33616023280253937,
+      "mean_drop_full": 0.3145120982330343,
+      "spearman_with_bridgesim": 0.011842180922376669
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "image_noise",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.1960224898562329,
+      "mean_drop_full": 0.16781434083919977,
+      "spearman_with_bridgesim": 0.01695284642140566
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "image_noise",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.03488307331378299,
+      "mean_drop_full": 0.04331754631828979
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "late_braking",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 7.898132328807156,
+      "mean_drop_full": 7.146306501851089,
+      "spearman_with_bridgesim": 0.0185368112363019
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "late_braking",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.36161830468081474,
+      "mean_drop_full": 0.3026001024410734,
+      "spearman_with_bridgesim": 0.05844373652521445
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "late_braking",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.023536260997067446,
+      "mean_drop_full": 0.012501268408551067
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.4307688973414063,
+      "mean_drop_full": 0.46037182786286485,
+      "spearman_with_bridgesim": 0.05978894104331036
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.22606808522832586,
+      "mean_drop_full": 0.32554896701365144,
+      "spearman_with_bridgesim": 0.030113191596800166
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.26075075366568917,
+      "mean_drop_full": 0.25928963420427553
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "stale_obs",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.45262055713785343,
+      "mean_drop_full": 0.33959904920561984,
+      "spearman_with_bridgesim": 0.12500266698786675
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "stale_obs",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.24310804024453095,
+      "mean_drop_full": 0.16363138826769166,
+      "spearman_with_bridgesim": 0.11584905251583363
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "stale_obs",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.043527,
+      "mean_drop_full": 0.046058180522565315
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.14932787168140602,
+      "mean_drop_full": 0.13394759083643434,
+      "spearman_with_bridgesim": 0.008807419243800168
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.17945882282258793,
+      "mean_drop_full": 0.20499946278494227,
+      "spearman_with_bridgesim": 0.07100657831261652
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": -0.0007395601173020564,
+      "mean_drop_full": -0.002814572446555823
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "tail_stretch",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 2.1224933116483977,
+      "mean_drop_full": 1.8311393108218257,
+      "spearman_with_bridgesim": -0.01828487203132518
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "tail_stretch",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.22254292234112663,
+      "mean_drop_full": 0.1461605896108184,
+      "spearman_with_bridgesim": 0.014415533085374294
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "tail_stretch",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.0022687390029325497,
+      "mean_drop_full": -0.001371209026128268
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "camera_dropout",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.4803394750338463,
+      "mean_drop_full": 0.3906510471730136,
+      "spearman_with_bridgesim": 0.10506220700967529
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "camera_dropout",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.05094921992057027,
+      "mean_drop_full": 0.1474917512243277,
+      "spearman_with_bridgesim": 0.07340184292787963
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "camera_dropout",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.048683941348973615,
+      "mean_drop_full": 0.06327530403800476
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "image_noise",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.22181512022642969,
+      "mean_drop_full": 0.15393277587512655,
+      "spearman_with_bridgesim": 0.07186158538306173
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "image_noise",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.09963545768963623,
+      "mean_drop_full": 0.06282955167660009,
+      "spearman_with_bridgesim": 0.07368866227543845
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "image_noise",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": -0.02071101173020528,
+      "mean_drop_full": -0.03432402850356295
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "late_braking",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 7.951667408491057,
+      "mean_drop_full": 7.22892428415382,
+      "spearman_with_bridgesim": -0.04633037657106368
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "late_braking",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.3185309239111023,
+      "mean_drop_full": 0.3093907696120751,
+      "spearman_with_bridgesim": -0.05013837783299771
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "late_braking",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": -0.0029201466275659833,
+      "mean_drop_full": -0.011955698337292164
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.4222145705754424,
+      "mean_drop_full": 0.4625908868926677,
+      "spearman_with_bridgesim": 0.03014686967548248
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.1578536679722735,
+      "mean_drop_full": 0.31684376077769805,
+      "spearman_with_bridgesim": 0.030048707901309295
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.15428253372434017,
+      "mean_drop_full": 0.15761969833729214
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "stale_obs",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.41600942412148617,
+      "mean_drop_full": 0.3173407632873638,
+      "spearman_with_bridgesim": 0.05135521181216038
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "stale_obs",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.20257561491993606,
+      "mean_drop_full": 0.16100552721106814,
+      "spearman_with_bridgesim": -0.0023222700732077758
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "stale_obs",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.003825914956011732,
+      "mean_drop_full": 0.0006466579572446572
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 0.14502249059122294,
+      "mean_drop_full": 0.13466902420974233,
+      "spearman_with_bridgesim": 0.0016020629164332858
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.12714092724828766,
+      "mean_drop_full": 0.20065726293697642,
+      "spearman_with_bridgesim": 0.07250408381727352
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.004174630498533725,
+      "mean_drop_full": 0.004551957244655584
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "tail_stretch",
+      "level": 3,
+      "evaluator": "open_l2",
+      "n_shared": 341,
+      "mean_drop_shared": 2.1866337567447713,
+      "mean_drop_full": 1.8733595019425937,
+      "spearman_with_bridgesim": -0.01969507813793789
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "tail_stretch",
+      "level": 3,
+      "evaluator": "navsim_v1",
+      "n_shared": 341,
+      "mean_drop_shared": 0.21683732446680667,
+      "mean_drop_full": 0.1558654916711938,
+      "spearman_with_bridgesim": 0.05952572420561779
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "tail_stretch",
+      "level": 3,
+      "evaluator": "bridgesim",
+      "n_shared": 341,
+      "mean_drop_shared": 0.0022599618768328455,
+      "mean_drop_full": 0.001973216152019003
+    }
+  ]
+}

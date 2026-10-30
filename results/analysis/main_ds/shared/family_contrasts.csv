@@ -1,0 +1,19 @@
+contrast,evaluator,scope,n_scenarios,mean,lo,hi,p_positive,units
+ego_status_mlp - ltf,open_l2,shared,341,-0.3715485588670076,-0.44097106337711806,-0.30433630782435867,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,open_l2,full,12146,-0.2072424717538806,-0.21854244515420893,-0.1954897405853472,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v1,shared,341,-0.22886125056153586,-0.2769532316674137,-0.18469819785197675,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v1,full,12146,-0.1711986623681681,-0.17777667608203462,-0.1651608802044614,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,bridgesim,shared,341,-0.10711653372434018,-0.12385624494134895,-0.08926548538611925,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,bridgesim,full,421,-0.10267345447347584,-0.11788863946951703,-0.08680468586698337,0.0,oriented: positive = first family better
+ego_status_mlp - transfuser,open_l2,shared,341,-0.4041066475794969,-0.4760733776124723,-0.3384207812391785,0.0,oriented: positive = first family better
+ego_status_mlp - transfuser,open_l2,full,12146,-0.22841338495404245,-0.23818701080355142,-0.21702704370967577,0.0,oriented: positive = first family better
+ego_status_mlp - transfuser,navsim_v1,shared,341,-0.21171062943420743,-0.25313847950970625,-0.1672818234955746,0.0,oriented: positive = first family better
+ego_status_mlp - transfuser,navsim_v1,full,12146,-0.17474419471535196,-0.18121345733197858,-0.16857588328316442,0.0,oriented: positive = first family better
+ego_status_mlp - transfuser,bridgesim,shared,341,0.012551203323558156,-0.0015052113391984324,0.027743302712609965,0.962,oriented: positive = first family better
+ego_status_mlp - transfuser,bridgesim,full,421,0.01681714964370546,0.0027303364410134565,0.030899646199524938,0.994,oriented: positive = first family better
+ltf - transfuser,open_l2,shared,341,-0.032558088712489316,-0.06445321125014358,-0.0011169552790287526,0.022,oriented: positive = first family better
+ltf - transfuser,open_l2,full,12146,-0.02117091320016186,-0.026176257969902476,-0.01687116667408881,0.0,oriented: positive = first family better
+ltf - transfuser,navsim_v1,shared,341,0.017150621127328403,-0.012692479279418429,0.04803724560194246,0.853,oriented: positive = first family better
+ltf - transfuser,navsim_v1,full,12146,-0.003545532347183826,-0.006927722171128205,0.00018631380200006233,0.029,oriented: positive = first family better
+ltf - transfuser,bridgesim,shared,341,0.11966773704789833,0.10013687316715542,0.13887289679863146,1.0,oriented: positive = first family better
+ltf - transfuser,bridgesim,full,421,0.1194906041171813,0.10171066977434678,0.13820269552652414,1.0,oriented: positive = first family better

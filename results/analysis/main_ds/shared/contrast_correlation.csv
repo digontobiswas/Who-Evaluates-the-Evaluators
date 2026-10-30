@@ -1,0 +1,10 @@
+contrast,pair,n_scenarios,spearman,sign_agreement,n_both_nonzero
+ego_status_mlp - ltf,open_l2|navsim_v1,341,0.34243187712363604,0.7433333333333333,300
+ego_status_mlp - ltf,open_l2|bridgesim,341,0.05143797911200288,0.6832844574780058,341
+ego_status_mlp - ltf,navsim_v1|bridgesim,341,0.08086590045552476,0.6733333333333333,300
+ego_status_mlp - transfuser,open_l2|navsim_v1,341,0.3401162512890935,0.7796610169491526,295
+ego_status_mlp - transfuser,open_l2|bridgesim,341,0.08212808197827673,0.5542521994134897,341
+ego_status_mlp - transfuser,navsim_v1|bridgesim,341,0.1847222245725834,0.535593220338983,295
+ltf - transfuser,open_l2|navsim_v1,341,0.29342592228466235,0.6103448275862069,290
+ltf - transfuser,open_l2|bridgesim,341,0.06710095058242467,0.4750733137829912,341
+ltf - transfuser,navsim_v1|bridgesim,341,0.035993736627780236,0.4896551724137931,290
