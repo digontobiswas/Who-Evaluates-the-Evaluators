@@ -61,7 +61,8 @@ python -m wete.analysis --scores "$OUT/scores.csv" --meta "$META_PATH" --out "$O
 
 # Small files only; scores.csv stays on scratch.
 for f in collect_report.json report.json monotonicity.csv discriminative_matrix.csv \
-         discriminative_matrix.png sample_efficiency.png tab_matrix.tex tab_reliability.tex; do
+         discriminative_matrix.png sample_efficiency.png tab_matrix.tex tab_reliability.tex \
+         specificity.csv; do
     [ -f "$OUT/$f" ] && cp "$OUT/$f" "$EXPORT/"
 done
 echo "[job] exported to $EXPORT"
