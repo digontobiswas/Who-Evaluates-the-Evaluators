@@ -37,7 +37,21 @@ mkdir -p "$OUT" "$EXPORT"
 cd "$WETE_REPO"
 python -m wete.shared --scores "$SCORES" --meta "$META_PATH" --out "$OUT" --B "${B:-1000}"
 
-for f in shared_report.json shared_agreement.csv family_contrasts.csv contrast_correlation.csv popA_shared.csv; do
+# Noise ceiling: BridgeSim clean runs (Population A level 0) against their wrapped reruns.
+RERUN="$WETE_EXP_ROOT/runs_variants/bridgesim/wrapped_rerun"
+if [ -d "$RERUN" ]; then
+    ORIG="$OUT/retest_original"
+    rm -rf "$ORIG" && mkdir -p "$ORIG"
+    for d in "$RERUN"/*/; do
+        pol="$(basename "$d")"
+        src="$WETE_EXP_ROOT/runs/bridgesim/A/$pol/none__L0"
+        [ -f "$src/per_scenario.csv" ] && ln -s "$src" "$ORIG/$pol"
+    done
+    python -m wete.shared --scores "$SCORES" --meta "$META_PATH" --out "$OUT" --B "${B:-1000}" \
+        --retest "$ORIG" "$RERUN"
+fi
+
+for f in shared_report.json shared_agreement.csv family_contrasts.csv contrast_correlation.csv popA_shared.csv retest.csv; do
     [ -f "$OUT/$f" ] && cp "$OUT/$f" "$EXPORT/"
 done
 echo "[job] exported to $EXPORT"

@@ -17,6 +17,8 @@ Reads the long score table written by ``wete.collect`` and writes, under --out:
                             evaluator on the shared set, and the per-scenario correlation of the
                             drop with the reference evaluator's drop
     shared_report.json      everything above plus the shared scenario count
+    retest.csv              (with --retest) BridgeSim test-retest correlation of per-scenario
+                            scores and policy contrasts: the noise ceiling for the correlations
 
     python -m wete.shared --scores <analysis dir>/scores.csv --meta configs/meta.bridgesim.json \
         --out <analysis dir>/shared [--B 1000]
@@ -159,6 +161,39 @@ def population_a(scores: pd.DataFrame, meta: Dict[str, Dict], level: int = 3) ->
     return rows
 
 
+def retest(original: Path, rerun: Path, column: str = "DS") -> List[Dict]:
+    """Noise ceiling of per-scenario comparisons in BridgeSim, from a repeated clean run.
+
+    original/<policy>/per_scenario.csv and rerun/<policy>/per_scenario.csv: the same policy run
+    twice. Reports, per policy, the Spearman correlation of per-scenario scores between the two
+    runs and, for every pair of policies, the correlation of the per-scenario contrast (A - B)
+    between the runs. No per-scenario correlation with another evaluator can be expected to exceed
+    these values."""
+    pols = sorted(p.name for p in Path(rerun).iterdir() if (p / "per_scenario.csv").exists()
+                  and (Path(original) / p.name / "per_scenario.csv").exists())
+    runs = {}
+    for pol in pols:
+        a = pd.read_csv(Path(original) / pol / "per_scenario.csv").set_index("scenario")[column]
+        b = pd.read_csv(Path(rerun) / pol / "per_scenario.csv").set_index("scenario")[column]
+        common = a.index.intersection(b.index)
+        runs[pol] = (a.loc[common], b.loc[common])
+    rows = []
+    for pol, (a, b) in runs.items():
+        rows.append({"what": "score", "policy": pol, "n": len(a), "spearman": St.spearman(a.values, b.values),
+                     "identical_fraction": float((a.values == b.values).mean()),
+                     "mean_original": float(a.mean()), "mean_rerun": float(b.mean())})
+    for p1, p2 in itertools.combinations(pols, 2):
+        a1, b1 = runs[p1]
+        a2, b2 = runs[p2]
+        common = a1.index.intersection(a2.index)
+        c_orig = a1.loc[common] - a2.loc[common]
+        c_rerun = b1.loc[common] - b2.loc[common]
+        rows.append({"what": "contrast", "policy": f"{p1} - {p2}", "n": len(common),
+                     "spearman": St.spearman(c_orig.values, c_rerun.values),
+                     "sign_agreement": float((np.sign(c_orig) == np.sign(c_rerun))[(c_orig != 0) & (c_rerun != 0)].mean())})
+    return rows
+
+
 def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str, B: int = 1000, seed: int = 0) -> Dict:
     scores = scores.copy()
     scores["scenario"] = scores["scenario"].map(normalise_scenario)
@@ -187,7 +222,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--out", required=True)
     ap.add_argument("--B", type=int, default=1000)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--retest", nargs=2, metavar=("ORIGINAL_ROOT", "RERUN_ROOT"),
+                    help="BridgeSim clean runs and their repeats, <root>/<policy>/per_scenario.csv; "
+                         "writes retest.csv (noise ceiling of per-scenario comparisons)")
     a = ap.parse_args(argv)
+    if a.retest:
+        rows = retest(Path(a.retest[0]), Path(a.retest[1]))
+        Path(a.out).mkdir(parents=True, exist_ok=True)
+        pd.DataFrame(rows).to_csv(Path(a.out) / "retest.csv", index=False)
+        print(pd.DataFrame(rows).to_string(index=False))
     scores = pd.read_csv(a.scores, dtype={"scenario": str})
     meta = json.loads(Path(a.meta).read_text())
     rep = run(scores, meta, a.out, a.B, a.seed)

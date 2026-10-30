@@ -67,3 +67,19 @@ def test_population_a_on_shared(tmp_path):
     assert tail.loc["navsim_v1", "mean_drop_shared"] == pytest.approx(0.2, abs=0.01)
     assert abs(tail.loc["bridgesim", "mean_drop_shared"]) < 0.01
     assert set(pa.n_shared) == {100}
+
+
+def test_retest_ceiling(tmp_path):
+    rng = np.random.default_rng(1)
+    sc = [f"sd_{i}" for i in range(200)]
+    base = rng.uniform(0, 1, 200)
+    signal = {"ltf_seed0": base + 0.1 + rng.normal(0, 0.1, 200), "transfuser_seed0": base}
+    for root, noise in (("orig", 0.0), ("rerun", 0.05)):
+        for pol, true in signal.items():
+            d = tmp_path / root / pol
+            d.mkdir(parents=True)
+            pd.DataFrame({"scenario": sc, "DS": true + rng.normal(0, noise, 200)}).to_csv(
+                d / "per_scenario.csv", index=False)
+    rows = pd.DataFrame(S.retest(tmp_path / "orig", tmp_path / "rerun")).set_index("policy")
+    assert rows.loc["ltf_seed0", "spearman"] > 0.9
+    assert 0.5 < rows.loc["ltf_seed0 - transfuser_seed0", "spearman"] < 1.0
