@@ -1,0 +1,32 @@
+# Population A wrapper around TransFuser for the NAVSIM v2 devkit (0a380a9); Latent TransFuser
+# with agent.base_agent.config.latent=true. base_agent mirrors the devkit's own
+# navsim/planning/script/config/common/agent/transfuser_agent.yaml at 0a380a9, where the
+# trajectory sampling is an argument of the agent (in v1.1 it sat inside TransfuserConfig).
+# The network layers are identical in both devkits, so the navsim_baselines checkpoints load.
+#
+# Found through: hydra.searchpath=[pkg://navsim.planning.script.config.common,file://<repo>/configs/navsim_hydra/v2]
+_target_: wete.navsim.degraded_agent.DegradedAgent
+_convert_: 'all'
+
+degradation: none
+level: 0
+value: null
+used_cameras: null
+log_dir: ${output_dir}/plans
+also_drop_lidar: false
+stale_ego_status: false
+
+base_agent:
+  _target_: navsim.agents.transfuser.transfuser_agent.TransfuserAgent
+  _convert_: 'all'
+  trajectory_sampling:
+    _target_: nuplan.planning.simulation.trajectory.trajectory_sampling.TrajectorySampling
+    _convert_: 'all'
+    time_horizon: 4
+    interval_length: 0.5
+  config:
+    _target_: navsim.agents.transfuser.transfuser_config.TransfuserConfig
+    _convert_: 'all'
+    latent: False
+  checkpoint_path: null
+  lr: 1e-4

@@ -299,10 +299,29 @@ def test_benign_tail_perturbations(nv):
     assert tr[-1, 0] == pytest.approx(ref[2, 0] + 1.7 * (ref[-1, 0] - ref[2, 0]), rel=1e-5)
 
 
+def test_latency_plans_from_older_input_and_reprojects(nv):
+    """Level 2 = 2 replans = 2 frames: the policy sees frame 1, and the old plan is moved into the
+    current frame (old ego 10 m behind), first 2 waypoints dropped, 2 appended."""
+    base, ag = agent(nv, "latency", 2)
+    assert ag.get_sensor_config().cam_f0 == [1]
+    ai = make_input(nv.dc, frames=(1,))
+    ai.ego_statuses[1].ego_pose[:] = [-10.0, 0.0, 0.0]
+    tr = np.asarray(ag.compute_trajectory(ai, make_scene(nv.dc)).poses)
+    assert base.seen["cam_f0"][0, 0, 0] == 20                     # frame 1 served as current
+    old = 10 * np.arange(1, 9) * 0.5 - 10.0                       # old plan in the current frame
+    np.testing.assert_allclose(tr[:6, 0], old[2:], atol=1e-5)
+    np.testing.assert_allclose(tr[6:, 0], [old[-1] + 5, old[-1] + 10], atol=1e-5)
+    assert tr.shape == (8, 3)
+
+
 def test_rejects_latency_and_bad_levels(nv):
     base = FakeTransFuser(nv.dc, nv.version)
-    with pytest.raises(ValueError):
-        nv.module.DegradedAgent(base, "latency", 1)
+    assert nv.module.latency_frames(4) == 3                          # capped by 1.5 s of history
+    poses = np.stack([np.arange(1, 9) * 5.0, np.zeros(8), np.zeros(8)], 1)
+    rot = nv.module.delayed_plan(poses, np.array([0.0, 0.0, np.pi / 2]), 1)
+    np.testing.assert_allclose(rot[0, :2], [0.0, 10.0], atol=1e-9)  # old forward = current left
+    np.testing.assert_allclose(rot[:, 2], np.pi / 2, atol=1e-9)
+    nv.module.DegradedAgent(base, "latency", 1)                     # allowed in NAVSIM now
     with pytest.raises(ValueError):
         nv.module.DegradedAgent(base, "camera_dropout", 7)
     with pytest.raises(KeyError):

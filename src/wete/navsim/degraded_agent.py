@@ -30,7 +30,13 @@ late_braking     arc-length stretch of the output trajectory.
 tail_lateral,    specificity arm: the two operators above applied only beyond the first 1.5 s and
 tail_stretch     10 m of the plan (degradations.tail_anchor), the part a replanning closed-loop
                  controller never executes.
-latency          not available: NAVSIM is single-shot. Raises.
+latency          single-shot analogue of BridgeSim's latency: the policy plans from the whole
+                 input of k frames ago (sensors and ego status, k = level parameter in replans of
+                 0.5 s, at most 3 because the history holds 1.5 s), and that plan is re-expressed in
+                 the current ego frame (through the logged ego pose of the older frame), its first k
+                 waypoints, which now lie in the past, are dropped, and k waypoints are appended at
+                 the last waypoint's velocity so the plan keeps its length. Level 3 is therefore
+                 1.5 s here and 2.0 s in BridgeSim.
 
 Every executed plan is appended to ``<log_dir>/<agent name>.plans.jsonl`` with open-loop L2
 against the logged future (ADE, FDE, L2 at 1/2/3 s) where the scene has one. These lines give
@@ -74,6 +80,38 @@ def stale_source_index(staleness_s: float, num_frames: int = NUM_HISTORY, frame_
     return D.stale_frame_index(num_frames, staleness_s, frame_dt)
 
 
+def latency_frames(replans: float, num_frames: int = NUM_HISTORY) -> int:
+    """Latency in history frames (one replan = one 0.5 s frame), capped by the stored history."""
+    return int(min(max(int(round(replans)), 0), num_frames - 1))
+
+
+def delayed_plan(poses: np.ndarray, old_pose: np.ndarray, k: int) -> np.ndarray:
+    """Plan made k frames ago, as executed now.
+
+    poses: (N, 3) [x, y, heading] in the ego frame of k frames ago; waypoint i at (i + 1) * 0.5 s.
+    old_pose: [x, y, heading] of that ego frame in the current ego frame (NAVSIM's EgoStatus).
+    Returns (N, 3) in the current ego frame: waypoints k.. of the old plan, then k waypoints
+    continuing at the last waypoint's velocity and heading."""
+    poses = np.asarray(poses, dtype=np.float64)
+    if k <= 0:
+        return poses
+    x0, y0, h0 = (float(v) for v in np.asarray(old_pose, dtype=np.float64)[:3])
+    c, s = np.cos(h0), np.sin(h0)
+    cur = np.empty_like(poses)
+    cur[:, 0] = x0 + c * poses[:, 0] - s * poses[:, 1]
+    cur[:, 1] = y0 + s * poses[:, 0] + c * poses[:, 1]
+    cur[:, 2] = np.arctan2(np.sin(poses[:, 2] + h0), np.cos(poses[:, 2] + h0))
+    kept = cur[k:]
+    if len(kept) >= 2:
+        step = kept[-1, :2] - kept[-2, :2]
+    elif len(kept) == 1:
+        step = kept[-1, :2] - (cur[-2, :2] if len(cur) > 1 else np.zeros(2))
+    else:
+        raise ValueError(f"latency of {k} frames leaves no waypoint of a {len(poses)}-waypoint plan")
+    extra = np.array([[*(kept[-1, :2] + (j + 1) * step), kept[-1, 2]] for j in range(k)])
+    return np.vstack([kept, extra])
+
+
 class DegradedAgent(AbstractAgent):
     def __init__(
         self,
@@ -94,8 +132,9 @@ class DegradedAgent(AbstractAgent):
         self.spec = D.DegradationSpec(degradation, int(level), None if value is None else float(value))
         if self.spec.degradation != "none":
             D.level_param(self.spec.degradation, self.spec.level)  # validates name and level
-        if self.spec.degradation in D.CLOSED_LOOP_ONLY:
+        if self.spec.degradation in D.CLOSED_LOOP_ONLY - {"latency"}:
             raise ValueError(f"{self.spec.degradation} is closed-loop only; NAVSIM is single-shot")
+        self._latency_k = latency_frames(self.spec.param) if self.spec.degradation == "latency" else 0
         self.also_drop_lidar = bool(also_drop_lidar)
         self.stale_ego_status = bool(stale_ego_status)
         self.log_dir = Path(log_dir) if log_dir else None
@@ -133,6 +172,8 @@ class DegradedAgent(AbstractAgent):
             return cfg
         if self.spec.degradation == "stale_obs":
             frames = [stale_source_index(self.spec.param)]
+        elif self.spec.degradation == "latency":
+            frames = [NUM_HISTORY - 1 - self._latency_k]
         elif self.spec.degradation == "history_removal":
             frames = list(range(NUM_HISTORY))
         else:
@@ -158,6 +199,14 @@ class DegradedAgent(AbstractAgent):
     # ---- degradations ----------------------------------------------------------------------
     def _degrade_input(self, ai: AgentInput, token: str) -> AgentInput:
         d, p = self.spec.degradation, self.spec.param
+        if d == "latency" and not self.spec.is_identity:
+            k = self._latency_k
+            seconds = k * FRAME_DT
+            return AgentInput(
+                D.stale_history(list(ai.ego_statuses), seconds, FRAME_DT),
+                D.stale_history(list(ai.cameras), seconds, FRAME_DT),
+                D.stale_history(list(ai.lidars), seconds, FRAME_DT),
+            )
         if self.spec.is_identity or D.ACTS_ON[d] != "input":
             return ai
         cams = list(ai.cameras)
@@ -205,8 +254,13 @@ class DegradedAgent(AbstractAgent):
                 setattr(out, name, replace(cam, image=D.image_noise(cam.image, sigma, rng)))
         return out
 
-    def _degrade_output(self, traj: Trajectory, token: str) -> Trajectory:
+    def _degrade_output(self, traj: Trajectory, token: str, original: Optional[AgentInput] = None) -> Trajectory:
         d, p = self.spec.degradation, self.spec.param
+        if d == "latency" and not self.spec.is_identity:
+            k = self._latency_k
+            old_pose = np.asarray(original.ego_statuses[-1 - k].ego_pose, dtype=np.float64)
+            poses = delayed_plan(np.asarray(traj.poses), old_pose, k)
+            return Trajectory(np.asarray(poses, dtype=np.float32), traj.trajectory_sampling)
         if self.spec.is_identity or D.ACTS_ON[d] != "output":
             return traj
         poses = D.apply_output(traj.poses, self.spec, token, traj.trajectory_sampling.interval_length)
@@ -221,7 +275,7 @@ class DegradedAgent(AbstractAgent):
             traj = self.base.compute_trajectory(ai, scene)
         else:
             traj = self.base.compute_trajectory(ai)
-        traj = self._degrade_output(traj, token)
+        traj = self._degrade_output(traj, token, agent_input)
         self._log_plan(traj, scene, token)
         return traj
 

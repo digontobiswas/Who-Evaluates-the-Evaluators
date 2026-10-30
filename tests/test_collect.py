@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 import pandas as pd
 
 from wete import analysis
@@ -41,13 +42,13 @@ def _write_tree(root: Path, rng):
                     poses = [[2.0 * k + shift, 0.0] for k in range(1, 9)]
                     f.write(json.dumps({"token": t, "ade": 1.0 + drops[lvl] * 5 + rng.random(),
                                         "poses": poses}) + "\n")
-            # navsim v2 per-scenario
-            d2 = root / "navsim_v2" / "A" / base / spec
+            # navsim v2 one stage: devkit CSV with a final "average_all_frames" row
+            d2 = root / "navsim_v2" / "A" / base / spec / "pdm_score"
             d2.mkdir(parents=True)
             s1 = np.clip(0.8 - drops[lvl] + 0.05 * rng.normal(size=len(TOKS)), 0, 1)
-            pd.DataFrame({"scenario": TOKS, "prev_token": TOKS, "stage1": s1, "stage2": s1,
-                          "combined": s1 ** 2, "stage_gap": rng.random(len(TOKS))}) \
-              .to_csv(d2 / "per_scenario.csv", index=False)
+            df2 = pd.DataFrame({"token": TOKS, "valid": True, "score": s1, "lane_keeping": 1.0})
+            df2.loc[len(df2)] = {"token": "average_all_frames", "valid": True, "score": s1.mean(), "lane_keeping": 1.0}
+            df2.to_csv(d2 / "2026.10.31.01.00.00.csv")
             # hugsim
             for scn in SCENES:
                 d3 = root / "hugsim" / "A" / base / spec / "ltf" / scn
@@ -74,7 +75,7 @@ def test_collect_and_analyse(tmp_path):
     assert report["navsim_v1"]["tf:none__L0"]["n_invalid"] == 1
     assert report["navsim_v1"]["ltf:clean"]["n_invalid"] == 1
     assert set(scores[scores.level == 0].degradation) == {"none"}
-    assert {"stage_gap"} <= set(feats.columns) and {"deviation"} <= set(feats.columns)
+    assert {"deviation"} <= set(feats.columns)
     hug = feats[feats.evaluator == "hugsim"].deviation
     assert np.all(hug > 0)
 
@@ -123,3 +124,18 @@ def test_bridgesim_score_column_is_selectable(tmp_path):
         assert C.read_bridgesim(d).score.tolist() == [0.8]
     finally:
         C.BRIDGESIM_SCORE = old
+
+
+def test_navsim_v2_two_stage_group_score(tmp_path, monkeypatch):
+    """Per real scene: stage-one score x mean stage-two score of its synthetic follow-ups."""
+    monkeypatch.setattr(C, "NAVHARD_MAPPING", [["cur1", "prev1", [["s1a", "s1b"], ["s2a", "s2b"]]]])
+    d = tmp_path / "pdm_score"
+    d.mkdir()
+    pd.DataFrame({"token": ["cur1", "prev1", "s1a", "s1b", "s2a", "s2b", "extended_pdm_score_combined"],
+                  "valid": [True] * 6 + [True],
+                  "score": [0.8, 0.5, 1.0, 0.4, 0.6, 0.8, 0.3]}).to_csv(d / "2026.10.31.csv")
+    sc, ft = C.read_navsim_v2_ph(tmp_path)
+    got = dict(zip(sc.scenario, sc.score))
+    assert got["cur1"] == pytest.approx(0.8 * (1.0 + 0.6) / 2)
+    assert got["prev1"] == pytest.approx(0.5 * (0.4 + 0.8) / 2)
+    assert set(ft.columns) == {"scenario", "stage_one", "stage_two_mean"}

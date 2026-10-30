@@ -1,0 +1,21 @@
+# Population A on NAVSIM v2 EPDMS, one stage, navtest: ltf, one degradation and level per job,
+#   OVERRIDES="degradation.name=lateral_noise degradation.level=2 [policy.seed=1]"
+# Same wrapper and degradations as the NAVSIM v1 runs (popA_ltf_navtest.yaml). Submit with
+# NAVSIM_VERSION=v2 (scripts/submit_navsim_v2.sh does).
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v2_epdms.yaml
+  - ../policies/ltf.yaml
+
+experiment:
+  name: popA_${policy.id}_${degradation.name}_L${degradation.level}_navtest_v2
+  # Layout read by `python -m wete.collect`: runs/<evaluator>/A/<base>/<degradation>__L<level>
+  out_dir: ${paths.exp}/runs/navsim_v2/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA_navtest_v2/${policy.id}/${degradation.name}__L${degradation.level}
+
+scenarios:
+  mode: full
+
+degradation:
+  wrap: true

@@ -83,3 +83,23 @@ def test_retest_ceiling(tmp_path):
     rows = pd.DataFrame(S.retest(tmp_path / "orig", tmp_path / "rerun")).set_index("policy")
     assert rows.loc["ltf_seed0", "spearman"] > 0.9
     assert 0.5 < rows.loc["ltf_seed0 - transfuser_seed0", "spearman"] < 1.0
+
+
+def test_selection_split_is_deterministic_and_shared_across_naming():
+    from wete import analysis as A
+    toks = pd.Series([f"t{i:04d}" for i in range(2000)])
+    sel = A.in_selection_half(toks, 0.5, "salt")
+    assert 0.45 < sel.mean() < 0.55
+    same = A.in_selection_half("sd_" + toks, 0.5, "salt")
+    assert (sel.values == same.values).all()           # 'sd_<token>' lands in the same half
+
+
+def test_analysis_split_keeps_halves_apart(tmp_path):
+    from wete import analysis as A
+    t = table()
+    rep = A.run(t, META, str(tmp_path), cfg={"B": 50, "split": True})
+    sp = rep["split"]["scenarios"]
+    assert sp["bridgesim"]["selection"] + sp["bridgesim"]["evaluation"] == 200
+    assert rep["monotonicity"]["on"] == "selection half"
+    m = pd.read_csv(tmp_path / "discriminative_matrix.csv")
+    assert (m.n_scenarios[m.evaluator == "bridgesim"] == sp["bridgesim"]["evaluation"]).all()

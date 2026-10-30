@@ -18,6 +18,8 @@
 #                 not tested and H1-H4 are skipped. Required while only NAVSIM rows exist.
 #   B             bootstrap resamples (default 1000)
 #   BRIDGESIM_SCORE  BridgeSim column used as the closed-loop score: DS (default) or EPDMS_no_ep
+#   SPLIT         1 = validate degradations on a selection half of the scenarios and measure every
+#                 evaluator on the other half (removes selection circularity)
 
 set -euo pipefail
 
@@ -51,6 +53,7 @@ python -m wete.collect --root "$RUN_ROOT" --out "$OUT" --bridgesim-score "${BRID
 
 EXTRA=()
 [ "${NO_REFERENCE:-0}" = 1 ] && EXTRA+=(--no-reference)
+[ "${SPLIT:-0}" = 1 ] && EXTRA+=(--split)
 FEATURES=()
 [ -f "$OUT/features.csv" ] && FEATURES=(--features "$OUT/features.csv")
 BEHAVIOR=()

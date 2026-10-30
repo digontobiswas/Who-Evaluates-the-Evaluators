@@ -1,0 +1,21 @@
+# Population B on NAVSIM v2 two-stage pseudo-simulation, navhard_two_stage: ego_status_mlp, one seed per job (OVERRIDES="policy.seed=1"),
+# undegraded, through the wrapper so that plans are logged. Submit with NAVSIM_VERSION=v2.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v2_navhard.yaml
+  - ../policies/ego_status_mlp.yaml
+
+experiment:
+  name: popB_${policy.id}_navhard_v2
+  # Layout read by `python -m wete.collect`: runs/<evaluator>/B/<policy>
+  out_dir: ${paths.exp}/runs/navsim_v2_ph/B/${policy.id}
+  export_dir: ${paths.repo}/results/popB_navhard_v2/${policy.id}
+
+scenarios:
+  mode: full
+
+degradation:
+  name: none
+  level: 0
+  wrap: true

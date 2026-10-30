@@ -1,0 +1,24 @@
+# Population A wrapper around the Ego Status MLP for the NAVSIM v2 devkit (0a380a9).
+# base_agent mirrors the devkit's own config/common/agent/ego_status_mlp_agent.yaml at 0a380a9.
+_target_: wete.navsim.degraded_agent.DegradedAgent
+_convert_: 'all'
+
+degradation: none
+level: 0
+value: null
+used_cameras: null
+log_dir: ${output_dir}/plans
+also_drop_lidar: false
+stale_ego_status: false
+
+base_agent:
+  _target_: navsim.agents.ego_status_mlp_agent.EgoStatusMLPAgent
+  _convert_: 'all'
+  trajectory_sampling:
+    _target_: nuplan.planning.simulation.trajectory.trajectory_sampling.TrajectorySampling
+    _convert_: 'all'
+    time_horizon: 4
+    interval_length: 0.5
+  checkpoint_path: null
+  hidden_layer_dim: 512
+  lr: 1e-4

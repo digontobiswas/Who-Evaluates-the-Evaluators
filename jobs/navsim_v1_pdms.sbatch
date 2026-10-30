@@ -17,6 +17,7 @@
 # Optional variables:
 #   STAGES     comma-separated subset of select,cache,score,report (default: all four)
 #   OVERRIDES  space-separated config overrides, e.g. OVERRIDES="policy.seed=1"
+#   NAVSIM_VERSION  devkit on PYTHONPATH: v1 (default) or v2; must match evaluator.devkit_version
 
 set -euo pipefail
 
@@ -27,7 +28,7 @@ set -euo pipefail
 source "$WETE_REPO/scripts/env.sh"
 wete_load_modules
 wete_activate
-wete_use_navsim v1
+wete_use_navsim "${NAVSIM_VERSION:-v1}"
 
 # Compute nodes have no internet. Every weight file is already in the caches filled by
 # scripts/fetch_assets.sh; these switches turn an attempted download into an immediate error
@@ -57,7 +58,7 @@ esac
 
 echo "[job] host=$(hostname) job=${SLURM_JOB_ID:-none} partition=${SLURM_JOB_PARTITION:-none} cpus=${SLURM_CPUS_PER_TASK:-unset}"
 echo "[job] repo=$WETE_REPO commit=${WETE_GIT_COMMIT:-unknown} (recorded at submission)"
-echo "[job] python=$(command -v python) config=$CONFIG_PATH"
+echo "[job] python=$(command -v python) config=$CONFIG_PATH navsim=${NAVSIM_VERSION:-v1} ($NAVSIM_DEVKIT_ROOT)"
 echo "[job] started $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 cd "$WETE_REPO"

@@ -54,6 +54,14 @@ DEFAULT_CFG = {
     "spec_margin": 0.01,       # equivalence margin on the reference score scale (1 DS point)
     "spec_ratio": 0.25,        # a penalty counts if >= this fraction of the harmful twin's drop
     "spec_threshold": 0.95,    # P(drop > 0) needed for a penalty to count
+    # Selection / evaluation split (senior's review, 31 Oct 2026; fixed before any split run):
+    # degradations are validated (monotonicity) and benign perturbations are validated on the
+    # SELECTION half of the scenarios; every evaluator, the reference included, is then measured
+    # on the EVALUATION half only. A scenario's half is a hash of its token (BridgeSim's 'sd_'
+    # prefix removed), so a scenario shared by several evaluators is in the same half for all.
+    "split": False,
+    "selection_fraction": 0.5,
+    "split_salt": "wete-selection-2026-10-31",
 }
 
 
@@ -79,6 +87,25 @@ def load_meta(path: str) -> Dict[str, Dict]:
         import yaml
         return yaml.safe_load(txt)
     return json.loads(txt)
+
+
+def scenario_key(s: str) -> str:
+    """Scenario id shared across evaluators: BridgeSim 'sd_<token>' -> '<token>'."""
+    s = str(s)
+    return s[3:] if s.startswith("sd_") else s
+
+
+def in_selection_half(scenarios: pd.Series, fraction: float, salt: str) -> pd.Series:
+    """Deterministic assignment of scenarios to the selection half by a hash of the token."""
+    import hashlib
+
+    def frac(token: str) -> float:
+        h = hashlib.sha256(f"{salt}|{scenario_key(token)}".encode()).digest()
+        return int.from_bytes(h[:8], "little") / 2 ** 64
+
+    keys = scenarios.astype(str)
+    lookup = {k: frac(k) < fraction for k in keys.unique()}
+    return keys.map(lookup)
 
 
 def family_matrix(dfA: pd.DataFrame, evaluator: str, base: str, deg: str,
@@ -135,6 +162,17 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     report: Dict = {"config": cfg}
 
     dfA = scores[scores.population == "A"]
+    dfA_sel = dfA_eval = dfA
+    if cfg["split"]:
+        sel = in_selection_half(dfA.scenario, cfg["selection_fraction"], cfg["split_salt"])
+        dfA_sel, dfA_eval = dfA[sel.values], dfA[~sel.values]
+        report["split"] = {
+            "selection_fraction": cfg["selection_fraction"], "salt": cfg["split_salt"],
+            "scenarios": {e: {"selection": int(dfA_sel[dfA_sel.evaluator == e].scenario.nunique()),
+                              "evaluation": int(dfA_eval[dfA_eval.evaluator == e].scenario.nunique())}
+                          for e in sorted(set(dfA.evaluator))},
+            "note": "monotonicity and benign validation on the selection half; everything else on the evaluation half",
+        }
     evaluators = [e for e in meta if e in set(scores.evaluator)]
     refs = [e for e in evaluators if meta[e].get("reference")]
     if not refs and not cfg["allow_no_reference"]:
@@ -150,7 +188,7 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     for d in degs_all:
         ok_all = []
         for ref in refs:
-            fams, _ = families_for(dfA, ref, [d], meta[ref]["higher_is_better"])
+            fams, _ = families_for(dfA_sel, ref, [d], meta[ref]["higher_is_better"])
             for (b, _), S in fams.items():
                 m = St.monotonicity_test(S, B=cfg["B"], threshold=cfg["mono_threshold"], rng=rng)
                 mono_rows.append({"reference": ref, "base": b, "degradation": d, "passed": m.passed,
@@ -163,7 +201,9 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     mono.to_csv(out / "monotonicity.csv", index=False)
     retained = [d for d in degs_all if keep[d]]
     report["monotonicity"] = {"tested": bool(refs), "references": refs, "retained": retained,
-                              "discarded": [d for d in degs_all if not keep[d]] if refs else []}
+                              "discarded": [d for d in degs_all if not keep[d]] if refs else [],
+                              "on": "selection half" if cfg["split"] else "all scenarios"}
+    dfA = dfA_eval          # every later measurement uses the evaluation half (all if no split)
 
     # ---- 2. Discriminative-power matrix ---------------------------------
     cells = []
@@ -171,9 +211,7 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     for e in evaluators:
         hib = meta[e]["higher_is_better"]
         for d in degs_all:
-            if d in D.CLOSED_LOOP_ONLY and meta[e]["family"] not in ("closed_loop", "world_model", "carla"):
-                continue
-            fams, sc = families_for(dfA, e, [d], hib)
+            fams, sc = families_for(dfA, e, [d], hib)   # an evaluator without runs of d has no family
             if not fams:
                 continue
             res = St.ordering_recovery(list(fams.values()), B=cfg["B"], rng=rng)
@@ -194,8 +232,11 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     fam_of = {e: meta[e]["family"] for e in evaluators}
     openish = [e for e in evaluators if fam_of[e] in ("open_loop", "nonreactive")]
     closed = [e for e in evaluators if fam_of[e] == "closed_loop"]
+    # Must be measured by both groups: NAVSIM runs latency as a single-shot analogue (plan from the
+    # input of k frames ago, re-expressed in the current frame), so it counts once those runs exist.
     timing_mem = [d for d in retained if D.FAILURE_CLASS[d] in ("timing", "memory")
-                  and d not in D.CLOSED_LOOP_ONLY]   # must be measurable by both groups
+                  and any((e, d) in draws for e in openish) and any((e, d) in draws for e in
+                                                                      [x for x in evaluators if fam_of[x] == "closed_loop"])]
     hyp = {}
     a, b = group_draws(closed, timing_mem), group_draws(openish, timing_mem)
     if a is not None and b is not None:
@@ -229,6 +270,14 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
 
     # ---- 4b. Specificity arm --------------------------------------------
     spec_rows, spec_summary = specificity(dfA, meta, evaluators, refs, cfg, rng)
+    if cfg["split"] and spec_summary:
+        # benign perturbations are validated on the selection half, verdicts come from the evaluation half
+        _, sel_summary = specificity(dfA_sel, meta, evaluators, refs, cfg, rng)
+        spec_summary["validated"] = sel_summary.get("validated", {})
+        spec_summary["validated_on"] = "selection half"
+        for e, v in spec_summary["verdicts"].items():
+            for d in v:
+                v[d]["validated_on_reference"] = spec_summary["validated"].get(d)
     if spec_rows:
         pd.DataFrame(spec_rows).to_csv(out / "specificity.csv", index=False)
     report["specificity"] = spec_summary
@@ -527,11 +576,13 @@ def main(argv=None):
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--no-reference", action="store_true",
                     help="provisional run without a reference evaluator (monotonicity untested)")
+    ap.add_argument("--split", action="store_true",
+                    help="validate degradations on a selection half of the scenarios, measure on the other half")
     a = ap.parse_args(argv)
     feats = pd.read_csv(a.features) if a.features else None
     beh = pd.read_csv(a.behavior) if a.behavior else None
     rep = run(load_table(a.scores), load_meta(a.meta), a.out, feats,
-              {"B": a.B, "seed": a.seed, "allow_no_reference": a.no_reference}, beh)
+              {"B": a.B, "seed": a.seed, "allow_no_reference": a.no_reference, "split": a.split}, beh)
     print(json.dumps({"provisional": rep.get("provisional"), "monotonicity": rep["monotonicity"],
                       "specificity": rep.get("specificity"), "hypotheses": rep["hypotheses"]},
                      indent=2, default=_json_default))

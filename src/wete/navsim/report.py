@@ -151,3 +151,70 @@ def summarize_plans(plans_dir: Path) -> Dict[str, Any]:
     if effective:
         out["effective_k"] = sorted(effective)
     return out
+
+
+# ---- NAVSIM v2 ------------------------------------------------------------------------------
+# Rows the v2 devkit appends to its per-token CSV (one stage: average_all_frames; two stage: the
+# three pseudo-simulation aggregates).
+V2_SUMMARY_TOKENS = ("average_all_frames", "extended_pdm_score_stage_one",
+                     "extended_pdm_score_stage_two", "extended_pdm_score_combined")
+
+
+def load_scores_v2(csv_path: Path) -> pd.DataFrame:
+    """Read a NAVSIM v2 score CSV. Its metric columns differ between one- and two-stage runs, so
+    only token, valid and score are required."""
+    frame = pd.read_csv(csv_path, index_col=0, dtype={"token": str})
+    missing = {"token", "valid", SCORE_COLUMN} - set(frame.columns)
+    if missing:
+        raise ReportError(f"{csv_path} lacks columns {sorted(missing)}")
+    frame["valid"] = frame["valid"].astype(str).str.strip().str.lower().eq("true")
+    return frame
+
+
+def summarize_v2(scores: pd.DataFrame, two_stage: bool,
+                 expected_tokens: Optional[Sequence[str]] = None) -> Dict[str, Any]:
+    """EPDMS summary of a NAVSIM v2 run.
+
+    One stage: EPDMS = 100 x mean per-token score over valid tokens (the devkit's
+    average_all_frames row is checked against it). Two stage: EPDMS = 100 x the devkit's
+    extended_pdm_score_combined row (stage one and two reported as well); per-token means are
+    over real and synthetic tokens together and are descriptive only."""
+    is_summary = scores["token"].isin(V2_SUMMARY_TOKENS)
+    per = scores[~is_summary]
+    rows = scores[is_summary].set_index("token")
+    valid = per[per["valid"]]
+    numeric = [c for c in per.columns if c not in ("token", "valid") and pd.api.types.is_numeric_dtype(per[c])]
+    means = {c: float(valid[c].mean()) for c in numeric} if len(valid) else {}
+    std = float(valid[SCORE_COLUMN].std(ddof=1)) if len(valid) > 1 else float("nan")
+    out: Dict[str, Any] = {
+        "two_stage": bool(two_stage),
+        "num_scored": int(len(per)),
+        "num_valid": int(len(valid)),
+        "num_invalid": int(len(per) - len(valid)),
+        "num_duplicated_tokens": int(per["token"].duplicated().sum()),
+        "mean": means,
+        "score_std": std,
+        "score_sem": std / math.sqrt(len(valid)) if len(valid) > 1 else float("nan"),
+    }
+    if two_stage:
+        for name, key in (("epdms", "extended_pdm_score_combined"), ("epdms_stage_one", "extended_pdm_score_stage_one"),
+                          ("epdms_stage_two", "extended_pdm_score_stage_two")):
+            out[name] = 100.0 * float(rows.loc[key, SCORE_COLUMN]) if key in rows.index else float("nan")
+        out["pseudo_closed_loop_valid"] = bool(rows["valid"].all()) if len(rows) else False
+    else:
+        out["epdms"] = 100.0 * means[SCORE_COLUMN] if means else float("nan")
+        if "average_all_frames" in rows.index and means:
+            avg = float(rows.loc["average_all_frames", SCORE_COLUMN])
+            out["devkit_average_score"] = avg
+            out["matches_devkit_average"] = bool(abs(avg - means[SCORE_COLUMN]) < 1e-9)
+    out["pdms"] = out["epdms"]  # one headline column name across devkits in our tables
+    if expected_tokens is not None:
+        expected, scored = set(expected_tokens), set(per["token"])
+        out.update(num_expected=len(expected), num_missing=len(expected - scored),
+                   num_unexpected=len(scored - expected))
+    else:
+        out.update(num_expected=None, num_missing=None, num_unexpected=None)
+    out["complete"] = bool(out["num_valid"] > 0 and out["num_invalid"] == 0 and out["num_duplicated_tokens"] == 0
+                           and not out["num_missing"] and not out["num_unexpected"]
+                           and (out.get("pseudo_closed_loop_valid", True)))
+    return out

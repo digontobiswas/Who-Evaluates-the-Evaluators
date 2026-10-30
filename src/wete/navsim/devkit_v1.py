@@ -18,12 +18,16 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set
 
 METRIC_CACHING_SCRIPT = Path("navsim/planning/script/run_metric_caching.py")
 PDM_SCORE_SCRIPT = Path("navsim/planning/script/run_pdm_score.py")
+# NAVSIM v2 (0a380a9): EPDMS on real scenes only (e.g. navtest); the two-stage pseudo-simulation
+# (e.g. navhard_two_stage, real + synthetic scenes) is PDM_SCORE_SCRIPT.
+PDM_SCORE_ONE_STAGE_SCRIPT = Path("navsim/planning/script/run_pdm_score_one_stage.py")
 
 # The one entry of `hydra.searchpath` in the devkit's default_run_pdm_score.yaml (v1.1).
 DEVKIT_SEARCHPATH = "pkg://navsim.planning.script.config.common"
 
 # Directory with our Hydra agent configs for the v1.1 devkit, relative to the repository.
 WRAPPER_CONFIG_DIR = Path("configs/navsim_hydra/v1")
+WRAPPER_CONFIG_DIRS = {"v1": WRAPPER_CONFIG_DIR, "v2": Path("configs/navsim_hydra/v2")}
 WRAPPER_CHECKPOINT_KEY = "agent.base_agent.checkpoint_path"
 
 # Devkit worker configs (navsim/planning/script/config/common/worker/*.yaml) and the key each
@@ -149,6 +153,89 @@ def pdm_score_command(
     ]
 
 
+def metric_cache_command_v2(
+    devkit_root: Path,
+    split: str,
+    navsim_log_path: Path,
+    cache_dir: Path,
+    worker: Mapping[str, Any],
+    num_workers: int,
+    synthetic_scenes_path: Optional[Path] = None,
+    log_names: Optional[Sequence[str]] = None,
+    tokens: Optional[Sequence[str]] = None,
+) -> List[str]:
+    """NAVSIM v2 metric caching: the cache directory is ``metric_cache_path`` (v1.1:
+    ``cache.cache_path``); two-stage splits also read the synthetic scenes."""
+    extra = [f"synthetic_scenes_path={hydra_quote(str(synthetic_scenes_path))}"] if synthetic_scenes_path else []
+    return [
+        sys.executable,
+        str(devkit_root / METRIC_CACHING_SCRIPT),
+        f"train_test_split={split}",
+        f"metric_cache_path={hydra_quote(str(cache_dir))}",
+        f"navsim_log_path={hydra_quote(str(navsim_log_path))}",
+        *extra,
+        *worker_overrides(worker, num_workers),
+        *scene_filter_overrides(log_names, tokens),
+    ]
+
+
+def pdm_score_command_v2(
+    devkit_root: Path,
+    split: str,
+    navsim_log_path: Path,
+    sensor_blobs_path: Path,
+    cache_dir: Path,
+    output_dir: Path,
+    experiment_name: str,
+    agent: str,
+    agent_overrides: Sequence[str],
+    checkpoint: Path,
+    worker: Mapping[str, Any],
+    num_workers: int,
+    two_stage: bool,
+    synthetic_sensor_path: Optional[Path] = None,
+    synthetic_scenes_path: Optional[Path] = None,
+    traffic_agents: str = "non_reactive",
+    log_names: Optional[Sequence[str]] = None,
+    tokens: Optional[Sequence[str]] = None,
+    checkpoint_key: str = "agent.checkpoint_path",
+    config_searchpath: Optional[Path] = None,
+) -> List[str]:
+    """NAVSIM v2 scoring. One stage (real scenes): run_pdm_score_one_stage.py with the traffic
+    agent policy. Two stage (pseudo-simulation): run_pdm_score.py with the synthetic scenes.
+    v2 calls the real-scene sensor folder ``original_sensor_path`` (v1.1: ``sensor_blobs_path``)."""
+    if two_stage and not (synthetic_sensor_path and synthetic_scenes_path):
+        raise DevkitError("two-stage scoring needs synthetic_sensor_path and synthetic_scenes_path")
+    searchpath = []
+    if config_searchpath is not None:
+        searchpath = [
+            "hydra.searchpath="
+            + hydra_list([DEVKIT_SEARCHPATH, "file://" + str(Path(config_searchpath).resolve())])
+        ]
+    stage = (
+        [f"synthetic_sensor_path={hydra_quote(str(synthetic_sensor_path))}",
+         f"synthetic_scenes_path={hydra_quote(str(synthetic_scenes_path))}"]
+        if two_stage else [f"traffic_agents={traffic_agents}"]
+    )
+    return [
+        sys.executable,
+        str(devkit_root / (PDM_SCORE_SCRIPT if two_stage else PDM_SCORE_ONE_STAGE_SCRIPT)),
+        *searchpath,
+        f"train_test_split={split}",
+        f"agent={agent}",
+        f"{checkpoint_key}={hydra_quote(str(checkpoint))}",
+        *agent_overrides,
+        f"experiment_name={experiment_name}",
+        f"navsim_log_path={hydra_quote(str(navsim_log_path))}",
+        f"original_sensor_path={hydra_quote(str(sensor_blobs_path))}",
+        *stage,
+        f"metric_cache_path={hydra_quote(str(cache_dir))}",
+        f"output_dir={hydra_quote(str(output_dir))}",
+        *worker_overrides(worker, num_workers),
+        *scene_filter_overrides(log_names, tokens),
+    ]
+
+
 def read_metric_cache_tokens(cache_dir: Path) -> Set[str]:
     """Tokens present in a metric cache, read the way the devkit's ``MetricCacheLoader`` does.
 
@@ -256,6 +343,12 @@ def required_history_frames(degradation: Mapping[str, Any], policy_history_frame
         return policy_history_frames
     if name == "history_removal":
         return max(policy_history_frames, 4)
+    if name == "latency":
+        from wete import degradations as D
+
+        value = degradation.get("value")
+        replans = float(value) if value is not None else D.level_param(name, level)
+        return max(policy_history_frames, min(4, int(round(replans)) + 1))
     if name == "stale_obs":
         from wete import degradations as D
 

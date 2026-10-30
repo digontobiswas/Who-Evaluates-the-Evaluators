@@ -1,0 +1,31 @@
+# NAVSIM v2 two-stage pseudo-simulation on navhard_two_stage (run_pdm_score.py): stage one scores
+# the real scene, stage two scores synthetic follow-up scenes rendered from where the plan leads;
+# the headline EPDMS is the devkit's extended_pdm_score_combined. The real NavHard scenes are the
+# ones BridgeSim converts, so this evaluator shares scenarios with the closed-loop reference.
+# Data: download/download_navhard_two_stage.sh of the v2 devkit, extracted into
+# ${paths.openscene}/navhard_two_stage/{sensor_blobs,synthetic_scene_pickles,openscene_meta_datas}.
+# Submit with NAVSIM_VERSION=v2.
+
+evaluator:
+  id: navsim_v2_navhard
+  family: pseudo_sim_v2_two_stage
+  devkit_version: v2
+  two_stage: true
+  devkit_root: ${paths.third_party}/navsim_v2
+  nuplan_devkit_root: ${paths.third_party}/nuplan-devkit
+
+  split: navhard_two_stage
+  navsim_log_path: ${paths.openscene}/navsim_logs/test
+  sensor_blobs_path: ${paths.openscene}/sensor_blobs/test
+  synthetic_sensor_path: ${paths.openscene}/navhard_two_stage/sensor_blobs
+  synthetic_scenes_path: ${paths.openscene}/navhard_two_stage/synthetic_scene_pickles
+
+  metric_cache:
+    dir: ${paths.exp}/metric_cache/navsim_v2_${evaluator.split}
+    worker:
+      name: ray_distributed_no_torch
+
+  scoring:
+    worker:
+      name: single_machine_thread_pool
+      use_process_pool: false

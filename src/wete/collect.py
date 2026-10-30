@@ -10,7 +10,8 @@ Evaluator payloads:
   navsim_v1    NAVSIM v1.1 run_pdm_score.py CSV (<timestamp>.csv), one row per token plus a
                final row whose token is "average"
   open_l2      <...>/plans/<agent>.plans.jsonl written by DegradedAgent (navtest run)
-  navsim_v2    per_scenario.csv from wete_navsim.run_pdm_score_per_scenario
+  navsim_v2    NAVSIM v2 one-stage CSV (run_pdm_score_one_stage.py), EPDMS per token
+  navsim_v2_ph NAVSIM v2 two-stage CSV (run_pdm_score.py, navhard_two_stage), group score per real scene
   hugsim       <scene>_<mode>/eval.json (+ wete_trace.jsonl)
   world_model  scores.csv with columns scenario, score[, consistency]
   bridgesim    per_scenario.csv from wete.cli.bridgesim_run (EPDMS_no_ep per scenario)
@@ -132,7 +133,7 @@ def plans_hugsim(d: Path) -> Dict[str, np.ndarray]:
     return out
 
 
-PLAN_READERS = {"navsim_v1": plans_navsim, "navsim_v2": plans_navsim, "hugsim": plans_hugsim}
+PLAN_READERS = {"navsim_v1": plans_navsim, "hugsim": plans_hugsim}
 NO_BEHAVIOUR_AT_STEP0 = {"stale_obs", "latency"}      # identity at the first closed-loop step
 
 
@@ -167,14 +168,65 @@ def behaviour_table(root: Path) -> pd.DataFrame:
     return df.drop_duplicates(["base", "degradation", "scenario"]) if not df.empty else df
 
 
-def read_navsim_v2(d: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    f = _latest(list(d.rglob("per_scenario.csv")))
-    if f is None:
-        return pd.DataFrame(), pd.DataFrame()
-    df = pd.read_csv(f)
-    sc = pd.DataFrame({"scenario": df.scenario.astype(str), "score": df.combined.astype(float)})
-    ft = pd.DataFrame({"scenario": df.scenario.astype(str), "stage_gap": df.stage_gap.astype(float)})
-    return sc, ft
+def _devkit_csv(d: Path) -> pd.DataFrame:
+    """The newest devkit score CSV under a run directory, per-token rows only, invalid -> NaN."""
+    csv = _latest([p for p in d.rglob("*.csv") if p.name != "per_scenario.csv" and "metric_cache" not in p.parts])
+    if csv is None:
+        return pd.DataFrame()
+    df = pd.read_csv(csv, dtype={"token": str})
+    df = df[~df.token.isin(NAVSIM_SUMMARY_TOKENS)].copy()
+    df.loc[~_as_bool(df["valid"]), "score"] = np.nan
+    return df
+
+
+def read_navsim_v2(d: Path) -> pd.DataFrame:
+    """NAVSIM v2 one-stage EPDMS (run_pdm_score_one_stage.py): one score per real scenario."""
+    df = _devkit_csv(d)
+    if df.empty:
+        return df
+    return pd.DataFrame({"scenario": df.token.astype(str), "score": df.score.astype(float)})
+
+
+# Two-stage mapping of navhard_two_stage: [(current token, previous token, [(synthetic follow-up of
+# current, synthetic follow-up of previous), ...]), ...], read from the v2 devkit's split config.
+NAVHARD_MAPPING: Optional[List] = None
+
+
+def _navhard_mapping() -> List:
+    global NAVHARD_MAPPING
+    if NAVHARD_MAPPING is None:
+        import os
+
+        import yaml
+
+        cfg = (Path(os.environ["WETE_THIRD_PARTY"]) / "navsim_v2" / "navsim" / "planning" / "script" / "config"
+               / "common" / "train_test_split" / "navhard_two_stage.yaml")
+        NAVHARD_MAPPING = yaml.safe_load(cfg.read_text())["reactive_all_mapping"]
+    return NAVHARD_MAPPING
+
+
+def read_navsim_v2_ph(d: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """NAVSIM v2 two-stage pseudo-simulation (run_pdm_score.py on navhard_two_stage).
+
+    Per real scene s (the current and the previous frame of each mapping entry): stage-one score of
+    s times the mean stage-two score of its synthetic follow-ups, i.e. the devkit's group score.
+    The devkit weights the stage-two scenes but does not write the weights to its CSV, so the mean
+    here is unweighted; the policy-level number we report is the devkit's own combined row.
+    Features: stage-one score and stage-two mean separately."""
+    df = _devkit_csv(d)
+    if df.empty:
+        return df, pd.DataFrame()
+    score = dict(zip(df.token.astype(str), df.score.astype(float)))
+    rows, feats = [], []
+    for cur, prev, pairs in _navhard_mapping():
+        for real, follow in ((cur, [p[0] for p in pairs if len(p) > 0]), (prev, [p[1] for p in pairs if len(p) > 1])):
+            s1 = score.get(str(real), np.nan)
+            s2 = [score[str(t)] for t in follow if str(t) in score]
+            s2m = float(np.nanmean(s2)) if s2 and not np.all(np.isnan(s2)) else np.nan
+            rows.append({"scenario": str(real), "score": s1 * s2m})
+            feats.append({"scenario": str(real), "stage_one": s1, "stage_two_mean": s2m})
+    sc = pd.DataFrame(rows).drop_duplicates("scenario")
+    return sc, pd.DataFrame(feats).drop_duplicates("scenario")
 
 
 LOGGED_PATHS: Dict[str, np.ndarray] = {}   # scene -> (M, 2|3) recorded ego positions
@@ -240,7 +292,8 @@ def read_bridgesim(d: Path) -> pd.DataFrame:
                          "score": pd.to_numeric(df[BRIDGESIM_SCORE], errors="coerce")})
 
 
-READERS = {"navsim_v1": read_navsim_v1, "navsim_v2": read_navsim_v2, "bridgesim": read_bridgesim,
+READERS = {"navsim_v1": read_navsim_v1, "navsim_v2": read_navsim_v2, "navsim_v2_ph": read_navsim_v2_ph,
+           "bridgesim": read_bridgesim,
            "hugsim": read_hugsim, "world_model": read_world_model}
 # derived evaluators: (name, source evaluator dir, reader)
 DERIVED = [("open_l2", "navsim_v1", read_open_l2)]   # L2 is logged during the navtest run

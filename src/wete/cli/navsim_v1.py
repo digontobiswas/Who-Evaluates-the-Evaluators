@@ -1,4 +1,10 @@
-"""Stage 1 job: reproduce a published NAVSIM v1 PDMS with the unmodified devkit.
+"""NAVSIM job: score a policy with the unmodified NAVSIM devkit (v1.1 PDMS or v2 EPDMS).
+
+The devkit is chosen by the evaluator config: ``evaluator.devkit_version`` is ``v1`` (default)
+or ``v2``; with v2, ``evaluator.two_stage: true`` runs the two-stage pseudo-simulation
+(run_pdm_score.py on real + synthetic scenes, e.g. navhard_two_stage) and otherwise the one-stage
+EPDMS on real scenes (run_pdm_score_one_stage.py, e.g. navtest). The job script must put the
+matching devkit on PYTHONPATH (jobs/navsim_v1_pdms.sbatch: NAVSIM_VERSION=v1|v2).
 
 Usage (normally through ``jobs/navsim_v1_pdms.sbatch``)::
 
@@ -23,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import math
 import shutil
 import sys
@@ -99,8 +106,31 @@ def _fail(message: str) -> "SystemExit":
     return SystemExit(f"[wete] ERROR: {message}")
 
 
+def _version(cfg: Dict[str, Any]) -> str:
+    version = str(cfg["evaluator"].get("devkit_version", "v1"))
+    if version not in ("v1", "v2"):
+        raise _fail(f"evaluator.devkit_version must be v1 or v2, got {version!r}")
+    return version
+
+
+def _two_stage(cfg: Dict[str, Any]) -> bool:
+    return _version(cfg) == "v2" and bool(cfg["evaluator"].get("two_stage", False))
+
+
 def stage_select(cfg: Dict[str, Any], out_dir: Path) -> Dict[str, Any]:
     """Decide which scenarios to run and prove their sensor files exist."""
+    if _two_stage(cfg):
+        # Two-stage splits list synthetic scenes that are in no log, so the log-based sensor check
+        # does not apply. The devkit scores the split's own definition; completeness is judged from
+        # the devkit's valid flags and its pseudo-simulation aggregate.
+        synth = Path(cfg["evaluator"]["synthetic_scenes_path"])
+        if not synth.is_dir() or not any(synth.iterdir()):
+            raise _fail(f"No synthetic scenes in {synth}; download the split (scripts in the v2 devkit's download/).")
+        chosen = {"mode": "full", "split": cfg["evaluator"]["split"], "log_names": None, "tokens": None,
+                  "expected_tokens": None, "num_expected": None, "num_logs_read": None}
+        _write_json(out_dir / "selection.json", chosen)
+        print(f"[wete] select: two-stage split {chosen['split']}, scenarios defined by the devkit")
+        return chosen
     devkit_root = Path(cfg["evaluator"]["devkit_root"])
     split_filter = selection.load_split_filter(devkit_root, cfg["evaluator"]["split"])
     sensors = cfg["policy"]["sensors"]
@@ -168,13 +198,16 @@ def _load_selection(out_dir: Path) -> Dict[str, Any]:
 def stage_cache(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], dry_run: bool) -> Optional[float]:
     """Build the metric cache unless every expected scenario is already in it."""
     cache_dir = Path(cfg["evaluator"]["metric_cache"]["dir"])
-    expected = set(chosen["expected_tokens"])
+    expected = set(chosen["expected_tokens"] or [])
     cached = devkit_v1.read_metric_cache_tokens(cache_dir)
     if expected and expected <= cached:
         print(f"[wete] cache: all {len(expected)} scenarios already cached in {cache_dir}, skipping.")
         return None
+    if not expected and cached and _two_stage(cfg):
+        print(f"[wete] cache: two-stage cache already present in {cache_dir} ({len(cached)} tokens), skipping.")
+        return None
 
-    command = devkit_v1.metric_cache_command(
+    common = dict(
         devkit_root=Path(cfg["evaluator"]["devkit_root"]),
         split=cfg["evaluator"]["split"],
         navsim_log_path=Path(cfg["evaluator"]["navsim_log_path"]),
@@ -184,6 +217,11 @@ def stage_cache(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], dry_
         log_names=chosen["log_names"],
         tokens=chosen["tokens"],
     )
+    if _version(cfg) == "v2":
+        synth = cfg["evaluator"].get("synthetic_scenes_path") if _two_stage(cfg) else None
+        command = devkit_v1.metric_cache_command_v2(synthetic_scenes_path=Path(synth) if synth else None, **common)
+    else:
+        command = devkit_v1.metric_cache_command(**common)
     if dry_run:
         print(devkit_v1.format_command(command))
         return None
@@ -191,6 +229,8 @@ def stage_cache(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], dry_
     elapsed = devkit_v1.run(command, out_dir / "logs" / "metric_caching.log", env=_devkit_env(cfg))
     cached = devkit_v1.read_metric_cache_tokens(cache_dir)
     missing = expected - cached
+    if not cached:
+        raise _fail(f"Metric caching finished but {cache_dir} holds no tokens. See {out_dir / 'logs' / 'metric_caching.log'}.")
     if missing:
         raise _fail(
             f"Metric caching finished but {len(missing)} of {len(expected)} scenarios are not in the cache "
@@ -217,12 +257,22 @@ def stage_score(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], dry_
             degradation, cfg["policy"]["sensors"].get("used_cameras")
         )
         checkpoint_key = devkit_v1.WRAPPER_CHECKPOINT_KEY
-        searchpath = Path(cfg["paths"]["repo"]) / devkit_v1.WRAPPER_CONFIG_DIR
+        searchpath = Path(cfg["paths"]["repo"]) / devkit_v1.WRAPPER_CONFIG_DIRS[_version(cfg)]
     else:
         agent = cfg["policy"]["navsim_agent"]
         checkpoint_key = "agent.checkpoint_path"
         searchpath = None
-    command = devkit_v1.pdm_score_command(
+    builder = devkit_v1.pdm_score_command
+    extra: Dict[str, Any] = {}
+    if _version(cfg) == "v2":
+        builder = devkit_v1.pdm_score_command_v2
+        two = _two_stage(cfg)
+        extra = {"two_stage": two, "traffic_agents": cfg["evaluator"].get("traffic_agents", "non_reactive")}
+        if two:
+            extra["synthetic_sensor_path"] = Path(cfg["evaluator"]["synthetic_sensor_path"])
+            extra["synthetic_scenes_path"] = Path(cfg["evaluator"]["synthetic_scenes_path"])
+    command = builder(
+        **extra,
         devkit_root=Path(cfg["evaluator"]["devkit_root"]),
         split=cfg["evaluator"]["split"],
         navsim_log_path=Path(cfg["evaluator"]["navsim_log_path"]),
@@ -263,8 +313,12 @@ def stage_score(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], dry_
 def stage_report(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], timings: Dict[str, Any]) -> Dict[str, Any]:
     """Aggregate, compare with the published value where that is meaningful, and export."""
     csv_path = report.find_score_csv(out_dir / "pdm_score")
-    scores = report.load_scores(csv_path)
-    result = report.summarize(scores, expected_tokens=chosen["expected_tokens"])
+    if _version(cfg) == "v2":
+        scores = report.load_scores_v2(csv_path)
+        result = report.summarize_v2(scores, _two_stage(cfg), expected_tokens=chosen["expected_tokens"])
+    else:
+        scores = report.load_scores(csv_path)
+        result = report.summarize(scores, expected_tokens=chosen["expected_tokens"])
 
     degradation = cfg["degradation"]
     degraded = str(degradation["name"]) != "none" and int(degradation["level"]) > 0
@@ -312,7 +366,7 @@ def stage_report(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], tim
     if devkit_v1.is_wrapped(degradation):
         summary["open_loop"] = report.summarize_plans(out_dir / "pdm_score" / "plans")
 
-    reference = cfg["policy"].get("reference")
+    reference = cfg["policy"].get("reference") if _version(cfg) == "v1" else None
     if degraded:
         summary["comparison"] = None
         summary["comparison_note"] = "Degraded policy: the published PDMS does not apply."
@@ -360,7 +414,12 @@ def _require_cached(cfg: Dict[str, Any], chosen: Dict[str, Any]) -> None:
     build the same cache at once would collide, so jobs that skip caching check first.
     """
     cache_dir = Path(cfg["evaluator"]["metric_cache"]["dir"])
-    missing = set(chosen["expected_tokens"]) - devkit_v1.read_metric_cache_tokens(cache_dir)
+    cached = devkit_v1.read_metric_cache_tokens(cache_dir)
+    if chosen["expected_tokens"] is None:
+        if not cached:
+            raise _fail(f"The metric cache {cache_dir} is empty. Build it first with STAGES=select,cache (one job).")
+        return
+    missing = set(chosen["expected_tokens"]) - cached
     if missing:
         raise _fail(
             f"{len(missing)} of {len(chosen['expected_tokens'])} scenarios are not in the metric cache "
@@ -376,6 +435,9 @@ def _preflight(cfg: Dict[str, Any]) -> None:
         "OpenScene logs": Path(cfg["evaluator"]["navsim_log_path"]),
         "OpenScene sensors": Path(cfg["evaluator"]["sensor_blobs_path"]),
     }
+    if _two_stage(cfg):
+        checks["synthetic sensors"] = Path(cfg["evaluator"]["synthetic_sensor_path"])
+        checks["synthetic scenes"] = Path(cfg["evaluator"]["synthetic_scenes_path"])
     absent = [f"{name}: {path}" for name, path in checks.items() if not path.exists()]
     if absent:
         raise _fail("Missing inputs:\n  " + "\n  ".join(absent))
@@ -397,6 +459,11 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if not args.dry_run:
         _preflight(cfg)
+        on_path = os.environ.get("NAVSIM_DEVKIT_ROOT")
+        wanted = Path(cfg["evaluator"]["devkit_root"])
+        if on_path and Path(on_path).resolve() != wanted.resolve():
+            raise _fail(f"The job put {on_path} on PYTHONPATH but the evaluator uses {wanted}. "
+                        f"Submit with NAVSIM_VERSION={_version(cfg)}.")
 
     timings_path = out_dir / "timings.json"
     timings: Dict[str, Any] = _read_json(timings_path) if timings_path.is_file() else {}

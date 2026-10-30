@@ -1,0 +1,16 @@
+# Builds the NAVSIM v2 metric cache for navtest (one CPU job, STAGES=select,cache). Every v2
+# scoring job on navtest reads this cache and refuses to start without it. The policy entry is
+# only there because the job schema needs one; nothing is scored. Submit with NAVSIM_VERSION=v2.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v2_epdms.yaml
+  - ../policies/transfuser.yaml
+
+experiment:
+  name: cache_navtest_v2
+  out_dir: ${paths.exp}/cache_jobs/navtest_v2
+  export_dir: null
+
+scenarios:
+  mode: full

@@ -1,0 +1,27 @@
+# NAVSIM v2 Extended PDM Score (EPDMS) on real scenes, one stage (run_pdm_score_one_stage.py):
+# non-reactive traffic, the v2 metric set (adds traffic-light compliance, lane keeping and
+# extended comfort to v1's). Devkit: autonomousvision/navsim at 0a380a9 (configs/third_party.env).
+# Submit with NAVSIM_VERSION=v2 so that the job puts this devkit on PYTHONPATH.
+
+evaluator:
+  id: navsim_v2_epdms
+  family: pseudo_sim_v2
+  devkit_version: v2
+  two_stage: false
+  traffic_agents: non_reactive
+  devkit_root: ${paths.third_party}/navsim_v2
+  nuplan_devkit_root: ${paths.third_party}/nuplan-devkit
+
+  split: navtest
+  navsim_log_path: ${paths.openscene}/navsim_logs/test
+  sensor_blobs_path: ${paths.openscene}/sensor_blobs/test
+
+  metric_cache:
+    dir: ${paths.exp}/metric_cache/navsim_v2_${evaluator.split}
+    worker:
+      name: ray_distributed_no_torch
+
+  scoring:
+    worker:
+      name: single_machine_thread_pool
+      use_process_pool: false

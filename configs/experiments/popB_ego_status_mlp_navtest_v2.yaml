@@ -1,0 +1,21 @@
+# Population B on NAVSIM v2 EPDMS, one stage, navtest: ego_status_mlp, one seed per job (OVERRIDES="policy.seed=1"),
+# undegraded, through the wrapper so that plans are logged. Submit with NAVSIM_VERSION=v2.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v2_epdms.yaml
+  - ../policies/ego_status_mlp.yaml
+
+experiment:
+  name: popB_${policy.id}_navtest_v2
+  # Layout read by `python -m wete.collect`: runs/<evaluator>/B/<policy>
+  out_dir: ${paths.exp}/runs/navsim_v2/B/${policy.id}
+  export_dir: ${paths.repo}/results/popB_navtest_v2/${policy.id}
+
+scenarios:
+  mode: full
+
+degradation:
+  name: none
+  level: 0
+  wrap: true

@@ -1,0 +1,23 @@
+# Smoke test of the NAVSIM v2 pipeline: TransFuser seed 0 through the wrapper on 64 navtest
+# scenarios, one stage. Runs after the v2 navtest metric cache exists (STAGES=select,score,report).
+# Submit with NAVSIM_VERSION=v2.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v2_epdms.yaml
+  - ../policies/transfuser.yaml
+
+experiment:
+  name: smoke_${policy.id}_navtest_v2
+  out_dir: ${paths.exp}/smoke/navsim_v2/${policy.id}
+  export_dir: null
+
+scenarios:
+  mode: subset
+  max_scenarios: 64
+  max_logs: 8
+
+degradation:
+  name: none
+  level: 0
+  wrap: true
