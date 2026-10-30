@@ -142,6 +142,57 @@ def popa_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
     return sorted(rows, key=lambda x: (x["policy"], x["degradation"] != "none", x["degradation"], x["level"]))
 
 
+# Population B reuses the Population A clean runs of these policies (linked, not rerun).
+POPB_REUSED = ("transfuser_seed0", "ltf_seed0")
+
+
+def popb_navsim_rows(results: Path) -> List[Dict[str, Any]]:
+    paths = sorted(results.glob("popB/*/summary.json"))
+    paths += [results / "popA" / p / "none__L0" / "summary.json" for p in POPB_REUSED]
+    rows = []
+    for path in paths:
+        if not path.exists():
+            continue
+        s = _load(path)
+        r, ol = s["result"], s.get("open_loop") or {}
+        rows.append({
+            "policy": s["policy"],
+            "pdms": r["pdms"],
+            "pdms_sem": 100 * r["score_sem"] if r.get("score_sem") is not None else None,
+            "num_valid": r["num_valid"],
+            "num_expected": r["num_expected"],
+            "complete": r["complete"],
+            "open_loop_ade_m": ol.get("mean_ade"),
+            "open_loop_l2_1s_m": ol.get("mean_l2_1s"),
+            "open_loop_l2_2s_m": ol.get("mean_l2_2s"),
+            "open_loop_l2_3s_m": ol.get("mean_l2_3s"),
+            **{f"mean_{k}": v for k, v in (r.get("mean") or {}).items()},
+            "source_file": str(path),
+        })
+    return sorted(rows, key=lambda x: x["policy"])
+
+
+def popb_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
+    paths = sorted(results.glob("popB_bridgesim/*/summary.json"))
+    paths += [results / "popA_bridgesim" / p / "none__L0" / "summary.json" for p in POPB_REUSED]
+    rows = []
+    for path in paths:
+        if not path.exists():
+            continue
+        s = _load(path)
+        r = s["result"]
+        rows.append({
+            "policy": s["policy"],
+            "epdms": r["epdms"], "epdms_sem": r.get("epdms_sem"),
+            "ds": r["ds"], "ds_sem": r.get("ds_sem"),
+            "rc": r["rc"],
+            "num_scored": r["num_scored"], "num_expected": r["num_expected"], "complete": r["complete"],
+            **{f"mean_{k}": v for k, v in (r.get("mean") or {}).items()},
+            "source_file": str(path),
+        })
+    return sorted(rows, key=lambda x: x["policy"])
+
+
 README = """Summary tables built from the summary.json files of the cluster jobs (wete.cli.export_tables).
 
 stage1_navsim_navtest.csv
@@ -168,6 +219,11 @@ bridgesim_navhard.csv
   BridgeSim's leaderboard does. published_*: BridgeSim README leaderboard (commit ea5d45f).
   extra_evaluator_args shows protocol variants (e.g. runtime LiDAR on).
 
+popB_navsim_navtest.csv, popB_bridgesim_navhard.csv
+  Population B: the public navsim_baselines checkpoints (TransFuser, LTF, Ego Status MLP, seeds
+  0-2), undegraded, on NAVSIM v1 navtest (PDMS and open-loop L2) and in BridgeSim NavHard (EPDMS,
+  DS, RC). TransFuser and LTF seed 0 are the Population A clean runs (same numbers).
+
 Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
 lateral_noise / late_braking only beyond the first 1.5 s and 10 m of the plan (the part BridgeSim's
 replanning controller never executes). A correct closed-loop score should not move under them.
@@ -188,7 +244,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     for name, rows in (("stage1_navsim_navtest.csv", stage1_rows(results)),
                        ("popA_navsim_navtest.csv", popa_rows(results)),
                        ("bridgesim_navhard.csv", bridgesim_rows(results)),
-                       ("popA_bridgesim_navhard.csv", popa_bridgesim_rows(results))):
+                       ("popA_bridgesim_navhard.csv", popa_bridgesim_rows(results)),
+                       ("popB_navsim_navtest.csv", popb_navsim_rows(results)),
+                       ("popB_bridgesim_navhard.csv", popb_bridgesim_rows(results))):
         if rows:
             pd.DataFrame(rows).to_csv(out / name, index=False, float_format="%.4f")
             written.append(f"{name}: {len(rows)} rows")

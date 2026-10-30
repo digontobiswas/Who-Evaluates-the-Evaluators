@@ -1,0 +1,19 @@
+# Population B in BridgeSim (closed loop, 421 NavHard scenarios): the public navsim_baselines
+# checkpoints, TransFuser / LTF / Ego Status MLP x seeds 0-2, undegraded. Used for agreement
+# between evaluators on natural policy differences (no known order).
+#
+#   OVERRIDES="policy.family=ego_status_mlp policy.seed=2"
+#
+# TransFuser and LTF seed 0 are the Population A clean runs; scripts/submit_population_b.sh links
+# them into runs/bridgesim/B/ instead of running them again.
+
+extends:
+  - stage1_bridgesim_navhard.yaml
+
+experiment:
+  name: popB_bridgesim_${policy.id}
+  out_dir: ${paths.exp}/runs/bridgesim/B/${policy.id}
+  export_dir: ${paths.repo}/results/popB_bridgesim/${policy.id}
+
+run_parallel: 6               # as Population A: one job per run on one V100
+compare_with_reference: false # the leaderboard reports seed 0 only

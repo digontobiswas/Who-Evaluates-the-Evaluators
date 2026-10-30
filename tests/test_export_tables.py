@@ -57,3 +57,20 @@ def test_population_a_bridgesim_table(tmp_path):
     X.main(["--results", str(res), "--out", str(tmp_path / "tables")])
     t = pd.read_csv(tmp_path / "tables" / "popA_bridgesim_navhard.csv")
     assert list(t.degradation) == ["none", "latency"] and list(t.level) == [0, 2]
+
+
+def test_population_b_tables_include_reused_seed0(tmp_path):
+    res = tmp_path / "results"
+    nav = {"result": {"pdms": 83.0, "score_sem": 0.003, "num_valid": 12146, "num_expected": 12146,
+                      "complete": True, "mean": {}}, "open_loop": {"mean_ade": 0.7, "mean_l2_1s": 0.12}}
+    _write(res / "popA" / "ltf_seed0" / "none__L0" / "summary.json", {"policy": "ltf_seed0", "degradation": {"name": "none", "level": 0}, **nav})
+    _write(res / "popB" / "ego_status_mlp_seed1" / "summary.json", {"policy": "ego_status_mlp_seed1", **nav})
+    bs = {"result": {"epdms": 60.0, "ds": 40.0, "rc": 66.0, "num_scored": 421, "num_expected": 421,
+                     "complete": True, "mean": {}}}
+    _write(res / "popA_bridgesim" / "transfuser_seed0" / "none__L0" / "summary.json", {"policy": "transfuser_seed0", "degradation": {"name": "none", "level": 0}, **bs})
+    _write(res / "popB_bridgesim" / "ltf_seed2" / "summary.json", {"policy": "ltf_seed2", **bs})
+    X.main(["--results", str(res), "--out", str(tmp_path / "tables")])
+    nb = pd.read_csv(tmp_path / "tables" / "popB_navsim_navtest.csv")
+    bb = pd.read_csv(tmp_path / "tables" / "popB_bridgesim_navhard.csv")
+    assert nb.policy.tolist() == ["ego_status_mlp_seed1", "ltf_seed0"]
+    assert bb.policy.tolist() == ["ltf_seed2", "transfuser_seed0"]

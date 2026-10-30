@@ -1,0 +1,26 @@
+# Population B on NAVSIM v1 (navtest, PDMS): ltf, one seed per job, undegraded but run
+# through the DegradedAgent wrapper so that its plans (open-loop L2) are logged.
+#
+#   OVERRIDES="policy.seed=1"
+#
+# Seed 0 of TransFuser and LTF is the Population A clean run, linked by
+# scripts/submit_population_b.sh. Needs the full navtest metric cache (stage 1).
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v1_pdms.yaml
+  - ../policies/ltf.yaml
+
+experiment:
+  name: popB_${policy.id}_navtest
+  # Layout read by `python -m wete.collect`: runs/<evaluator>/B/<policy>
+  out_dir: ${paths.exp}/runs/navsim_v1/B/${policy.id}
+  export_dir: ${paths.repo}/results/popB/${policy.id}
+
+scenarios:
+  mode: full
+
+degradation:
+  name: none
+  level: 0
+  wrap: true
