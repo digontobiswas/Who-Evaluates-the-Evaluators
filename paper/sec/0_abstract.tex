@@ -1,0 +1,19 @@
+\begin{abstract}
+End-to-end driving policies are ranked almost exclusively by proxy evaluators---open-loop
+displacement, non-reactive pseudo-simulation, two-stage pseudo-simulation---whose ability to rank
+policies correctly has never been tested against a known answer.
+We build that answer by construction: graded degradations of pretrained policies whose quality must
+fall with the degradation level, admitted as ground truth only if a closed-loop reference
+evaluator confirms the ordering on a held-out half of the scenarios.
+We add the converse test that rankings need and degradations alone cannot provide: \emph{benign}
+perturbations that change the plan but not what a replanning vehicle executes, which a correct
+evaluator must not penalise.
+Running one policy population through five evaluators on shared scenarios, we find that
+(i)~of six degradation families only \num{RetainedCount} survive validation, so most popular
+perturbations do not yield a usable ground truth even in closed loop;
+(ii)~NAVSIM penalises changes to the never-executed part of a plan by up to \num{SpecMaxRatioNavsimV1}
+of the penalty for the matching harmful change, while the closed-loop reference does not move;
+and (iii)~on identical scenes the open-loop scores and closed loop disagree on which real
+policies are better, a disagreement far above the closed-loop test-retest ceiling.
+We release the harness, all per-scenario scores and the statistical protocol.
+\end{abstract}

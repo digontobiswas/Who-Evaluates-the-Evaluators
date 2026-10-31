@@ -1,0 +1,27 @@
+\section{Discussion and limitations}
+\label{sec:discussion}
+
+\paragraph{The reference is a simulator.}
+BridgeSim renders camera input in MetaDrive, so camera-based policies face a domain gap that the
+blind Ego Status MLP does not.
+Our ground-truth families are therefore restricted to orderings that BridgeSim confirms with
+confidence, and the policy-level comparisons are reported as disagreement between evaluators, not
+as proof that one evaluator is wrong.
+Our TransFuser reproduction in BridgeSim lies below the published EPDMS for all three seeds while
+LTF matches; we report this gap rather than tuning the protocol to close it.
+
+\paragraph{Specificity depends on the controller.}
+The benign perturbations are benign for a controller that replans every $0.5$\,s and tracks the first
+seconds of a plan.
+For a system that executes longer horizons, the tail of a plan matters; the test should then be
+re-derived from that system's controller.
+
+\paragraph{What we could not run.}
+A generative world model that is both multi-camera and action-conditioned for NAVSIM policies is not
+openly available at the memory of our GPUs, and HUGSIM requires compiled extensions our cluster does
+not allow; both evaluator families are left to future work.
+The reference score (DS rather than EPDMS) was chosen after observing that EPDMS rewards a policy for
+driving less; we report both.
+
+\section{Conclusion}
+\TODO{After the final analysis.}

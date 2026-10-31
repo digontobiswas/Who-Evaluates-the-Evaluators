@@ -1,0 +1,27 @@
+\section{Experimental setup}
+\label{sec:setup}
+
+\paragraph{Policies.}
+We use the public NAVSIM baselines: TransFuser~\cite{chitta2023transfuser} (cameras and LiDAR),
+Latent TransFuser (LTF, cameras only) and the Ego Status MLP (no sensors), three training seeds each.
+Degradations are applied to TransFuser and LTF, seed~0 for all families and seeds~1--2 for latency
+and lateral noise (replication).
+
+\paragraph{Evaluators and scenarios.}
+\emph{Open-loop L2} is the average displacement of the plan from the logged trajectory on navtest.
+\emph{NAVSIM v1} is the PDM Score on navtest (\num{NavtestScenarios} scenarios).
+\emph{NAVSIM v2} is the extended PDM Score in one stage on navtest, and the two-stage
+pseudo-simulation on navhard (combined score); its synthetic scenes contain no LiDAR, so TransFuser
+cannot be evaluated there.
+\emph{BridgeSim}~\cite{zhao2026bridgesim} is our closed-loop reference $E^\star$: the \num{NavhardScenarios}
+NavHard scenarios converted to MetaDrive~\cite{li2022metadrive}, run with the leaderboard protocol
+(log-replay traffic, pure-pursuit control, replanning every $0.5$\,s, 8\,s of evaluation).
+Its EPDMS column omits ego progress, so a policy that drives less scores higher; we use its driving
+score DS (EPDMS without ego progress times route completion) and report EPDMS as a sensitivity check.
+\num{SharedScenarios} NavHard scenarios are also navtest scenarios; all cross-evaluator comparisons
+of individual scenarios use this shared set.
+
+\paragraph{Implementation.}
+All evaluators run unmodified at pinned commits; policies are wrapped, never retrained.
+Each run writes per-scenario scores; every number in this paper is computed from those files with
+$B=1000$ bootstrap resamples.

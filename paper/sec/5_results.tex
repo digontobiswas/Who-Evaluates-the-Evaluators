@@ -1,0 +1,48 @@
+\section{Results}
+\label{sec:results}
+
+\newcommand{\maybetable}[1]{\IfFileExists{tables/#1.tex}{\input{tables/#1}}{\TODO{table #1}}}
+
+\begin{table}[t]
+\centering\small
+\caption{Degradation families and their parameters at levels 1--3 (level 0 is the unmodified policy).
+Latency is in replanning steps of $0.5$\,s; single-shot evaluators cap it at three steps.}
+\label{tab:degradations}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Family & Parameter & L1 & L2 & L3 \\
+\midrule
+Camera dropout & cameras blanked & 1 & 2 & 4 \\
+Image noise & $\sigma$ (pixel value) & 10 & 25 & 50 \\
+Stale observation & age (s) & 0.5 & 1.0 & 1.5 \\
+Lateral noise & peak drift (m) & 0.3 & 0.8 & 1.5 \\
+Late braking & path stretch & 0.15 & 0.40 & 0.70 \\
+Latency & steps & 1 & 2 & 4 (NAVSIM: 3) \\
+\midrule
+Tail lateral (benign) & peak drift (m) & 0.3 & 0.8 & 1.5 \\
+Tail stretch (benign) & path stretch & 0.15 & 0.40 & 0.70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Which degradations give a ground truth?}
+\label{sec:results:mono}
+\maybetable{monotonicity}
+\TODO{Text from the split analysis: retained families on the selection half, and the all-scenario
+analysis as a sensitivity check.}
+
+\subsection{Do evaluators recover the known order?}
+\label{sec:results:order}
+\maybetable{ordering}
+\TODO{Ordering recovery and sample efficiency per evaluator on the evaluation half; H1.}
+
+\subsection{Specificity}
+\label{sec:results:spec}
+\maybetable{specificity}
+\TODO{Benign validation on the reference; verdicts per evaluator.}
+
+\subsection{Ranking real policies}
+\label{sec:results:popB}
+\maybetable{popB}
+\TODO{Family contrasts on the shared scenes; agreement; per-scenario correlation against the
+test-retest ceiling.}

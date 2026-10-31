@@ -1,0 +1,30 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Open-loop evaluation.}
+Codevilla~\etal~\cite{codevilla2018offline} showed that offline metrics of vision-based driving
+models correlate weakly with driving quality.
+For end-to-end planning on nuScenes, an MLP on ego status alone matches camera-based planners on
+displacement metrics~\cite{zhai2023admlp,li2024egostatus}, which shows that displacement can be
+optimised without perception.
+
+\paragraph{Pseudo-simulation.}
+NAVSIM~\cite{dauner2024navsim} scores a planned trajectory by simulating it for four seconds
+against a non-reactive world with the PDM Score~\cite{dauner2023pdm} built on nuPlan~\cite{caesar2021nuplan}.
+Its second version~\cite{cao2025pseudosim} adds a second stage of synthetic scenes near where the
+first plan leads and reports high agreement with closed-loop results.
+On non-reactive navtest, even the choice of waypoint controller is rewarded for fitting the fixed
+future~\cite{rodriguez2026waypoint}.
+
+\paragraph{Closed-loop evaluation.}
+Bench2Drive~\cite{jia2024bench2drive} evaluates CARLA-trained policies over fixed routes; HUGSIM~\cite{zhou2024hugsim}
+replays reconstructed real scenes; BridgeSim~\cite{zhao2026bridgesim} converts NAVSIM scenes into
+MetaDrive~\cite{li2022metadrive} and runs NAVSIM-trained checkpoints in closed loop.
+BridgeSim documents an open-loop/closed-loop gap for policies; we use it as a reference to test
+evaluators.
+
+\paragraph{Evaluating evaluators.}
+Wang~\etal~\cite{wang2026olcl} correlate NAVSIM and Bench2Drive scores of eight published methods.
+In robot manipulation, SIMPLER~\cite{li2024simpler} measures whether simulated scores preserve real
+policy rankings, introducing the mean maximum rank violation we also report.
+None of these has a known ordering of policies; ours does, by construction.

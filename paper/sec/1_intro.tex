@@ -1,0 +1,52 @@
+\section{Introduction}
+\label{sec:intro}
+
+Progress in end-to-end autonomous driving is measured by benchmarks.
+Real-world closed-loop testing is unavailable at research scale, so policies are ranked by proxy
+evaluators: displacement from a logged human trajectory~\cite{zhai2023admlp,li2024egostatus},
+non-reactive pseudo-simulation such as NAVSIM~\cite{dauner2024navsim}, two-stage
+pseudo-simulation~\cite{cao2025pseudosim}, and closed-loop simulators such as
+CARLA-based Bench2Drive~\cite{jia2024bench2drive} or BridgeSim~\cite{zhao2026bridgesim}.
+Papers routinely report gains of one or two points on these scores.
+Whether such a gain means better driving depends on a property of the evaluator that is rarely
+measured: does it rank policies in their true order?
+
+Existing studies answer a weaker question.
+They correlate the published numbers of a handful of methods across benchmarks~\cite{wang2026olcl},
+or compare one proxy with one simulator~\cite{cao2025pseudosim,zhao2026bridgesim}.
+In both cases evaluator is compared with evaluator; no study has a ground truth, so a disagreement
+cannot say which side is wrong, and an agreement can be shared bias.
+
+We remove this obstacle by constructing policies whose order is known.
+A pretrained policy degraded in graded steps---its plan delayed, drifted sideways, its cameras
+blanked---must drive worse as the step grows.
+An evaluator that does not recover this order is blind to that failure.
+Two safeguards make the construction usable.
+First, the assumption ``more degradation is worse'' is itself tested: a degradation family is
+admitted only if a closed-loop reference ranks its levels with statistical confidence, and,
+to avoid circularity, this selection is made on one half of the scenarios while every evaluator,
+the reference included, is measured on the other half.
+Second, sensitivity to harmful change is not enough: an evaluator that penalises every change to the
+plan passes an ordering test while mis-ranking real policies.
+We therefore add a \emph{specificity arm} of benign perturbations---the same edits applied only to
+the part of a plan that a replanning controller never executes---which a correct evaluator must
+leave unpenalised.
+
+We apply this protocol to five evaluators that can be run on the same scenarios: open-loop average
+displacement error, NAVSIM v1 PDMS, NAVSIM v2 EPDMS in one stage and in its two-stage
+pseudo-simulation, and BridgeSim, a closed-loop simulator that runs the same checkpoints and serves
+as the reference.
+The policy population comprises TransFuser~\cite{chitta2023transfuser}, Latent TransFuser and the
+Ego Status MLP of NAVSIM, three training seeds each, with six degradation families at three levels
+and two benign families.
+
+\paragraph{Contributions.}
+\begin{itemize}
+\item A ground-truth ordering test for driving evaluators, with the ordering itself validated on
+held-out scenarios before use (\cref{sec:method}).
+\item A specificity test that separates evaluators which detect bad driving from those which
+detect any change to the plan (\cref{sec:method:spec}).
+\item A controlled study of five evaluators on shared scenarios, with paired bootstrap intervals,
+seed replication and a closed-loop test-retest ceiling (\cref{sec:results}).
+\item An open harness and all per-scenario scores.
+\end{itemize}

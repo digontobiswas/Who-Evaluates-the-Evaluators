@@ -1,0 +1,39 @@
+% CVPR 2027 submission. Template: https://github.com/cvpr-org/author-kit (a236934, 28 Oct 2026).
+% Build: cd paper && latexmk -pdf main.tex
+% Every number in the text comes from paper/numbers.tex and every table from paper/tables/*.tex,
+% both written by `python -m wete.cli.paper_numbers` from results/ (never typed by hand).
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage[review]{cvpr}
+\input{preamble}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb}
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\def\confName{CVPR}
+\def\confYear{2027}
+
+\IfFileExists{numbers.tex}{\input{numbers}}{}
+\newcommand{\num}[1]{\ifcsname wete@#1\endcsname\csname wete@#1\endcsname\else\TODO{#1}\fi}
+
+\title{Who Evaluates the Evaluators? Testing Driving Benchmarks Against a Known Ranking}
+
+\author{Anonymous authors}
+
+\begin{document}
+\maketitle
+\input{sec/0_abstract}
+\input{sec/1_intro}
+\input{sec/2_related}
+\input{sec/3_method}
+\input{sec/4_setup}
+\input{sec/5_results}
+\input{sec/6_discussion}
+{
+    \small
+    \bibliographystyle{ieeenat_fullname}
+    \bibliography{main}
+}
+\end{document}
