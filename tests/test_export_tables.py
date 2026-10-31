@@ -74,3 +74,22 @@ def test_population_b_tables_include_reused_seed0(tmp_path):
     bb = pd.read_csv(tmp_path / "tables" / "popB_bridgesim_navhard.csv")
     assert nb.policy.tolist() == ["ego_status_mlp_seed1", "ltf_seed0"]
     assert bb.policy.tolist() == ["ltf_seed2", "transfuser_seed0"]
+
+
+def test_navsim_v2_tables(tmp_path):
+    res = tmp_path / "results"
+    r1 = {"pdms": 70.0, "epdms": 70.0, "score_sem": 0.003, "num_valid": 100, "num_expected": 100, "complete": True,
+          "mean": {}}
+    r2 = {**r1, "two_stage": True, "epdms_stage_one": 80.0, "epdms_stage_two": 60.0, "num_expected": None}
+    deg = {"name": "lateral_noise", "level": 1, "value": None}
+    _write(res / "popA_navtest_v2" / "ltf_seed0" / "lateral_noise__L1" / "summary.json",
+           {"policy": "ltf_seed0", "degradation": deg, "result": r1, "open_loop": {}})
+    _write(res / "popA_navhard_v2" / "ltf_seed0" / "lateral_noise__L1" / "summary.json",
+           {"policy": "ltf_seed0", "degradation": deg, "result": r2, "open_loop": {}})
+    _write(res / "popB_navhard_v2" / "ego_status_mlp_seed1" / "summary.json",
+           {"policy": "ego_status_mlp_seed1", "result": r2, "open_loop": {}})
+    X.main(["--results", str(res), "--out", str(tmp_path / "tables")])
+    a = pd.read_csv(tmp_path / "tables" / "popA_navsim_v2_navhard.csv")
+    assert a.epdms_stage_two.tolist() == [60.0] and a.pdms.tolist() == [70.0]
+    assert pd.read_csv(tmp_path / "tables" / "popA_navsim_v2_navtest.csv").policy.tolist() == ["ltf_seed0"]
+    assert pd.read_csv(tmp_path / "tables" / "popB_navsim_v2_navhard.csv").policy.tolist() == ["ego_status_mlp_seed1"]

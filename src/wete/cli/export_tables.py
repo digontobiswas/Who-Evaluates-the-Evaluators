@@ -59,9 +59,9 @@ def stage1_rows(results: Path) -> List[Dict[str, Any]]:
     return rows
 
 
-def popa_rows(results: Path) -> List[Dict[str, Any]]:
+def popa_rows(results: Path, folder: str = "popA") -> List[Dict[str, Any]]:
     rows = []
-    for path in sorted(results.glob("popA/*/*/summary.json")):
+    for path in sorted(results.glob(f"{folder}/*/*/summary.json")):
         s = _load(path)
         r, d, ol = s["result"], s["degradation"], s.get("open_loop") or {}
         rows.append({
@@ -72,6 +72,8 @@ def popa_rows(results: Path) -> List[Dict[str, Any]]:
             "parameter": d.get("value"),
             "pdms": r["pdms"],
             "pdms_sem": 100 * r["score_sem"] if r.get("score_sem") is not None else None,
+            **({"epdms_stage_one": r.get("epdms_stage_one"), "epdms_stage_two": r.get("epdms_stage_two")}
+               if r.get("two_stage") else {}),
             "num_valid": r["num_valid"],
             "num_expected": r["num_expected"],
             "complete": r["complete"],
@@ -146,9 +148,9 @@ def popa_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
 POPB_REUSED = ("transfuser_seed0", "ltf_seed0")
 
 
-def popb_navsim_rows(results: Path) -> List[Dict[str, Any]]:
-    paths = sorted(results.glob("popB/*/summary.json"))
-    paths += [results / "popA" / p / "none__L0" / "summary.json" for p in POPB_REUSED]
+def popb_navsim_rows(results: Path, suffix: str = "") -> List[Dict[str, Any]]:
+    paths = sorted(results.glob(f"popB{suffix}/*/summary.json"))
+    paths += [results / f"popA{suffix}" / p / "none__L0" / "summary.json" for p in POPB_REUSED]
     rows = []
     for path in paths:
         if not path.exists():
@@ -224,6 +226,16 @@ popB_navsim_navtest.csv, popB_bridgesim_navhard.csv
   0-2), undegraded, on NAVSIM v1 navtest (PDMS and open-loop L2) and in BridgeSim NavHard (EPDMS,
   DS, RC). TransFuser and LTF seed 0 are the Population A clean runs (same numbers).
 
+popA_navsim_v2_navtest.csv, popB_navsim_v2_navtest.csv
+  The same populations scored by NAVSIM v2 EPDMS, one stage, on navtest (column pdms holds EPDMS).
+
+popA_navsim_v2_navhard.csv, popB_navsim_v2_navhard.csv
+  NAVSIM v2 two-stage pseudo-simulation on navhard_two_stage: pdms holds the devkit's combined
+  EPDMS, with stage one and stage two separately. Latent TransFuser and Ego Status MLP only: the
+  synthetic scenes have no LiDAR, which TransFuser needs.
+
+The NAVSIM v1 tables are unchanged; v1 and v2 are separate evaluators, reported side by side.
+
 Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
 lateral_noise / late_braking only beyond the first 1.5 s and 10 m of the plan (the part BridgeSim's
 replanning controller never executes). A correct closed-loop score should not move under them.
@@ -246,7 +258,11 @@ def main(argv: Optional[List[str]] = None) -> int:
                        ("bridgesim_navhard.csv", bridgesim_rows(results)),
                        ("popA_bridgesim_navhard.csv", popa_bridgesim_rows(results)),
                        ("popB_navsim_navtest.csv", popb_navsim_rows(results)),
-                       ("popB_bridgesim_navhard.csv", popb_bridgesim_rows(results))):
+                       ("popB_bridgesim_navhard.csv", popb_bridgesim_rows(results)),
+                       ("popA_navsim_v2_navtest.csv", popa_rows(results, "popA_navtest_v2")),
+                       ("popB_navsim_v2_navtest.csv", popb_navsim_rows(results, "_navtest_v2")),
+                       ("popA_navsim_v2_navhard.csv", popa_rows(results, "popA_navhard_v2")),
+                       ("popB_navsim_v2_navhard.csv", popb_navsim_rows(results, "_navhard_v2"))):
         if rows:
             pd.DataFrame(rows).to_csv(out / name, index=False, float_format="%.4f")
             written.append(f"{name}: {len(rows)} rows")
