@@ -1,0 +1,29 @@
+# Population A wrapper around DiffusionDrive for the NAVSIM v1.1 devkit. base_agent mirrors
+# DiffusionDrive's own config/common/agent/diffusiondrive_agent.yaml at 9b52ed0; the agent code is
+# linked into the devkit as navsim.agents.diffusiondrive by scripts/setup_diffusiondrive.sh.
+# plan_anchor_path is set by the policy config (configs/policies/diffusiondrive.yaml).
+_target_: wete.navsim.degraded_agent.DegradedAgent
+_convert_: 'all'
+
+degradation: none
+level: 0
+value: null
+used_cameras: null
+log_dir: ${output_dir}/plans
+also_drop_lidar: false
+stale_ego_status: false
+
+base_agent:
+  _target_: navsim.agents.diffusiondrive.transfuser_agent.TransfuserAgent
+  _convert_: 'all'
+  config:
+    _target_: navsim.agents.diffusiondrive.transfuser_config.TransfuserConfig
+    _convert_: 'all'
+    trajectory_sampling:
+      _target_: nuplan.planning.simulation.trajectory.trajectory_sampling.TrajectorySampling
+      _convert_: 'all'
+      time_horizon: 4
+      interval_length: 0.5
+    latent: False
+  checkpoint_path: null
+  lr: 6e-4

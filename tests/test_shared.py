@@ -103,3 +103,30 @@ def test_analysis_split_keeps_halves_apart(tmp_path):
     assert rep["monotonicity"]["on"] == "selection half"
     m = pd.read_csv(tmp_path / "discriminative_matrix.csv")
     assert (m.n_scenarios[m.evaluator == "bridgesim"] == sp["bridgesim"]["evaluation"]).all()
+
+
+def test_selection_bases_hold_out_a_base(tmp_path):
+    """Degradations are validated on the named bases only; a held-out base that would fail the
+    test does not remove the family, but it is still measured."""
+    from wete import analysis as A
+    t = table()
+    extra = t[(t.base == "tf_seed0")].copy()
+    extra["base"] = "dd_seed0"
+    flip = (extra.evaluator == "bridgesim") & (extra.degradation == "lateral_noise")
+    extra.loc[flip, "score"] += 0.5                       # held-out base gets better with noise
+    t = pd.concat([t, extra])
+    rep_all = A.run(t, META, str(tmp_path / "all"), cfg={"B": 50})
+    rep_sel = A.run(t, META, str(tmp_path / "sel"), cfg={"B": 50, "selection_bases": ["tf_"]})
+    assert "lateral_noise" in rep_all["monotonicity"]["discarded"]
+    assert "lateral_noise" in rep_sel["monotonicity"]["retained"]
+    m = pd.read_csv(tmp_path / "sel" / "discriminative_matrix.csv")
+    assert (m[(m.evaluator == "bridgesim") & (m.degradation == "lateral_noise")].n_bases == 2).all()
+
+
+def test_seed_torch_is_deterministic():
+    torch = pytest.importorskip("torch")
+    from wete import degradations as D
+    D.seed_torch("sd_x|25"); a = torch.randn(3)
+    D.seed_torch("sd_x|25"); b = torch.randn(3)
+    D.seed_torch("sd_x|30"); c = torch.randn(3)
+    assert torch.equal(a, b) and not torch.equal(a, c)

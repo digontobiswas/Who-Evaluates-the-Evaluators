@@ -128,7 +128,10 @@ def _run_one(cfg: Dict[str, Any], scenario: str) -> Dict[str, Any]:
     command = bridgesim.evaluator_command(
         ev["root"], bridgesim.MODEL_TYPES[policy["family"]], Path(policy["checkpoint"]),
         Path(cfg["scenarios"]["dir"]) / scenario, run_dir, ev["run"],
-        extra=[str(x) for x in (cfg.get("extra_evaluator_args") or [])],
+        # policy.bridgesim_args belong to the model (e.g. DiffusionDrive's anchors), not to the
+        # protocol, so unlike extra_evaluator_args they do not disable the leaderboard comparison
+        extra=[str(x) for x in (policy.get("bridgesim_args") or [])]
+              + [str(x) for x in (cfg.get("extra_evaluator_args") or [])],
         degradation=cfg.get("degradation"),
     )
     start = time.time()

@@ -116,6 +116,16 @@ def level_param(degradation: str, level: int) -> float:
     return LEVELS[degradation][level]
 
 
+def seed_torch(key: str) -> None:
+    """Seed torch's global generator from a string key (no-op if torch is not installed)."""
+    try:
+        import torch
+    except ImportError:
+        return
+    h = hashlib.sha256(f"wete|{key}".encode()).digest()
+    torch.manual_seed(int.from_bytes(h[:8], "little") % (2 ** 63))
+
+
 def scenario_rng(scenario_id: str, degradation: str, salt: str = "") -> np.random.Generator:
     """Deterministic RNG keyed by scenario and degradation type, NOT by level."""
     h = hashlib.sha256(f"{scenario_id}|{degradation}|{salt}".encode()).digest()

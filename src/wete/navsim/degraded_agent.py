@@ -270,6 +270,7 @@ class DegradedAgent(AbstractAgent):
         if scene is None:
             raise RuntimeError("DegradedAgent needs the scene (requires_scene=True) to key its randomness")
         token = scene.scene_metadata.initial_token
+        D.seed_torch(token)
         ai = self._degrade_input(agent_input, token)
         if self.base.requires_scene:
             traj = self.base.compute_trajectory(ai, scene)

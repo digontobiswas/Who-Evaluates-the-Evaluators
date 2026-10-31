@@ -49,3 +49,31 @@ def test_summary_reports_standard_errors(tmp_path):
     rows = [{"scenario": s, **bridgesim.read_average_row(tmp_path / s)} for s in ("a", "b")]
     out = R.summarize(rows, ["a", "b"])
     assert math.isclose(out["epdms_sem"], 10.0) and math.isclose(out["ds_sem"], 10.0)
+
+
+def test_policy_args_reach_the_evaluator(tmp_path, monkeypatch):
+    """DiffusionDrive's anchors travel as policy.bridgesim_args, ahead of protocol extras."""
+    from wete.cli import bridgesim_run as BR
+    seen = {}
+
+    def fake_run(cmd, **kwargs):
+        seen["cmd"] = cmd
+
+        class P:
+            returncode = 0
+        return P()
+
+    monkeypatch.setattr(BR.subprocess, "run", fake_run)
+    cfg = {"evaluator": {"root": str(tmp_path), "run": {"traffic_mode": "log_replay", "eval_mode": "closed_loop",
+                                                        "controller": "pure_pursuit", "sim_dt": 0.1, "replan_rate": 5,
+                                                        "ego_replay_frames": 20, "eval_frames": 80}},
+           "policy": {"family": "diffusiondrive", "checkpoint": str(tmp_path / "dd"),
+                      "bridgesim_args": ["--plan-anchor-path", "/a.npy"]},
+           "experiment": {"out_dir": str(tmp_path / "out")}, "scenarios": {"dir": str(tmp_path / "sc")},
+           "extra_evaluator_args": [], "degradation": {"name": "none", "level": 0, "wrap": True},
+           "timeout_s_per_scenario": 10}
+    BR._run_one(cfg, "sd_1")
+    cmd = seen["cmd"]
+    assert cmd[cmd.index("--model-type") + 1] == "diffusiondrive"
+    assert cmd[cmd.index("--plan-anchor-path") + 1] == "/a.npy"
+    assert "wete.cli.bridgesim_degraded_eval" in cmd

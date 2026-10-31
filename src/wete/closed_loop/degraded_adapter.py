@@ -89,6 +89,9 @@ class DegradedAdapter:
 
     def prepare_input(self, images: Dict[str, np.ndarray], ego_state: Dict[str, Any],
                       scenario_data: Dict[str, Any], frame_id: int) -> Any:
+        # Stochastic policies (DiffusionDrive) draw noise at inference: seed it per scenario and
+        # frame so that levels and reruns share the draw. No effect on deterministic policies.
+        D.seed_torch(f"{self.scenario_id}|{frame_id}")
         if images:
             images = self._degrader.observe(dict(images))
         return self._base.prepare_input(images=images, ego_state=ego_state,

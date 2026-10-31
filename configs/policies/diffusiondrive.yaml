@@ -1,0 +1,36 @@
+# DiffusionDrive (Liao et al., CVPR 2025): truncated diffusion over 20 trajectory anchors on a
+# TransFuser backbone (cameras + LiDAR). One public NAVSIM checkpoint (no training seeds).
+# Weights: https://huggingface.co/hustvl/DiffusionDrive (diffusiondrive_navsim_88p1_PDMS);
+# anchors: kmeans_navsim_traj_20.npy from the repository's release DiffusionDrive_88p1_PDMS_Eval_file.
+# scripts/setup_diffusiondrive.sh fetches both and links the agent code into the v1.1 devkit.
+#
+# A held-out base: degradation families are validated on TransFuser and LTF only (analysis
+# SELECTION_BASES), DiffusionDrive tests whether their order carries over to a modern policy.
+
+policy:
+  family: diffusiondrive
+  seed: 0                                    # one public checkpoint
+  id: diffusiondrive_seed${policy.seed}
+  navsim_agent: diffusiondrive_agent
+  degraded_agent: degraded_diffusiondrive_agent
+  navsim_overrides:
+    - agent.config.plan_anchor_path=${paths.checkpoints}/diffusiondrive/kmeans_navsim_traj_20.npy
+  checkpoint: ${paths.checkpoints}/diffusiondrive/diffusiondrive_navsim_88p1_PDMS
+  plan_anchor: ${paths.checkpoints}/diffusiondrive/kmeans_navsim_traj_20.npy
+  # BridgeSim adapter arguments that belong to the model, not to the evaluation protocol.
+  bridgesim_args: ["--plan-anchor-path", "${policy.plan_anchor}"]
+
+  # SensorConfig.build_all_sensors(include=[3]): all eight cameras and the LiDAR of the current
+  # frame; the model reads the three front cameras (stitched) and the LiDAR, like TransFuser.
+  sensors:
+    cameras: [cam_f0, cam_l0, cam_l1, cam_l2, cam_r0, cam_r1, cam_r2, cam_b0]
+    used_cameras: [cam_l0, cam_f0, cam_r0]
+    lidar: true
+    history_frames: 1
+
+  reference:
+    pdms: 88.1
+    source: "DiffusionDrive README (hustvl/DiffusionDrive at 9b52ed0), navtest PDMS, with per-token CSV diffusiondrive_88p1_PDMS.csv"
+    note: >-
+      The diffusion sampler draws Gaussian noise; the wrapper seeds it per scenario token, so our
+      runs are repeatable but need not match the authors' draws token by token.

@@ -59,6 +59,10 @@ DEFAULT_CFG = {
     # SELECTION half of the scenarios; every evaluator, the reference included, is then measured
     # on the EVALUATION half only. A scenario's half is a hash of its token (BridgeSim's 'sd_'
     # prefix removed), so a scenario shared by several evaluators is in the same half for all.
+    # Bases on which degradation families (monotonicity) and benign perturbations are validated.
+    # None = all. Fixed on 31 Oct 2026, before any DiffusionDrive run: TransFuser and LTF (all
+    # seeds); DiffusionDrive is a held-out base on which validated orders are only measured.
+    "selection_bases": None,
     "split": False,
     "selection_fraction": 0.5,
     "split_salt": "wete-selection-2026-10-31",
@@ -173,6 +177,10 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
                           for e in sorted(set(dfA.evaluator))},
             "note": "monotonicity and benign validation on the selection half; everything else on the evaluation half",
         }
+    if cfg["selection_bases"]:
+        prefixes = tuple(cfg["selection_bases"])
+        dfA_sel = dfA_sel[dfA_sel.base.astype(str).str.startswith(prefixes)]
+        report["selection_bases"] = list(prefixes)
     evaluators = [e for e in meta if e in set(scores.evaluator)]
     refs = [e for e in evaluators if meta[e].get("reference")]
     if not refs and not cfg["allow_no_reference"]:
@@ -576,13 +584,16 @@ def main(argv=None):
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--no-reference", action="store_true",
                     help="provisional run without a reference evaluator (monotonicity untested)")
+    ap.add_argument("--selection-bases", default="",
+                    help="comma-separated base-name prefixes used to validate degradations, e.g. transfuser,ltf")
     ap.add_argument("--split", action="store_true",
                     help="validate degradations on a selection half of the scenarios, measure on the other half")
     a = ap.parse_args(argv)
     feats = pd.read_csv(a.features) if a.features else None
     beh = pd.read_csv(a.behavior) if a.behavior else None
     rep = run(load_table(a.scores), load_meta(a.meta), a.out, feats,
-              {"B": a.B, "seed": a.seed, "allow_no_reference": a.no_reference, "split": a.split}, beh)
+              {"B": a.B, "seed": a.seed, "allow_no_reference": a.no_reference, "split": a.split,
+               "selection_bases": [b for b in a.selection_bases.split(",") if b] or None}, beh)
     print(json.dumps({"provisional": rep.get("provisional"), "monotonicity": rep["monotonicity"],
                       "specificity": rep.get("specificity"), "hypotheses": rep["hypotheses"]},
                      indent=2, default=_json_default))

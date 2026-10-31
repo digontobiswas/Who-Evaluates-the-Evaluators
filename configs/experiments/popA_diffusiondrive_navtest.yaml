@@ -1,0 +1,21 @@
+# DiffusionDrive on NAVSIM v1 (navtest, PDMS): held-out base for Population A and a Population B
+# policy. One degradation and level per job,
+#   OVERRIDES="degradation.name=latency degradation.level=2"
+# level 0 (degradation none) is the clean run, linked into Population B. Needs
+# scripts/setup_diffusiondrive.sh (agent code, checkpoint, anchors, diffusers) and the navtest cache.
+
+extends:
+  - ../default.yaml
+  - ../evaluators/navsim_v1_pdms.yaml
+  - ../policies/diffusiondrive.yaml
+
+experiment:
+  name: popA_${policy.id}_${degradation.name}_L${degradation.level}_navtest
+  out_dir: ${paths.exp}/runs/navsim_v1/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA/${policy.id}/${degradation.name}__L${degradation.level}
+
+scenarios:
+  mode: full
+
+degradation:
+  wrap: true

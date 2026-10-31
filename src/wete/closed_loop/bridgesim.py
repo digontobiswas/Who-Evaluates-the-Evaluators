@@ -13,7 +13,8 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional
 
 # navsim_baselines family -> BridgeSim --model-type
-MODEL_TYPES = {"transfuser": "transfuser", "ltf": "ltf", "ego_status_mlp": "egomlp"}
+MODEL_TYPES = {"transfuser": "transfuser", "ltf": "ltf", "ego_status_mlp": "egomlp",
+               "diffusiondrive": "diffusiondrive"}
 
 # Columns of the AVERAGE row, in BridgeSim's order. DS = EPDMS_no_ep x RC per scenario.
 METRICS = ("NC", "DAC", "DDC", "TL", "TTC", "LK", "HC", "EC", "DS", "EPDMS_no_ep", "RC")
