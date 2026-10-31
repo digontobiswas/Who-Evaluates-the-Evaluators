@@ -1,0 +1,17 @@
+evaluator,degradation,failure_class,retained,tau,tau_lo,tau_hi,pair_acc,p_full_order,n_scenarios,n_bases
+open_l2,camera_dropout,perception,False,1.0,1.0,1.0,1.0,1.0,6084,2
+open_l2,image_noise,perception,False,1.0,1.0,1.0,1.0,0.992,6084,2
+open_l2,stale_obs,timing,False,1.0,1.0,1.0,1.0,1.0,6084,2
+open_l2,lateral_noise,control,False,1.0,1.0,1.0,1.0,1.0,6084,2
+open_l2,late_braking,control,False,1.0,1.0,1.0,1.0,1.0,6084,2
+navsim_v1,camera_dropout,perception,False,1.0,1.0,1.0,1.0,1.0,6084,2
+navsim_v1,image_noise,perception,False,1.0,0.8333333333333333,1.0,1.0,0.61,6084,2
+navsim_v1,stale_obs,timing,False,1.0,1.0,1.0,1.0,1.0,6084,2
+navsim_v1,lateral_noise,control,False,1.0,1.0,1.0,1.0,1.0,6084,2
+navsim_v1,late_braking,control,False,1.0,1.0,1.0,1.0,1.0,6084,2
+bridgesim,camera_dropout,perception,False,0.6666666666666666,0.5,0.8333333333333333,0.8333333333333334,0.017,199,2
+bridgesim,image_noise,perception,False,0.16666666666666669,-0.16666666666666669,0.33333333333333337,0.5833333333333334,0.0,199,2
+bridgesim,stale_obs,timing,False,0.5,0.16666666666666666,0.8333333333333333,0.75,0.012,199,2
+bridgesim,latency,timing,True,1.0,1.0,1.0,1.0,0.999,199,2
+bridgesim,lateral_noise,control,False,1.0,0.8333333333333333,1.0,1.0,0.697,199,2
+bridgesim,late_braking,control,False,-0.16666666666666666,-0.6666666666666666,0.16666666666666666,0.41666666666666663,0.0,199,2

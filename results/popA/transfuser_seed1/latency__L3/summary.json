@@ -1,0 +1,77 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_1.ckpt",
+    "sha256": "cea40f12ad637ae2abba0a131e57a4ef97661c9aeed50a7d9824756ee513c145",
+    "size_bytes": 672447984
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:5a27ca45ac2dba61695b3eded8f4d32c3f9554a1"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-10-30T21:59:50Z",
+  "degradation": {
+    "level": 3,
+    "name": "latency",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_transfuser_seed1_latency_L3_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn119",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1218291",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__latency@L3.plans.jsonl"
+    ],
+    "mean_ade": 1.7248547642895946,
+    "mean_fde": 3.321851415656798,
+    "mean_l2_1s": 0.7270660460395407,
+    "mean_l2_2s": 1.416891318516219,
+    "mean_l2_3s": 2.256196208268782,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "transfuser_seed1",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.7104369663739686,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9981887041001153,
+      "drivable_area_compliance": 0.8550139963774082,
+      "driving_direction_compliance": 0.9452494648443932,
+      "ego_progress": 0.682040685010804,
+      "no_at_fault_collisions": 0.9196031615346616,
+      "score": 0.7104369663739686,
+      "time_to_collision_within_bound": 0.8317964762061584
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 71.04369663739686,
+    "score_sem": 0.0035225676019846005,
+    "score_std": 0.38821827439361867
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.286691074525828,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1/A/transfuser_seed1/latency__L3/pdm_score/2026.10.31.03.29.41.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3695.5100812911987,
+    "select": 55.09863519668579
+  }
+}

@@ -1,0 +1,10 @@
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & Camera dropout$^{\ast}$ & Image noise$^{\ast}$ & Stale obs.$^{\ast}$ & Latency & Lateral noise$^{\ast}$ & Late braking$^{\ast}$ \\
+\midrule
+open\_l2 & 1.00\,{\scriptsize[1.00,1.00]} & 1.00\,{\scriptsize[1.00,1.00]} & 1.00\,{\scriptsize[1.00,1.00]} & n/a & 1.00\,{\scriptsize[1.00,1.00]} & 1.00\,{\scriptsize[1.00,1.00]} \\
+navsim\_v1 & 1.00\,{\scriptsize[1.00,1.00]} & 1.00\,{\scriptsize[0.83,1.00]} & 1.00\,{\scriptsize[1.00,1.00]} & n/a & 1.00\,{\scriptsize[1.00,1.00]} & 1.00\,{\scriptsize[1.00,1.00]} \\
+bridgesim & 0.67\,{\scriptsize[0.50,0.83]} & 0.17\,{\scriptsize[-0.17,0.33]} & 0.50\,{\scriptsize[0.17,0.83]} & 1.00\,{\scriptsize[1.00,1.00]} & 1.00\,{\scriptsize[0.83,1.00]} & -0.17\,{\scriptsize[-0.67,0.17]} \\
+\bottomrule
+\end{tabular}
+% $^{\ast}$ degradation failed the monotonicity test on the reference evaluator; shown for completeness, excluded from H1/H2 and reliability.

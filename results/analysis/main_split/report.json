@@ -1,0 +1,212 @@
+{
+  "config": {
+    "B": 1000,
+    "mono_threshold": 0.95,
+    "mono_require_all_refs": true,
+    "h_margin": 0.1,
+    "h3_auroc": 0.7,
+    "theta": 0.5,
+    "behavior_eps": 0.1,
+    "n_sub": 25,
+    "eff_grid": [
+      10,
+      25,
+      50,
+      100,
+      200,
+      400,
+      800
+    ],
+    "seed": 0,
+    "allow_no_reference": false,
+    "spec_margin": 0.01,
+    "spec_ratio": 0.25,
+    "spec_threshold": 0.95,
+    "split": true,
+    "selection_fraction": 0.5,
+    "split_salt": "wete-selection-2026-10-31"
+  },
+  "split": {
+    "selection_fraction": 0.5,
+    "salt": "wete-selection-2026-10-31",
+    "scenarios": {
+      "bridgesim": {
+        "selection": 222,
+        "evaluation": 199
+      },
+      "navsim_v1": {
+        "selection": 6062,
+        "evaluation": 6084
+      },
+      "open_l2": {
+        "selection": 6062,
+        "evaluation": 6084
+      }
+    },
+    "note": "monotonicity and benign validation on the selection half; everything else on the evaluation half"
+  },
+  "monotonicity": {
+    "tested": true,
+    "references": [
+      "bridgesim"
+    ],
+    "retained": [
+      "latency"
+    ],
+    "discarded": [
+      "camera_dropout",
+      "image_noise",
+      "stale_obs",
+      "lateral_noise",
+      "late_braking"
+    ],
+    "on": "selection half"
+  },
+  "sample_efficiency": {
+    "open_l2": {},
+    "navsim_v1": {},
+    "bridgesim": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.7833333333333334,
+            "p_full_order": 0.37
+          },
+          "25": {
+            "tau": 0.935,
+            "p_full_order": 0.735
+          },
+          "50": {
+            "tau": 0.9883333333333334,
+            "p_full_order": 0.93
+          },
+          "100": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 50
+      }
+    }
+  },
+  "specificity": {
+    "margin": 0.01,
+    "ratio": 0.25,
+    "threshold": 0.95,
+    "validated": {
+      "tail_lateral": false,
+      "tail_stretch": false
+    },
+    "verdicts": {
+      "bridgesim": {
+        "tail_lateral": {
+          "verdict": "specific",
+          "validated_on_reference": false,
+          "max_ratio": 0.16738042470470255
+        },
+        "tail_stretch": {
+          "verdict": "specific",
+          "validated_on_reference": false,
+          "max_ratio": 0.1767151629778454
+        }
+      },
+      "navsim_v1": {
+        "tail_lateral": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.6320668793309268
+        },
+        "tail_stretch": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.505567900079621
+        }
+      },
+      "open_l2": {
+        "tail_lateral": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.29518413858895415
+        },
+        "tail_stretch": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.2581197104153595
+        }
+      }
+    },
+    "validated_on": "selection half"
+  },
+  "agreement": {
+    "B": {
+      "policies": [
+        "ego_status_mlp_seed0",
+        "ego_status_mlp_seed1",
+        "ego_status_mlp_seed2",
+        "ltf_seed0",
+        "ltf_seed1",
+        "ltf_seed2",
+        "transfuser_seed0",
+        "transfuser_seed1",
+        "transfuser_seed2"
+      ],
+      "pairs": {
+        "open_l2|navsim_v1": {
+          "tau": 0.7222222222222222,
+          "tau_ci": [
+            0.5555555555555556,
+            0.8333333333333334
+          ],
+          "rho": 0.8499999999999999,
+          "rho_ci": [
+            0.7166666666666667,
+            0.9333333333333332
+          ],
+          "tau_perm_p": 0.003249837508124594
+        },
+        "open_l2|bridgesim": {
+          "tau": -0.3333333333333333,
+          "tau_ci": [
+            -0.3888888888888889,
+            -0.05555555555555555
+          ],
+          "rho": -0.48333333333333334,
+          "rho_ci": [
+            -0.5166666666666667,
+            -0.11666666666666665
+          ],
+          "tau_perm_p": 0.9071046447677616
+        },
+        "navsim_v1|bridgesim": {
+          "tau": -0.16666666666666666,
+          "tau_ci": [
+            -0.2777777777777778,
+            0.16666666666666666
+          ],
+          "rho": -0.26666666666666666,
+          "rho_ci": [
+            -0.38333333333333336,
+            0.15
+          ],
+          "tau_perm_p": 0.7614619269036548
+        },
+        "MMRV|open_l2": {
+          "mmrv": 0.09199977038796517,
+          "mmrv_ci": [
+            0.0783320227038795,
+            0.1110856835510688
+          ]
+        },
+        "MMRV|navsim_v1": {
+          "mmrv": 0.09199977038796517,
+          "mmrv_ci": [
+            0.06594613335972513,
+            0.10805153985220387
+          ]
+        }
+      }
+    }
+  },
+  "reliability": {},
+  "hypotheses": {}
+}
