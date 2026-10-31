@@ -7,7 +7,7 @@
 #    $WETE_THIRD_PARTY/diffusiondrive and links its agent package into the NAVSIM v1.1 devkit as
 #    navsim/agents/diffusiondrive. Nothing of the devkit itself is changed: the link is an extra,
 #    untracked directory, and DiffusionDrive's own navsim copy equals v1.1 apart from line endings.
-# 2. Installs diffusers 0.35.2 (the only missing dependency; DDIMScheduler) into the NAVSIM and the
+# 2. Installs diffusers 0.35.2 and einops 0.8.1 (the only missing dependencies) into the NAVSIM and the
 #    BridgeSim venvs with --no-deps, so no pinned package changes. Checked against the pins:
 #    huggingface-hub 1.8.0, torch 2.0.1, Python 3.9.
 # 3. Downloads the checkpoint, the 20 trajectory anchors and the authors' per-token navtest scores
@@ -45,12 +45,18 @@ fi
 
 # ---- 2. diffusers --------------------------------------------------------------------------------
 for venv in "$WETE_VENV" "$WETE_BRIDGESIM_VENV"; do
-    if "$venv/bin/python" -c "import diffusers" 2>/dev/null; then
-        log "diffusers present in $venv"
-    else
-        log "installing diffusers 0.35.2 (--no-deps) into $venv"
-        "$venv/bin/python" -m pip install --quiet --no-deps "diffusers==0.35.2"
-    fi
+    # The agent code imports exactly two packages the pinned venvs lack (checked by parsing every
+    # import of both copies of the agent, 31 Oct 2026): diffusers (DDIMScheduler) and einops.
+    # ipdb appears only in commented-out or training-time debug calls and is not needed.
+    for pkg in "diffusers==0.35.2" "einops==0.8.1"; do
+        mod="${pkg%%==*}"
+        if "$venv/bin/python" -c "import $mod" 2>/dev/null; then
+            log "$mod present in $venv"
+        else
+            log "installing $pkg (--no-deps) into $venv"
+            "$venv/bin/python" -m pip install --quiet --no-deps "$pkg"
+        fi
+    done
 done
 
 # ---- 3. weights ----------------------------------------------------------------------------------
