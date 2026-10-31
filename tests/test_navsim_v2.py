@@ -87,3 +87,27 @@ def test_v2_experiment_configs_resolve(monkeypatch, name, ov, out):
     assert cfg["degradation"]["wrap"] is True
     if "navhard" in name:
         assert cfg["evaluator"]["two_stage"] and cfg["evaluator"]["synthetic_scenes_path"] == "/os/navhard_two_stage/synthetic_scene_pickles"
+
+
+@pytest.mark.parametrize("version", ["v1", "v2"])
+@pytest.mark.parametrize("family", ["transfuser", "ltf", "ego_status_mlp", "diffusiondrive"])
+def test_policy_overrides_fit_the_wrapper_config(monkeypatch, tmp_path, version, family):
+    """Hydra refuses overrides of undeclared keys (DiffusionDrive jobs 1218831-55 failed on this):
+    every override a job sends must exist in the wrapper's agent config."""
+    from omegaconf import OmegaConf
+    if version == "v2" and family == "diffusiondrive":
+        pytest.skip("DiffusionDrive is run on NAVSIM v1 only")
+    for k, v in {"WETE_REPO": "/r", "WETE_ROOT": "/w", "WETE_DATA_ROOT": "/d", "WETE_EXP_ROOT": "/x",
+                 "WETE_CKPT_ROOT": "/ck", "WETE_THIRD_PARTY": "/tp", "OPENSCENE_DATA_ROOT": "/os",
+                 "NUPLAN_MAPS_ROOT": "/m"}.items():
+        monkeypatch.setenv(k, v)
+    exp = tmp_path / "exp.yaml"
+    exp.write_text(f"extends:\n  - {ROOT}/configs/default.yaml\n  - {ROOT}/configs/policies/{family}.yaml\n")
+    pol = config_lib.resolve(config_lib.load_config(exp))["policy"]
+    agent_file = ROOT / "configs" / "navsim_hydra" / version / "agent" / f"{pol['degraded_agent']}.yaml"
+    cfg = OmegaConf.create({"agent": OmegaConf.load(agent_file), "output_dir": "/o"})
+    OmegaConf.set_struct(cfg, True)
+    overrides = K.rebase_agent_overrides(pol.get("navsim_overrides") or []) + K.wrapper_overrides(
+        {"name": "latency", "level": 2}, pol["sensors"].get("used_cameras"))
+    overrides.append(f"{K.WRAPPER_CHECKPOINT_KEY}=/ck/model.ckpt")
+    cfg.merge_with_dotlist([o.replace('"', "") for o in overrides])

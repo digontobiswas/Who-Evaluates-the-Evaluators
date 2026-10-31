@@ -4,6 +4,8 @@
 # evaluator, 26 jobs). The clean runs are linked into Population B.
 #
 #     bash scripts/submit_diffusiondrive.sh [--dry-run]
+#     ONLY=navsim bash scripts/submit_diffusiondrive.sh     # just the 13 NAVSIM v1 jobs
+#     ONLY=bridgesim bash scripts/submit_diffusiondrive.sh  # just the 13 BridgeSim jobs
 #
 # DiffusionDrive is a held-out base: run the final analysis with SELECTION_BASES=transfuser,ltf so
 # that degradation families stay validated on the pre-registered bases only.
@@ -28,14 +30,19 @@ for deg in lateral_noise latency tail_lateral tail_stretch; do
 done
 for spec in "${specs[@]}"; do
     set -- $spec
-    # NAVSIM v1 on CPU: the diffusion decoder is slower than TransFuser, so allow 12 h.
-    bash "$SCRIPT_DIR/submit.sh" ${DRY[@]+"${DRY[@]}"} cpu jobs/navsim_v1_pdms.sbatch \
-        CONFIG=configs/experiments/popA_diffusiondrive_navtest.yaml "STAGES=select,score,report" \
-        "OVERRIDES=degradation.name=$1 degradation.level=$2" -- --time=12:00:00
-    bash "$SCRIPT_DIR/submit.sh" ${DRY[@]+"${DRY[@]}"} gpu jobs/bridgesim.sbatch ACTION=evaluate \
-        CONFIG=configs/experiments/popA_bridgesim_diffusiondrive.yaml \
-        "OVERRIDES=degradation.name=$1 degradation.level=$2" -- --time=06:00:00
-    count=$((count + 2))
+    if [ "${ONLY:-}" != bridgesim ]; then
+        # NAVSIM v1 on CPU: the diffusion decoder is slower than TransFuser, so allow 12 h.
+        bash "$SCRIPT_DIR/submit.sh" ${DRY[@]+"${DRY[@]}"} cpu jobs/navsim_v1_pdms.sbatch \
+            CONFIG=configs/experiments/popA_diffusiondrive_navtest.yaml "STAGES=select,score,report" \
+            "OVERRIDES=degradation.name=$1 degradation.level=$2" -- --time=12:00:00
+        count=$((count + 1))
+    fi
+    if [ "${ONLY:-}" != navsim ]; then
+        bash "$SCRIPT_DIR/submit.sh" ${DRY[@]+"${DRY[@]}"} gpu jobs/bridgesim.sbatch ACTION=evaluate \
+            CONFIG=configs/experiments/popA_bridgesim_diffusiondrive.yaml \
+            "OVERRIDES=degradation.name=$1 degradation.level=$2" -- --time=06:00:00
+        count=$((count + 1))
+    fi
 done
 
 for ev in navsim_v1 bridgesim; do

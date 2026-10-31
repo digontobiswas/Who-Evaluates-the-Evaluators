@@ -1,8 +1,8 @@
 #!/bin/bash
 # Replication in NAVSIM v2 (senior's point 4, applied to v2): seeds 1-2 of the Population A bases for
 # the degradations that matter (lateral_noise and latency, L1-3), as already done for NAVSIM v1 and
-# BridgeSim (scripts/submit_review_fixes.sh). Submit after scripts/submit_navsim_v2.sh has finished:
-# the clean runs of seeds 1-2 are its Population B runs, linked into runs/<evaluator>/A/.
+# BridgeSim (scripts/submit_review_fixes.sh). The clean runs of seeds 1-2 are the Population B runs of
+# scripts/submit_navsim_v2.sh, linked into runs/<evaluator>/A/ (they may still be running).
 #
 #     bash scripts/submit_navsim_v2_seeds.sh [--dry-run] <navtest|navhard>
 #
@@ -28,10 +28,8 @@ for fam in "${FAMS[@]}"; do
     for seed in 1 2; do
         id="${fam}_seed${seed}"
         src="$RUNS/$EV/B/$id" dst="$RUNS/$EV/A/$id/none__L0"
-        if [ ! -f "$src/summary.json" ]; then
-            echo "[v2-seeds] ERROR: $src has no summary.json; wait for scripts/submit_navsim_v2.sh $SPLIT to finish" >&2
-            exit 1
-        fi
+        # The seed jobs do not need the clean run; the link is only read by the analysis, and may
+        # point at a Population B run that is still queued.
         if [ -e "$dst" ]; then echo "[v2-seeds] exists: $dst"
         elif [ ${#DRY[@]} -gt 0 ]; then echo "[v2-seeds] would link $dst -> $src"
         else mkdir -p "$RUNS/$EV/A/$id" && ln -s "$src" "$dst" && echo "[v2-seeds] linked $dst -> $src"; fi

@@ -145,7 +145,7 @@ def popa_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
 
 
 # Population B reuses the Population A clean runs of these policies (linked, not rerun).
-POPB_REUSED = ("transfuser_seed0", "ltf_seed0")
+POPB_REUSED = ("transfuser_seed0", "ltf_seed0", "diffusiondrive_seed0")
 
 
 def popb_navsim_rows(results: Path, suffix: str = "") -> List[Dict[str, Any]]:

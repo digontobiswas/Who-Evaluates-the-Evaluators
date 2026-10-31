@@ -12,6 +12,7 @@
 #   NAME  analysis whose scores.csv is used ($WETE_EXP_ROOT/analysis/$NAME/scores.csv)
 #   META  evaluator meta file (default: configs/meta.bridgesim.json)
 #   B     bootstrap resamples (default 1000)
+#   TAG   optional suffix for the output folder (shared_<TAG>), e.g. when run with another META
 
 set -euo pipefail
 
@@ -25,8 +26,8 @@ wete_activate
 export PYTHONPATH="$WETE_REPO/src"
 
 SCORES="$WETE_EXP_ROOT/analysis/$NAME/scores.csv"
-OUT="$WETE_EXP_ROOT/analysis/$NAME/shared"
-EXPORT="$WETE_REPO/results/analysis/$NAME/shared"
+OUT="$WETE_EXP_ROOT/analysis/$NAME/shared${TAG:+_$TAG}"
+EXPORT="$WETE_REPO/results/analysis/$NAME/shared${TAG:+_$TAG}"
 META_PATH="${META:-configs/meta.bridgesim.json}"
 case "$META_PATH" in /*) ;; *) META_PATH="$WETE_REPO/$META_PATH" ;; esac
 

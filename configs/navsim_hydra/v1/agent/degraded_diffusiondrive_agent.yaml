@@ -25,5 +25,9 @@ base_agent:
       time_horizon: 4
       interval_length: 0.5
     latent: False
+    # Declared here so that the policy config can set it (Hydra refuses to override keys that are
+    # not in the config). The default inside DiffusionDrive's TransfuserConfig is an author's
+    # local path; configs/policies/diffusiondrive.yaml points it at the downloaded anchors.
+    plan_anchor_path: null
   checkpoint_path: null
   lr: 6e-4
