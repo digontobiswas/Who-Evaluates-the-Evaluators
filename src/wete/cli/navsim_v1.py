@@ -236,7 +236,8 @@ def stage_cache(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], dry_
             f"Metric caching finished but {len(missing)} of {len(expected)} scenarios are not in the cache "
             f"({cache_dir}). See {out_dir / 'logs' / 'metric_caching.log'}."
         )
-    print(f"[wete] cache: {len(expected)} scenarios cached in {elapsed:.0f} s.")
+    print(f"[wete] cache: {len(cached)} tokens in {cache_dir} after {elapsed:.0f} s "
+          f"({len(expected) if expected else 'all'} expected scenarios present).")
     return elapsed
 
 
