@@ -1,0 +1,82 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_1.ckpt",
+    "sha256": "cea40f12ad637ae2abba0a131e57a4ef97661c9aeed50a7d9824756ee513c145",
+    "size_bytes": 672447984
+  },
+  "code": {
+    "navsim_devkit": "submit:0a380a9063d7162ec93d0f51e9990ebac585f720",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:5a27ca45ac2dba61695b3eded8f4d32c3f9554a1"
+  },
+  "comparison": null,
+  "comparison_note": "No comparison with the published PDMS: it is defined on the full split, and this run covers a subset.",
+  "created_utc": "2026-10-31T14:50:49Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v2_epdms",
+  "experiment": "popB_transfuser_seed1_navtest_v2",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn198",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1218768",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__clean.plans.jsonl"
+    ],
+    "mean_ade": 0.6531904315200942,
+    "mean_fde": 1.6050572356677781,
+    "mean_l2_1s": 0.11243185703398156,
+    "mean_l2_2s": 0.41478037275845553,
+    "mean_l2_3s": 0.9235744924382204,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "transfuser_seed1",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.8443131344505113,
+    "epdms": 84.43131344505113,
+    "matches_devkit_average": true,
+    "mean": {
+      "drivable_area_compliance": 0.9279598221636752,
+      "driving_direction_compliance": 0.9919315000823317,
+      "ego_progress": 0.8752081117798998,
+      "history_comfort": 0.9830396838465338,
+      "lane_keeping": 0.9587518524617158,
+      "no_at_fault_collisions": 0.9767413140128437,
+      "score": 0.8443131344505113,
+      "time_to_collision_within_bound": 0.9654207146385642,
+      "traffic_light_compliance": 0.9974477194137987,
+      "two_frame_extended_comfort": 0.8826693227091633
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 84.43131344505113,
+    "score_sem": 0.0026121742994311948,
+    "score_std": 0.28788483672228227,
+    "two_stage": false
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 1.949461795713576,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v2/B/transfuser_seed1/pdm_score/2026.10.31.20.20.28.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 6230.4375631809235,
+    "select": 37.4023597240448
+  }
+}

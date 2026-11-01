@@ -1,0 +1,82 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_2.ckpt",
+    "sha256": "ac39bc3c3161df2b816a56bc5c937b845940f7208e4357b0505034aafe0815cc",
+    "size_bytes": 672447984
+  },
+  "code": {
+    "navsim_devkit": "submit:0a380a9063d7162ec93d0f51e9990ebac585f720",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:7815fd0d62657d84f1185d04fb6aeaec37577fca"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-11-01T06:09:12Z",
+  "degradation": {
+    "level": 2,
+    "name": "latency",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v2_epdms",
+  "experiment": "popA_transfuser_seed2_latency_L2_navtest_v2",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn118",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1219149",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__latency@L2.plans.jsonl"
+    ],
+    "mean_ade": 1.2666125226335179,
+    "mean_fde": 2.5889465571213184,
+    "mean_l2_1s": 0.4426394688349015,
+    "mean_l2_2s": 0.9917473082419617,
+    "mean_l2_3s": 1.7134155083136926,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "transfuser_seed2",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.760945313572722,
+    "epdms": 76.0945313572722,
+    "matches_devkit_average": true,
+    "mean": {
+      "drivable_area_compliance": 0.8854767001481969,
+      "driving_direction_compliance": 0.9804050716285196,
+      "ego_progress": 0.8708318844755321,
+      "history_comfort": 0.9814753828420879,
+      "lane_keeping": 0.9246665568911576,
+      "no_at_fault_collisions": 0.9456199571875514,
+      "score": 0.760945313572722,
+      "time_to_collision_within_bound": 0.9319117404906965,
+      "traffic_light_compliance": 0.9968713979911081,
+      "two_frame_extended_comfort": 0.7468127490039841
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 76.0945313572722,
+    "score_sem": 0.0032059532665033533,
+    "score_std": 0.3533245591106069,
+    "two_stage": false
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 1.9052265337835612,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v2/A/transfuser_seed2/latency__L2/pdm_score/2026.11.01.11.38.42.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 6375.094921588898,
+    "select": 48.57628583908081
+  }
+}

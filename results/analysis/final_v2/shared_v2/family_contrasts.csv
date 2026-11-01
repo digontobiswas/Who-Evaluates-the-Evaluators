@@ -1,0 +1,11 @@
+contrast,evaluator,scope,n_scenarios,mean,lo,hi,p_positive,units
+ego_status_mlp - ltf,open_l2,shared,341,-0.3715485588670076,-0.44097106337711806,-0.30433630782435867,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,open_l2,full,12146,-0.2072424717538806,-0.21854244515420893,-0.1954897405853472,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v1,shared,341,-0.22886125056153586,-0.2769532316674137,-0.18469819785197675,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v1,full,12146,-0.1711986623681681,-0.17777667608203462,-0.1651608802044614,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v2,shared,341,-0.23432737887043537,-0.2797298837058192,-0.19078398081294015,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v2,full,12146,-0.1707417590236024,-0.1778821881216999,-0.16455436577711602,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v2_ph,shared,341,-0.12607846936628223,-0.14193458186095131,-0.10959768107925366,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,navsim_v2_ph,full,450,-0.12694510662675443,-0.1424470620337813,-0.1094488873624622,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,bridgesim,shared,341,-0.10711653372434018,-0.12578329640762462,-0.09079110916422287,0.0,oriented: positive = first family better
+ego_status_mlp - ltf,bridgesim,full,421,-0.10267345447347584,-0.11942867662311954,-0.0856075865993666,0.0,oriented: positive = first family better

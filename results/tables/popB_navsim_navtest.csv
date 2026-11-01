@@ -1,4 +1,5 @@
 policy,pdms,pdms_sem,num_valid,num_expected,complete,open_loop_ade_m,open_loop_l2_1s_m,open_loop_l2_2s_m,open_loop_l2_3s_m,mean_comfort,mean_drivable_area_compliance,mean_driving_direction_compliance,mean_ego_progress,mean_no_at_fault_collisions,mean_score,mean_time_to_collision_within_bound,source_file
+diffusiondrive_seed0,88.0582,0.2073,12146,12146,True,0.6446,0.1151,0.4164,0.9090,0.9999,0.9623,0.9811,0.8218,0.9819,0.8806,0.9481,results/popA/diffusiondrive_seed0/none__L0/summary.json
 ego_status_mlp_seed0,65.5165,0.3785,12146,12146,True,0.8826,0.1183,0.4986,1.2368,0.9997,0.7731,0.9068,0.6265,0.9303,0.6552,0.8363,results/popB/ego_status_mlp_seed0/summary.json
 ego_status_mlp_seed1,67.3885,0.3715,12146,12146,True,0.8880,0.1306,0.5047,1.2439,0.9999,0.7927,0.9042,0.6370,0.9323,0.6739,0.8472,results/popB/ego_status_mlp_seed1/summary.json
 ego_status_mlp_seed2,66.2918,0.3762,12146,12146,True,0.8785,0.1184,0.4946,1.2314,0.9996,0.7821,0.9024,0.6324,0.9300,0.6629,0.8371,results/popB/ego_status_mlp_seed2/summary.json

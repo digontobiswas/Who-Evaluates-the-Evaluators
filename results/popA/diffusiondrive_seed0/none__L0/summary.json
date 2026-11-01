@@ -1,0 +1,84 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/diffusiondrive/diffusiondrive_navsim_88p1_PDMS",
+    "sha256": "008ffc39cc6c57ff9007025217e601f408818afa036c0bae4e543907993a005b",
+    "size_bytes": 729518199
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:7815fd0d62657d84f1185d04fb6aeaec37577fca"
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": -0.041792367267930786,
+    "reference_note": "The diffusion sampler draws Gaussian noise; the wrapper seeds it per scenario token, so our runs are repeatable but need not match the authors' draws token by token.",
+    "reference_pdms": 88.1,
+    "reference_source": "DiffusionDrive README (hustvl/DiffusionDrive at 9b52ed0), navtest PDMS, with per-token CSV diffusiondrive_88p1_PDMS.csv",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": true
+  },
+  "created_utc": "2026-10-31T22:19:56Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_diffusiondrive_seed0_none_L0_navtest",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn282",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1219114",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__clean.plans.jsonl"
+    ],
+    "mean_ade": 0.6446317196262241,
+    "mean_fde": 1.573057610312108,
+    "mean_l2_1s": 0.11506822552413104,
+    "mean_l2_2s": 0.41635626417287874,
+    "mean_l2_3s": 0.9089782058578048,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "diffusiondrive_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.8805820763273207,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9999176683681871,
+      "drivable_area_compliance": 0.9622921126296723,
+      "driving_direction_compliance": 0.9811460563148362,
+      "ego_progress": 0.8217751075282059,
+      "no_at_fault_collisions": 0.9818870410011526,
+      "score": 0.8805820763273207,
+      "time_to_collision_within_bound": 0.9481310719578462
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 88.05820763273206,
+    "score_sem": 0.002072779907077076,
+    "score_std": 0.2284387780861517
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.0350819967229934,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1/A/diffusiondrive_seed0/none__L0/pdm_score/2026.11.01.03.49.40.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 4001.868817090988,
+    "select": 103.44377112388611
+  }
+}

@@ -29,6 +29,16 @@ popB_navsim_navtest.csv, popB_bridgesim_navhard.csv
   0-2), undegraded, on NAVSIM v1 navtest (PDMS and open-loop L2) and in BridgeSim NavHard (EPDMS,
   DS, RC). TransFuser and LTF seed 0 are the Population A clean runs (same numbers).
 
+popA_navsim_v2_navtest.csv, popB_navsim_v2_navtest.csv
+  The same populations scored by NAVSIM v2 EPDMS, one stage, on navtest (column pdms holds EPDMS).
+
+popA_navsim_v2_navhard.csv, popB_navsim_v2_navhard.csv
+  NAVSIM v2 two-stage pseudo-simulation on navhard_two_stage: pdms holds the devkit's combined
+  EPDMS, with stage one and stage two separately. Latent TransFuser and Ego Status MLP only: the
+  synthetic scenes have no LiDAR, which TransFuser needs.
+
+The NAVSIM v1 tables are unchanged; v1 and v2 are separate evaluators, reported side by side.
+
 Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
 lateral_noise / late_braking only beyond the first 1.5 s and 10 m of the plan (the part BridgeSim's
 replanning controller never executes). A correct closed-loop score should not move under them.

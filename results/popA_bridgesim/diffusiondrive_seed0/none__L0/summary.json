@@ -1,0 +1,102 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/diffusiondrive/diffusiondrive_navsim_88p1_PDMS",
+    "sha256": "008ffc39cc6c57ff9007025217e601f408818afa036c0bae4e543907993a005b"
+  },
+  "code": {
+    "bridgesim": "ea5d45f571ad934e09152e3f9c0fbe7d4c2f37db",
+    "repo": "68679114448ce30ef207f3a222e30b6d3afe216b"
+  },
+  "comparison": {
+    "delta_ds": 0.39971615201900335,
+    "delta_epdms": -4.3434080760094815,
+    "delta_rc": 4.017060332541561,
+    "note": "The leaderboard reports one checkpoint per model; compare seed 0.",
+    "reference": {
+      "ds": 43.29,
+      "epdms": 69.7,
+      "rc": 61.3
+    },
+    "source": "BridgeSim README at ea5d45f, BridgeSim-NavHard leaderboard (421 scenarios)"
+  },
+  "created_utc": "2026-10-31T10:10:31Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrap": true
+  },
+  "evaluator": "bridgesim_closed_loop",
+  "experiment": "popA_bridgesim_diffusiondrive_seed0_none_L0",
+  "extra_evaluator_args": [],
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "gpu012",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "20",
+    "slurm_job_id": "1218832",
+    "slurm_partition": "gpu"
+  },
+  "policy": "diffusiondrive_seed0",
+  "protocol": {
+    "controller": "pure_pursuit",
+    "ego_replay_frames": 20,
+    "eval_frames": 80,
+    "eval_mode": "closed_loop",
+    "replan_rate": 5,
+    "sim_dt": 0.1,
+    "traffic_mode": "log_replay"
+  },
+  "result": {
+    "complete": true,
+    "ds": 43.689716152019,
+    "ds_sem": 1.250124315331208,
+    "epdms": 65.35659192399052,
+    "epdms_sem": 1.13299486995646,
+    "mean": {
+      "DAC": 0.827827486935867,
+      "DDC": 1.0,
+      "DS": 0.43689716152019004,
+      "EC": 0.43008033966745846,
+      "EPDMS_no_ep": 0.6535659192399051,
+      "HC": 0.9248341995249405,
+      "LK": 0.9090590617577199,
+      "NC": 0.9553446603325416,
+      "RC": 0.6531706033254157,
+      "TL": 0.990061945368171,
+      "TTC": 0.87591613064133
+    },
+    "missing_example": [],
+    "num_blank_values": {
+      "DAC": 0,
+      "DDC": 0,
+      "DS": 0,
+      "EC": 0,
+      "EPDMS_no_ep": 0,
+      "HC": 0,
+      "LK": 0,
+      "NC": 0,
+      "RC": 0,
+      "TL": 0,
+      "TTC": 0
+    },
+    "num_expected": 421,
+    "num_missing": 0,
+    "num_scored": 421,
+    "rc": 65.31706033254156,
+    "sem": {
+      "DAC": 0.011502764475791892,
+      "DDC": 0.0,
+      "DS": 0.01250124315331208,
+      "EC": 0.009721726146185192,
+      "EPDMS_no_ep": 0.0113299486995646,
+      "HC": 0.004071781935431898,
+      "LK": 0.008527941328141532,
+      "NC": 0.004901102238946087,
+      "RC": 0.01289191681383282,
+      "TL": 0.002913437665800692,
+      "TTC": 0.010644928466626019
+    }
+  }
+}

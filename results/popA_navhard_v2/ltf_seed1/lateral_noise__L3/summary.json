@@ -1,0 +1,92 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_1.ckpt",
+    "sha256": "4802deb7e579e025295051f91a0f1cb45e69319139465521e29617c5358a2f70",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": "submit:0a380a9063d7162ec93d0f51e9990ebac585f720",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:7815fd0d62657d84f1185d04fb6aeaec37577fca"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-11-01T02:21:50Z",
+  "degradation": {
+    "level": 3,
+    "name": "lateral_noise",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v2_navhard",
+  "experiment": "popA_ltf_seed1_lateral_noise_L3_navhard_v2",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn198",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1219129",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__lateral_noise@L3.plans.jsonl"
+    ],
+    "mean_ade": 1.1898180411992196,
+    "mean_fde": 2.559226831830316,
+    "mean_l2_1s": 0.39171485115351584,
+    "mean_l2_2s": 0.8848304661210032,
+    "mean_l2_3s": 1.6046944019012985,
+    "num_tokens": 5912,
+    "num_with_l2": 450
+  },
+  "policy": "ltf_seed1",
+  "result": {
+    "complete": true,
+    "epdms": 11.064174750619319,
+    "epdms_stage_one": 40.56587851199195,
+    "epdms_stage_two": 24.07459636992321,
+    "mean": {
+      "drivable_area_compliance_stage_one": 0.5888888888888889,
+      "drivable_area_compliance_stage_two": 0.5483339436103991,
+      "driving_direction_compliance_stage_one": 0.8877777777777778,
+      "driving_direction_compliance_stage_two": 0.7655620651775906,
+      "ego_progress_stage_one": 0.8392812996720833,
+      "ego_progress_stage_two": 0.7841641621202246,
+      "history_comfort_stage_one": 0.9711111111111111,
+      "history_comfort_stage_two": 0.9509337239106554,
+      "lane_keeping_stage_one": 0.6933333333333334,
+      "lane_keeping_stage_two": 0.4465397290369828,
+      "no_at_fault_collisions_stage_one": 0.8966666666666666,
+      "no_at_fault_collisions_stage_two": 0.8090443061149762,
+      "score": 0.2810285715973991,
+      "time_to_collision_within_bound_stage_one": 0.86,
+      "time_to_collision_within_bound_stage_two": 0.773343097766386,
+      "traffic_light_compliance_stage_one": 0.9933333333333333,
+      "traffic_light_compliance_stage_two": 0.9864518491395093,
+      "two_frame_extended_comfort_stage_one": 0.6044444444444445,
+      "two_frame_extended_comfort_stage_two": 0.4291468326620286
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": null,
+    "num_invalid": 0,
+    "num_missing": null,
+    "num_scored": 5912,
+    "num_unexpected": null,
+    "num_valid": 5912,
+    "pdms": 11.064174750619319,
+    "pseudo_closed_loop_valid": true,
+    "score_sem": 0.004803902829097029,
+    "score_std": 0.3693698362048462,
+    "two_stage": true
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 0.47658283358149506,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v2_ph/A/ltf_seed1/lateral_noise__L3/pdm_score/2026.11.01.07.51.12.csv",
+  "split": "navhard_two_stage",
+  "timings_s": {
+    "score": 12404.978911161423,
+    "select": 0.005591630935668945
+  }
+}
