@@ -1,0 +1,16 @@
+# DiffusionDrive in BridgeSim on the held-out navtest scenes (held-out base, as on NavHard).
+#   OVERRIDES="degradation.name=latency degradation.level=2"
+
+extends:
+  - popA_bridgesim_heldout.yaml
+
+policy:
+  family: diffusiondrive
+  seed: 0
+  id: diffusiondrive_seed0
+  checkpoint: ${paths.checkpoints}/diffusiondrive/diffusiondrive_navsim_88p1_PDMS
+  plan_anchor: ${paths.checkpoints}/diffusiondrive/kmeans_navsim_traj_20.npy
+  bridgesim_args: ["--plan-anchor-path", "${policy.plan_anchor}"]
+
+degradation:
+  wrap: true

@@ -1,0 +1,28 @@
+# BridgeSim on held-out navtest scenes (not NavHard), for the held-out analysis (DECISIONS.md,
+# item 19). Same protocol, policies and checkpoints as NavHard; only the scenes differ.
+#
+#   convert once (CPU):  ACTION=convert CONFIG=configs/experiments/stage1_bridgesim_heldout.yaml
+#   it writes scenarios.expected_list: the first scenarios.count converted candidates in the
+#   fixed hash order of configs/bridgesim/navtest_heldout_candidates.txt
+#
+# Clean runs: OVERRIDES="policy.family=ltf"  (written where Population A expects level 0).
+
+extends:
+  - stage1_bridgesim_navhard.yaml
+
+evaluator:
+  scene_filter: ${paths.repo}/configs/bridgesim/navtest_heldout_filter.yaml
+
+scenarios:
+  dir: ${paths.exp}/bridgesim/scenarios/navtest_heldout
+  candidates: ${paths.repo}/configs/bridgesim/navtest_heldout_candidates.txt
+  count: 420
+  expected_list: ${paths.exp}/bridgesim/scenarios/navtest_heldout_list.txt
+
+experiment:
+  name: heldout_bridgesim_${policy.id}
+  out_dir: ${paths.exp}/runs/bridgesim_ext/A/${policy.id}/none__L0
+  export_dir: ${paths.repo}/results/heldout_bridgesim/${policy.id}/none__L0
+
+run_parallel: 6
+compare_with_reference: false   # the leaderboard is NavHard; these are other scenes

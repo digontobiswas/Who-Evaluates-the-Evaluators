@@ -119,9 +119,9 @@ def bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
     return rows
 
 
-def popa_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
+def popa_bridgesim_rows(results: Path, folder: str = "popA_bridgesim") -> List[Dict[str, Any]]:
     rows = []
-    for path in sorted(results.glob("popA_bridgesim/*/*/summary.json")):
+    for path in sorted(results.glob(f"{folder}/*/*/summary.json")):
         s = _load(path)
         r, d = s["result"], s.get("degradation") or {}
         rows.append({
@@ -174,9 +174,10 @@ def popb_navsim_rows(results: Path, suffix: str = "") -> List[Dict[str, Any]]:
     return sorted(rows, key=lambda x: x["policy"])
 
 
-def popb_bridgesim_rows(results: Path) -> List[Dict[str, Any]]:
-    paths = sorted(results.glob("popB_bridgesim/*/summary.json"))
-    paths += [results / "popA_bridgesim" / p / "none__L0" / "summary.json" for p in POPB_REUSED]
+def popb_bridgesim_rows(results: Path, popb: str = "popB_bridgesim",
+                        popa: str = "popA_bridgesim") -> List[Dict[str, Any]]:
+    paths = sorted(results.glob(f"{popb}/*/summary.json"))
+    paths += [results / popa / p / "none__L0" / "summary.json" for p in POPB_REUSED]
     rows = []
     for path in paths:
         if not path.exists():
@@ -234,6 +235,12 @@ popA_navsim_v2_navhard.csv, popB_navsim_v2_navhard.csv
   EPDMS, with stage one and stage two separately. Latent TransFuser and Ego Status MLP only: the
   synthetic scenes have no LiDAR, which TransFuser needs.
 
+popA_bridgesim_heldout.csv, popB_bridgesim_heldout.csv
+  BridgeSim on held-out navtest scenes that are not in NavHard (wete.closed_loop.heldout: the first
+  420 converted candidates in a fixed hash order). Same protocol and policies as NavHard. NavHard
+  is used to validate degradations; every evaluator is measured on these scenes (analysis
+  --heldout). Population B rows for TransFuser, LTF and DiffusionDrive seed 0 are the clean runs.
+
 The NAVSIM v1 tables are unchanged; v1 and v2 are separate evaluators, reported side by side.
 
 Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
@@ -262,7 +269,10 @@ def main(argv: Optional[List[str]] = None) -> int:
                        ("popA_navsim_v2_navtest.csv", popa_rows(results, "popA_navtest_v2")),
                        ("popB_navsim_v2_navtest.csv", popb_navsim_rows(results, "_navtest_v2")),
                        ("popA_navsim_v2_navhard.csv", popa_rows(results, "popA_navhard_v2")),
-                       ("popB_navsim_v2_navhard.csv", popb_navsim_rows(results, "_navhard_v2"))):
+                       ("popB_navsim_v2_navhard.csv", popb_navsim_rows(results, "_navhard_v2")),
+                       ("popA_bridgesim_heldout.csv", popa_bridgesim_rows(results, "heldout_bridgesim")),
+                       ("popB_bridgesim_heldout.csv",
+                        popb_bridgesim_rows(results, "heldout_bridgesim_B", "heldout_bridgesim"))):
         if rows:
             pd.DataFrame(rows).to_csv(out / name, index=False, float_format="%.4f")
             written.append(f"{name}: {len(rows)} rows")

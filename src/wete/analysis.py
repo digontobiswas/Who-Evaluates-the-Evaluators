@@ -65,6 +65,11 @@ DEFAULT_CFG = {
     # seeds); DiffusionDrive is a held-out base on which validated orders are only measured.
     "selection_bases": None,
     "split": False,
+    # Held-out scenes (1 Nov 2026, fixed before any held-out scene was converted): degradations
+    # and benign perturbations are validated on ALL scenarios of the evaluators whose meta has
+    # "role": "selection" (BridgeSim NavHard); every other evaluator is measured only on scenarios
+    # that are NOT in that selection set (BridgeSim on held-out navtest scenes, NAVSIM, L2).
+    "heldout": False,
     "selection_fraction": 0.5,
     "split_salt": "wete-selection-2026-10-31",
 }
@@ -178,12 +183,31 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
                           for e in sorted(set(dfA.evaluator))},
             "note": "monotonicity and benign validation on the selection half; everything else on the evaluation half",
         }
+    if cfg["heldout"]:
+        if cfg["split"]:
+            raise ValueError("use either --split or --heldout")
+        sel_evals = [e for e in meta if meta[e].get("role") == "selection"]
+        if not sel_evals:
+            raise ValueError('--heldout needs an evaluator with "role": "selection" in the meta file')
+        is_sel = dfA.evaluator.isin(sel_evals)
+        sel_keys = set(dfA[is_sel].scenario.map(scenario_key))
+        dfA_sel = dfA[is_sel]
+        dfA_eval = dfA[~is_sel & ~dfA.scenario.map(scenario_key).isin(sel_keys)]
+        report["heldout"] = {
+            "selection_evaluators": sel_evals, "n_selection_scenarios": len(sel_keys),
+            "scenarios": {e: int(dfA_eval[dfA_eval.evaluator == e].scenario.nunique())
+                          for e in sorted(set(dfA_eval.evaluator))},
+            "note": "monotonicity and benign validation on every selection scenario; everything else "
+                    "on scenarios outside the selection set, by evaluators other than the selection one",
+        }
     if cfg["selection_bases"]:
         prefixes = tuple(cfg["selection_bases"])
         dfA_sel = dfA_sel[dfA_sel.base.astype(str).str.startswith(prefixes)]
         report["selection_bases"] = list(prefixes)
     evaluators = [e for e in meta if e in set(scores.evaluator)]
     refs = [e for e in evaluators if meta[e].get("reference")]
+    # reference for measurements (agreement, reliability): not one used only to select
+    eval_refs = [e for e in refs if meta[e].get("role") != "selection"] or refs
     if not refs and not cfg["allow_no_reference"]:
         raise ValueError("meta must mark at least one evaluator as reference (E*)")
     if not refs:
@@ -211,7 +235,8 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     retained = [d for d in degs_all if keep[d]]
     report["monotonicity"] = {"tested": bool(refs), "references": refs, "retained": retained,
                               "discarded": [d for d in degs_all if not keep[d]] if refs else [],
-                              "on": "selection half" if cfg["split"] else "all scenarios"}
+                              "on": ("selection half" if cfg["split"] else
+                                     "selection evaluator, all scenarios" if cfg["heldout"] else "all scenarios")}
     dfA = dfA_eval          # every later measurement uses the evaluation half (all if no split)
 
     # ---- 2. Discriminative-power matrix ---------------------------------
@@ -279,11 +304,11 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
 
     # ---- 4b. Specificity arm --------------------------------------------
     spec_rows, spec_summary = specificity(dfA, meta, evaluators, refs, cfg, rng)
-    if cfg["split"] and spec_summary:
+    if (cfg["split"] or cfg["heldout"]) and spec_summary:
         # benign perturbations are validated on the selection half, verdicts come from the evaluation half
         _, sel_summary = specificity(dfA_sel, meta, evaluators, refs, cfg, rng)
         spec_summary["validated"] = sel_summary.get("validated", {})
-        spec_summary["validated_on"] = "selection half"
+        spec_summary["validated_on"] = "selection half" if cfg["split"] else "selection evaluator"
         for e, v in spec_summary["verdicts"].items():
             for d in v:
                 v[d]["validated_on_reference"] = spec_summary["validated"].get(d)
@@ -312,7 +337,7 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
                 de = dfp[(dfp.evaluator == e) & dfp.policy.isin(pols)]
                 piv = de.pivot_table(index="policy", columns="scenario", values="score").loc[pols]
                 mats[e] = St.orient(piv.values, meta[e]["higher_is_better"])
-            ref = refs[0] if refs and refs[0] in mats else None
+            ref = eval_refs[0] if eval_refs and eval_refs[0] in mats else None
             res = St.bootstrap_agreement(mats, B=cfg["B"], reference=ref, rng=rng)
             for key, val in res.items():
                 pairs[key] = dict(val, policies=pols, n_policies=len(pols))
@@ -365,7 +390,7 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
                     entry[mode] = {"skipped": "no behaviour deltas supplied"}
                     continue
                 if mode == "effect_conditioned":
-                    ref = refs[0]
+                    ref = eval_refs[0]
                     if ref == e:
                         entry[mode] = {"skipped": "evaluator is the reference (circular)"}
                         continue
@@ -604,11 +629,14 @@ def main(argv=None):
                     help="comma-separated base-name prefixes used to validate degradations, e.g. transfuser,ltf")
     ap.add_argument("--split", action="store_true",
                     help="validate degradations on a selection half of the scenarios, measure on the other half")
+    ap.add_argument("--heldout", action="store_true",
+                    help='validate on the evaluator(s) with "role": "selection", measure on held-out scenarios')
     a = ap.parse_args(argv)
     feats = pd.read_csv(a.features) if a.features else None
     beh = pd.read_csv(a.behavior) if a.behavior else None
     rep = run(load_table(a.scores), load_meta(a.meta), a.out, feats,
               {"B": a.B, "seed": a.seed, "allow_no_reference": a.no_reference, "split": a.split,
+               "heldout": a.heldout,
                "selection_bases": [b for b in a.selection_bases.split(",") if b] or None}, beh)
     print(json.dumps({"provisional": rep.get("provisional"), "monotonicity": rep["monotonicity"],
                       "specificity": rep.get("specificity"), "hypotheses": rep["hypotheses"]},

@@ -1,0 +1,10 @@
+# Population A in BridgeSim on the held-out navtest scenes: one base, one degradation, one level
+# per job. OVERRIDES="policy.family=ltf degradation.name=latency degradation.level=2"
+
+extends:
+  - stage1_bridgesim_heldout.yaml
+
+experiment:
+  name: heldout_bridgesim_${policy.id}_${degradation.name}_L${degradation.level}
+  out_dir: ${paths.exp}/runs/bridgesim_ext/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/heldout_bridgesim/${policy.id}/${degradation.name}__L${degradation.level}

@@ -1,0 +1,11 @@
+# Population B in BridgeSim on the held-out navtest scenes: navsim_baselines seeds, undegraded.
+#   OVERRIDES="policy.family=ego_status_mlp policy.seed=2"
+# TransFuser, LTF and DiffusionDrive seed 0 are linked from the Population A clean runs.
+
+extends:
+  - stage1_bridgesim_heldout.yaml
+
+experiment:
+  name: heldout_bridgesim_B_${policy.id}
+  out_dir: ${paths.exp}/runs/bridgesim_ext/B/${policy.id}
+  export_dir: ${paths.repo}/results/heldout_bridgesim_B/${policy.id}

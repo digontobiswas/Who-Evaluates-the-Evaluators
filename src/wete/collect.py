@@ -294,6 +294,8 @@ def read_bridgesim(d: Path) -> pd.DataFrame:
 
 READERS = {"navsim_v1": read_navsim_v1, "navsim_v2": read_navsim_v2, "navsim_v2_ph": read_navsim_v2_ph,
            "bridgesim": read_bridgesim,
+           # held-out navtest scenes in BridgeSim (wete.closed_loop.heldout), same reader
+           "bridgesim_ext": read_bridgesim,
            "hugsim": read_hugsim, "world_model": read_world_model}
 # derived evaluators: (name, source evaluator dir, reader)
 DERIVED = [("open_l2", "navsim_v1", read_open_l2)]   # L2 is logged during the navtest run

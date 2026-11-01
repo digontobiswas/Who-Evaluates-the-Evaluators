@@ -22,6 +22,9 @@
 #                 (transfuser,ltf); other bases, e.g. DiffusionDrive, are held out
 #   SPLIT         1 = validate degradations on a selection half of the scenarios and measure every
 #                 evaluator on the other half (removes selection circularity)
+#   HELDOUT       1 = validate on the evaluator with "role": "selection" (BridgeSim NavHard, all
+#                 scenes) and measure every other evaluator on scenes outside that set
+#                 (configs/meta.heldout*.json; DECISIONS.md item 19)
 
 set -euo pipefail
 
@@ -56,6 +59,7 @@ python -m wete.collect --root "$RUN_ROOT" --out "$OUT" --bridgesim-score "${BRID
 EXTRA=()
 [ "${NO_REFERENCE:-0}" = 1 ] && EXTRA+=(--no-reference)
 [ "${SPLIT:-0}" = 1 ] && EXTRA+=(--split)
+[ "${HELDOUT:-0}" = 1 ] && EXTRA+=(--heldout)
 [ -n "${SELECTION_BASES:-}" ] && EXTRA+=(--selection-bases "$SELECTION_BASES")
 FEATURES=()
 [ -f "$OUT/features.csv" ] && FEATURES=(--features "$OUT/features.csv")

@@ -32,7 +32,7 @@ import pandas as pd
 
 from wete import config as config_lib
 from wete import provenance
-from wete.closed_loop import bridgesim
+from wete.closed_loop import bridgesim, heldout
 
 ACTIONS = ("convert", "evaluate", "report")
 REQUIRED_KEYS = (
@@ -72,14 +72,36 @@ def _write_json(path: Path, payload: Any) -> None:
 
 
 def expected_scenarios(cfg: Dict[str, Any]) -> List[str]:
-    return bridgesim.read_scenario_list(Path(cfg["scenarios"]["expected_list"]))
+    path = Path(cfg["scenarios"]["expected_list"])
+    if not path.is_file() and cfg["scenarios"].get("candidates"):
+        raise _fail(f"{path} does not exist yet: it is written by --action convert for a held-out split")
+    return bridgesim.read_scenario_list(path)
+
+
+def _candidates(cfg: Dict[str, Any]) -> List[str]:
+    """Held-out split: ranked candidate tokens (wete.closed_loop.heldout), or [] for a fixed list."""
+    path = cfg["scenarios"].get("candidates")
+    return Path(path).read_text().split() if path else []
+
+
+def _write_heldout_list(cfg: Dict[str, Any], converted: List[str]) -> Dict[str, Any]:
+    """The held-out set: the first `scenarios.count` converted candidates in rank order."""
+    chosen = heldout.select(_candidates(cfg), converted, int(cfg["scenarios"]["count"]))
+    path = Path(cfg["scenarios"]["expected_list"])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(chosen) + "\n")
+    return {"heldout_list": str(path), "num_heldout": len(chosen),
+            "num_candidates": len(_candidates(cfg)), "count_target": int(cfg["scenarios"]["count"])}
 
 
 # ---------------------------------------------------------------------------------------------
 def action_convert(cfg: Dict[str, Any]) -> Dict[str, Any]:
     ev = cfg["evaluator"]
     scenario_dir = Path(cfg["scenarios"]["dir"])
-    expected = set(expected_scenarios(cfg))
+    if _candidates(cfg) and Path(cfg["scenarios"]["expected_list"]).is_file():
+        print(f"[bridgesim] convert: held-out list {cfg['scenarios']['expected_list']} exists, skipping.")
+        return {"skipped": True}
+    expected = set() if _candidates(cfg) else set(expected_scenarios(cfg))
     done = set(bridgesim.converted_scenarios(scenario_dir))
     if expected and expected <= done:
         print(f"[bridgesim] convert: all {len(expected)} expected scenarios already in {scenario_dir}, skipping.")
@@ -112,9 +134,13 @@ def action_convert(cfg: Dict[str, Any]) -> Dict[str, Any]:
         "num_extra": len(done - expected),
         "log": str(log_path),
     }
-    print(f"[bridgesim] convert: {json.dumps(result)}", flush=True)
     if proc.returncode != 0 or not done:
+        print(f"[bridgesim] convert: {json.dumps(result)}", flush=True)
         raise _fail(f"conversion failed; see {log_path}")
+    if _candidates(cfg):
+        result.update(_write_heldout_list(cfg, sorted(done)))
+        result["missing"], result["num_missing"], result["num_extra"] = [], 0, 0
+    print(f"[bridgesim] convert: {json.dumps(result)}", flush=True)
     return result
 
 
