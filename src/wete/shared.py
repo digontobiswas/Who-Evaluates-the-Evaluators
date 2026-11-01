@@ -58,20 +58,27 @@ def _matrix(df: pd.DataFrame, policies: Sequence[str], scenarios: Sequence[str])
 
 def population_b(scores: pd.DataFrame, meta: Dict[str, Dict], B: int,
                  rng: np.random.Generator) -> Dict:
+    """Population B on the scenarios every evaluator scored.
+
+    Each evaluator keeps all of its own policies; a pair of evaluators is compared on the policies
+    both scored, and a family contrast is computed for every evaluator that has both families. (NAVSIM
+    v2 two-stage cannot run TransFuser; a single policy intersection would remove TransFuser from
+    every other comparison too.)"""
     dfb = scores[scores.population == "B"]
     evals = [e for e in meta if e in set(dfb.evaluator)]
     if len(evals) < 2:
         return {}
-    pols = sorted(set.intersection(*[set(dfb[dfb.evaluator == e].policy) for e in evals]))
+    pols_of = {e: sorted(set(dfb[dfb.evaluator == e].policy)) for e in evals}
     full = {}
     for e in evals:
-        de = dfb[(dfb.evaluator == e) & dfb.policy.isin(pols)]
+        de = dfb[dfb.evaluator == e]
         sc = sorted(de.scenario.unique())
-        M = _matrix(de, pols, sc)
+        M = _matrix(de, pols_of[e], sc)
         keep = ~np.isnan(M).any(axis=0)                 # drop scenarios invalid for any policy
         full[e] = (St.orient(M[:, keep], meta[e]["higher_is_better"]), [s for s, k in zip(sc, keep) if k])
     shared = sorted(set.intersection(*[set(sc) for _, sc in full.values()]))
-    out: Dict = {"policies": pols, "evaluators": evals, "n_shared": len(shared),
+    out: Dict = {"policies": sorted(set().union(*pols_of.values())), "policies_by_evaluator": pols_of,
+                 "evaluators": evals, "n_shared": len(shared),
                  "n_full": {e: len(sc) for e, (_, sc) in full.items()}}
     if len(shared) < 20:
         out["skipped"] = "fewer than 20 shared scenarios"
@@ -83,39 +90,51 @@ def population_b(scores: pd.DataFrame, meta: Dict[str, Dict], B: int,
     n = len(shared)
     idx = rng.integers(0, n, size=(B, n))               # one resample shared by all evaluators
     means = {e: M.mean(1) for e, M in mats.items()}
-    draws = {e: M[:, idx].mean(-1) for e, M in mats.items()}   # (P, B)
+    draws = {e: M[:, idx].mean(-1) for e, M in mats.items()}   # (P_e, B)
+
+    def rows(e: str, pols: Sequence[str]) -> List[int]:
+        return [pols_of[e].index(p) for p in pols]
 
     agree = []
     for a, b in itertools.combinations(evals, 2):
-        td = np.array([St.kendall(draws[a][:, k], draws[b][:, k]) for k in range(B)])
-        rd = np.array([St.spearman(draws[a][:, k], draws[b][:, k]) for k in range(B)])
+        P = sorted(set(pols_of[a]) & set(pols_of[b]))
+        if len(P) < 3:
+            continue
+        ra, rb = rows(a, P), rows(b, P)
+        da, db = draws[a][ra], draws[b][rb]
+        td = np.array([St.kendall(da[:, k], db[:, k]) for k in range(B)])
+        rd = np.array([St.spearman(da[:, k], db[:, k]) for k in range(B)])
         lo, hi = St.percentile_ci(td)
         rlo, rhi = St.percentile_ci(rd)
-        agree.append({"pair": f"{a}|{b}", "n_scenarios": n, "tau": St.kendall(means[a], means[b]),
-                      "tau_lo": float(lo), "tau_hi": float(hi), "rho": St.spearman(means[a], means[b]),
-                      "rho_lo": float(rlo), "rho_hi": float(rhi)})
+        agree.append({"pair": f"{a}|{b}", "n_scenarios": n, "n_policies": len(P),
+                      "tau": St.kendall(means[a][ra], means[b][rb]), "tau_lo": float(lo), "tau_hi": float(hi),
+                      "rho": St.spearman(means[a][ra], means[b][rb]), "rho_lo": float(rlo), "rho_hi": float(rhi),
+                      "policies": " ".join(P)})
     out["agreement"] = agree
-    out["policy_means"] = {e: {p: float(v) for p, v in zip(pols, means[e] * (1 if meta[e]["higher_is_better"] else -1))}
+    out["policy_means"] = {e: {p: float(v) for p, v in zip(pols_of[e], means[e] * (1 if meta[e]["higher_is_better"] else -1))}
                            for e in evals}
 
-    fams = sorted({family_of(p) for p in pols})
-    rows_of = {f: [i for i, p in enumerate(pols) if family_of(p) == f] for f in fams}
+    fams_of = {e: sorted({family_of(p) for p in pols_of[e]}) for e in evals}
     contrasts, corr = [], []
     per_scenario = {}
-    for fa, fb in itertools.combinations(fams, 2):
-        for e in evals:
+    for fa, fb in itertools.combinations(sorted(set().union(*fams_of.values())), 2):
+        have = [e for e in evals if fa in fams_of[e] and fb in fams_of[e]]
+        for e in have:
+            ia = [i for i, p in enumerate(pols_of[e]) if family_of(p) == fa]
+            ib = [i for i, p in enumerate(pols_of[e]) if family_of(p) == fb]
             for scope, (M, nsc) in (("shared", (mats[e], n)), ("full", (full[e][0], len(full[e][1])))):
-                d = M[rows_of[fa]].mean(0) - M[rows_of[fb]].mean(0)        # per scenario, oriented
+                d = M[ia].mean(0) - M[ib].mean(0)        # per scenario, oriented
                 j = rng.integers(0, nsc, size=(B, nsc))
                 dd = d[j].mean(1)
                 lo, hi = St.percentile_ci(dd)
                 contrasts.append({"contrast": f"{fa} - {fb}", "evaluator": e, "scope": scope,
-                                  "n_scenarios": nsc, "mean": float(d.mean()), "lo": float(lo),
+                                  "n_scenarios": nsc, "n_policies": len(ia) + len(ib),
+                                  "mean": float(d.mean()), "lo": float(lo),
                                   "hi": float(hi), "p_positive": float((dd > 0).mean()),
                                   "units": "oriented: positive = first family better"})
                 if scope == "shared":
                     per_scenario[(fa, fb, e)] = d
-        for a, b in itertools.combinations(evals, 2):
+        for a, b in itertools.combinations(have, 2):
             da, db = per_scenario[(fa, fb, a)], per_scenario[(fa, fb, b)]
             both = (da != 0) & (db != 0)
             corr.append({"contrast": f"{fa} - {fb}", "pair": f"{a}|{b}", "n_scenarios": n,

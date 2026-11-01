@@ -130,3 +130,34 @@ def test_seed_torch_is_deterministic():
     D.seed_torch("sd_x|25"); b = torch.randn(3)
     D.seed_torch("sd_x|30"); c = torch.randn(3)
     assert torch.equal(a, b) and not torch.equal(a, c)
+
+
+def _with_partial_evaluator():
+    """Adds 'navsim_v2_ph', which (like the real two-stage benchmark) has no TransFuser."""
+    t = table()
+    extra = t[(t.evaluator == "navsim_v1") & (t.population == "B") & ~t.policy.str.startswith("tf_")].copy()
+    extra["evaluator"] = "navsim_v2_ph"
+    meta = dict(META, navsim_v2_ph={"higher_is_better": True, "family": "pseudo_sim"})
+    return pd.concat([t, extra]), meta
+
+
+def test_partial_evaluator_does_not_shrink_other_pairs(tmp_path):
+    t, meta = _with_partial_evaluator()
+    S.run(t, meta, str(tmp_path), B=50)
+    a = pd.read_csv(tmp_path / "shared_agreement.csv").set_index("pair")
+    assert a.loc["navsim_v1|bridgesim", "n_policies"] == 9
+    assert a.loc["navsim_v1|navsim_v2_ph", "n_policies"] == 6
+    c = pd.read_csv(tmp_path / "family_contrasts.csv")
+    assert "navsim_v2_ph" not in set(c[c.contrast == "mlp - tf"].evaluator)
+    assert {"open_l2", "navsim_v1", "bridgesim"} <= set(c[c.contrast == "mlp - tf"].evaluator)
+
+
+def test_analysis_agreement_is_pairwise(tmp_path):
+    from wete import analysis as A
+    t, meta = _with_partial_evaluator()
+    rep = A.run(t, meta, str(tmp_path), cfg={"B": 50})
+    pairs = rep["agreement"]["B"]["pairs"]
+    assert pairs["navsim_v1|bridgesim"]["n_policies"] == 9
+    ph = next(v for k, v in pairs.items() if set(k.split("|")) == {"navsim_v2_ph", "bridgesim"})
+    assert ph["n_policies"] == 6
+    assert pairs["MMRV|navsim_v1"]["n_policies"] == 9

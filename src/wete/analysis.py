@@ -24,6 +24,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 from dataclasses import asdict
 from pathlib import Path
@@ -296,24 +297,39 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
         dfp = scores[scores.population == pop]
         if dfp.empty:
             continue
-        pols = sorted(set.intersection(*[set(dfp[dfp.evaluator == e].policy) for e in evaluators
-                                         if not dfp[dfp.evaluator == e].empty]))
-        mats = {}
-        for e in evaluators:
-            de = dfp[(dfp.evaluator == e) & dfp.policy.isin(pols)]
-            if de.empty:
+        # Each pair of evaluators is compared on the policies BOTH of them scored. A single
+        # intersection over all evaluators would let one evaluator with fewer policies (NAVSIM v2
+        # two-stage cannot run TransFuser) shrink every other comparison.
+        pol_sets = {e: set(dfp[dfp.evaluator == e].policy) for e in evaluators
+                    if not dfp[dfp.evaluator == e].empty}
+        pairs: Dict[str, Dict] = {}
+        for a, b in itertools.combinations(list(pol_sets), 2):
+            pols = sorted(pol_sets[a] & pol_sets[b])
+            if len(pols) < 3:
                 continue
-            piv = de.pivot_table(index="policy", columns="scenario", values="score").loc[pols]
-            mats[e] = St.orient(piv.values, meta[e]["higher_is_better"])
-        if len(mats) >= 2 and len(pols) >= 3:
-            agreement[pop] = {"policies": pols,
-                              "pairs": St.bootstrap_agreement(mats, B=cfg["B"], reference=refs[0]
-                                                              if refs[0] in mats else None, rng=rng)}
+            mats = {}
+            for e in (a, b):
+                de = dfp[(dfp.evaluator == e) & dfp.policy.isin(pols)]
+                piv = de.pivot_table(index="policy", columns="scenario", values="score").loc[pols]
+                mats[e] = St.orient(piv.values, meta[e]["higher_is_better"])
+            ref = refs[0] if refs and refs[0] in mats else None
+            res = St.bootstrap_agreement(mats, B=cfg["B"], reference=ref, rng=rng)
+            for key, val in res.items():
+                pairs[key] = dict(val, policies=pols, n_policies=len(pols))
+        if pairs:
+            agreement[pop] = {"policies": sorted(set.union(*pol_sets.values())),
+                              "policies_by_evaluator": {e: sorted(v) for e, v in pol_sets.items()},
+                              "pairs": pairs}
             if pop == "C":
                 # checkpoints: approximate known order = training progress (level)
-                lvl = dfp.drop_duplicates("policy").set_index("policy").loc[pols, "level"].values
-                agreement[pop]["vs_epoch_tau"] = {e: St.kendall(np.nanmean(M, 1), lvl)
-                                                  for e, M in mats.items()}
+                lvl_of = dfp.drop_duplicates("policy").set_index("policy")["level"]
+                agreement[pop]["vs_epoch_tau"] = {}
+                for e, ps in pol_sets.items():
+                    ps = sorted(ps)
+                    piv = dfp[dfp.evaluator == e].pivot_table(index="policy", columns="scenario",
+                                                             values="score").loc[ps]
+                    M = St.orient(piv.values, meta[e]["higher_is_better"])
+                    agreement[pop]["vs_epoch_tau"][e] = St.kendall(np.nanmean(M, 1), lvl_of.loc[ps].values)
     report["agreement"] = agreement
 
     # ---- 6. Reliability-weighted scoring (H3, H4) ------------------------
