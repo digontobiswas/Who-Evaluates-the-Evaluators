@@ -126,3 +126,14 @@ def test_analysis_heldout_validates_on_selection_and_measures_elsewhere(tmp_path
     assert spec["verdicts"]["navsim_v1"]["tail_lateral"]["verdict"] == "penalises benign"
     with pytest.raises(ValueError):
         A.run(_scores(), meta, str(tmp_path / "x"), cfg={"B": 50, "heldout": True, "split": True})
+
+
+def test_excluded_scene_is_dropped_for_every_run(tmp_path, monkeypatch):
+    from wete.cli import bridgesim_run as BR
+    (tmp_path / "list.txt").write_text("sd_a\nsd_b\nsd_c\n")
+    cfg = {"scenarios": {"expected_list": str(tmp_path / "list.txt"), "exclude": ["sd_b"]}}
+    assert BR.expected_scenarios(cfg) == ["sd_a", "sd_c"]
+    for k, v in ENV.items():
+        monkeypatch.setenv(k, v)
+    real = config_lib.resolve(config_lib.load_config(ROOT / "configs/experiments/popB_bridgesim_heldout.yaml"))
+    assert real["scenarios"]["exclude"] == ["sd_bb870b710b7a53e8"]

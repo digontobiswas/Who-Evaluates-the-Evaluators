@@ -72,10 +72,13 @@ def _write_json(path: Path, payload: Any) -> None:
 
 
 def expected_scenarios(cfg: Dict[str, Any]) -> List[str]:
+    """Scenarios a run must score: the expected list minus `scenarios.exclude` (scenes on which
+    BridgeSim itself fails for every policy, so they are dropped for every run alike)."""
     path = Path(cfg["scenarios"]["expected_list"])
     if not path.is_file() and cfg["scenarios"].get("candidates"):
         raise _fail(f"{path} does not exist yet: it is written by --action convert for a held-out split")
-    return bridgesim.read_scenario_list(path)
+    excluded = set(cfg["scenarios"].get("exclude") or [])
+    return [s for s in bridgesim.read_scenario_list(path) if s not in excluded]
 
 
 def _candidates(cfg: Dict[str, Any]) -> List[str]:

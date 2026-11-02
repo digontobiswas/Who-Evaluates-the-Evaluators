@@ -18,6 +18,9 @@ scenarios:
   candidates: ${paths.repo}/configs/bridgesim/navtest_heldout_candidates.txt
   count: 420
   expected_list: ${paths.exp}/bridgesim/scenarios/navtest_heldout_list.txt
+  # BridgeSim fails on this held-out scene in all 40 runs (every policy, degradation and level;
+  # jobs 1219623-59, 2 Nov 2026), so it is dropped for every run alike: 419 scenes are scored.
+  exclude: [sd_bb870b710b7a53e8]
 
 experiment:
   name: heldout_bridgesim_${policy.id}
