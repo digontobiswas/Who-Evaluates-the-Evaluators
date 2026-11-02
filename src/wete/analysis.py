@@ -70,6 +70,11 @@ DEFAULT_CFG = {
     # "role": "selection" (BridgeSim NavHard); every other evaluator is measured only on scenarios
     # that are NOT in that selection set (BridgeSim on held-out navtest scenes, NAVSIM, L2).
     "heldout": False,
+    # Bases on which evaluators are MEASURED (matrix, sample efficiency, H1). None = all. Added
+    # 2 Nov 2026: BridgeSim on the held-out scenes has seed-0 bases only, while NAVSIM and L2 also
+    # have seeds 1-2; P(full order for every base) is harder with more bases, so evaluators must be
+    # compared on the same bases (transfuser_seed0, ltf_seed0, diffusiondrive_seed0).
+    "measure_bases": None,
     "selection_fraction": 0.5,
     "split_salt": "wete-selection-2026-10-31",
 }
@@ -238,6 +243,9 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
                               "on": ("selection half" if cfg["split"] else
                                      "selection evaluator, all scenarios" if cfg["heldout"] else "all scenarios")}
     dfA = dfA_eval          # every later measurement uses the evaluation half (all if no split)
+    if cfg["measure_bases"]:
+        dfA = dfA[dfA.base.astype(str).isin(cfg["measure_bases"])]
+        report["measure_bases"] = list(cfg["measure_bases"])
 
     # ---- 2. Discriminative-power matrix ---------------------------------
     cells = []
@@ -629,6 +637,8 @@ def main(argv=None):
                     help="comma-separated base-name prefixes used to validate degradations, e.g. transfuser,ltf")
     ap.add_argument("--split", action="store_true",
                     help="validate degradations on a selection half of the scenarios, measure on the other half")
+    ap.add_argument("--measure-bases", default="",
+                    help="comma-separated exact base names on which every evaluator is measured")
     ap.add_argument("--heldout", action="store_true",
                     help='validate on the evaluator(s) with "role": "selection", measure on held-out scenarios')
     a = ap.parse_args(argv)
@@ -637,6 +647,7 @@ def main(argv=None):
     rep = run(load_table(a.scores), load_meta(a.meta), a.out, feats,
               {"B": a.B, "seed": a.seed, "allow_no_reference": a.no_reference, "split": a.split,
                "heldout": a.heldout,
+               "measure_bases": [b for b in a.measure_bases.split(",") if b] or None,
                "selection_bases": [b for b in a.selection_bases.split(",") if b] or None}, beh)
     print(json.dumps({"provisional": rep.get("provisional"), "monotonicity": rep["monotonicity"],
                       "specificity": rep.get("specificity"), "hypotheses": rep["hypotheses"]},

@@ -137,3 +137,14 @@ def test_excluded_scene_is_dropped_for_every_run(tmp_path, monkeypatch):
         monkeypatch.setenv(k, v)
     real = config_lib.resolve(config_lib.load_config(ROOT / "configs/experiments/popB_bridgesim_heldout.yaml"))
     assert real["scenarios"]["exclude"] == ["sd_bb870b710b7a53e8"]
+
+
+def test_measure_bases_restricts_measurement_not_selection(tmp_path):
+    from wete import analysis as A
+    meta = {"navsim_v1": {"higher_is_better": True, "family": "nonreactive"},
+            "bridgesim": {"higher_is_better": True, "family": "closed_loop", "reference": True, "role": "selection"},
+            "bridgesim_ext": {"higher_is_better": True, "family": "closed_loop", "reference": True}}
+    rep = A.run(_scores(), meta, str(tmp_path), cfg={"B": 50, "heldout": True, "measure_bases": ["ltf_seed0"]})
+    assert set(rep["monotonicity"]["retained"]) == {"latency", "lateral_noise"}
+    assert set(pd.read_csv(tmp_path / "monotonicity.csv").base) == {"transfuser_seed0", "ltf_seed0"}
+    assert (pd.read_csv(tmp_path / "discriminative_matrix.csv").n_bases == 1).all()

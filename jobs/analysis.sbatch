@@ -25,6 +25,8 @@
 #   HELDOUT       1 = validate on the evaluator with "role": "selection" (BridgeSim NavHard, all
 #                 scenes) and measure every other evaluator on scenes outside that set
 #                 (configs/meta.heldout*.json; DECISIONS.md item 19)
+#   MEASURE_BASES comma-separated exact base names on which every evaluator is measured, so
+#                 evaluators with different seed coverage are compared on the same bases
 
 set -euo pipefail
 
@@ -60,6 +62,7 @@ EXTRA=()
 [ "${NO_REFERENCE:-0}" = 1 ] && EXTRA+=(--no-reference)
 [ "${SPLIT:-0}" = 1 ] && EXTRA+=(--split)
 [ "${HELDOUT:-0}" = 1 ] && EXTRA+=(--heldout)
+[ -n "${MEASURE_BASES:-}" ] && EXTRA+=(--measure-bases "$MEASURE_BASES")
 [ -n "${SELECTION_BASES:-}" ] && EXTRA+=(--selection-bases "$SELECTION_BASES")
 FEATURES=()
 [ -f "$OUT/features.csv" ] && FEATURES=(--features "$OUT/features.csv")
