@@ -1,0 +1,423 @@
+{
+  "config": {
+    "B": 1000,
+    "mono_threshold": 0.95,
+    "mono_require_all_refs": true,
+    "h_margin": 0.1,
+    "h3_auroc": 0.7,
+    "theta": 0.5,
+    "behavior_eps": 0.1,
+    "n_sub": 25,
+    "eff_grid": [
+      10,
+      25,
+      50,
+      100,
+      200,
+      400,
+      800
+    ],
+    "seed": 0,
+    "allow_no_reference": false,
+    "spec_margin": 0.01,
+    "spec_ratio": 0.25,
+    "spec_threshold": 0.95,
+    "selection_bases": [
+      "transfuser_seed0",
+      "ltf_seed0"
+    ],
+    "split": true,
+    "selection_fraction": 0.5,
+    "split_salt": "wete-selection-2026-10-31"
+  },
+  "split": {
+    "selection_fraction": 0.5,
+    "salt": "wete-selection-2026-10-31",
+    "scenarios": {
+      "bridgesim": {
+        "selection": 222,
+        "evaluation": 199
+      },
+      "navsim_v1": {
+        "selection": 6062,
+        "evaluation": 6084
+      },
+      "navsim_v2": {
+        "selection": 6062,
+        "evaluation": 6084
+      },
+      "navsim_v2_ph": {
+        "selection": 232,
+        "evaluation": 218
+      },
+      "open_l2": {
+        "selection": 6062,
+        "evaluation": 6084
+      }
+    },
+    "note": "monotonicity and benign validation on the selection half; everything else on the evaluation half"
+  },
+  "selection_bases": [
+    "transfuser_seed0",
+    "ltf_seed0"
+  ],
+  "monotonicity": {
+    "tested": true,
+    "references": [
+      "bridgesim"
+    ],
+    "retained": [
+      "latency"
+    ],
+    "discarded": [
+      "camera_dropout",
+      "image_noise",
+      "stale_obs",
+      "lateral_noise",
+      "late_braking"
+    ],
+    "on": "selection half"
+  },
+  "sample_efficiency": {
+    "open_l2": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.9316666666666669,
+            "p_full_order": 0.4
+          },
+          "25": {
+            "tau": 0.9933333333333334,
+            "p_full_order": 0.895
+          },
+          "50": {
+            "tau": 0.9995238095238095,
+            "p_full_order": 0.995
+          },
+          "100": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 50
+      }
+    },
+    "navsim_v1": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.4483333333333333,
+            "p_full_order": 0.0
+          },
+          "25": {
+            "tau": 0.6576190476190475,
+            "p_full_order": 0.0
+          },
+          "50": {
+            "tau": 0.8109523809523809,
+            "p_full_order": 0.03
+          },
+          "100": {
+            "tau": 0.9104761904761905,
+            "p_full_order": 0.205
+          },
+          "200": {
+            "tau": 0.9721428571428572,
+            "p_full_order": 0.585
+          },
+          "400": {
+            "tau": 0.9961904761904762,
+            "p_full_order": 0.925
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 400
+      }
+    },
+    "bridgesim": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.7742857142857144,
+            "p_full_order": 0.025
+          },
+          "25": {
+            "tau": 0.912142857142857,
+            "p_full_order": 0.225
+          },
+          "50": {
+            "tau": 0.9723809523809525,
+            "p_full_order": 0.62
+          },
+          "100": {
+            "tau": 0.9980952380952381,
+            "p_full_order": 0.96
+          }
+        },
+        "n_for_p90": 100
+      }
+    }
+  },
+  "specificity": {
+    "margin": 0.01,
+    "ratio": 0.25,
+    "threshold": 0.95,
+    "validated": {
+      "tail_lateral": false,
+      "tail_stretch": false
+    },
+    "verdicts": {
+      "bridgesim": {
+        "tail_lateral": {
+          "verdict": "specific",
+          "validated_on_reference": false,
+          "max_ratio": 0.16738042470470255
+        },
+        "tail_stretch": {
+          "verdict": "specific",
+          "validated_on_reference": false,
+          "max_ratio": 0.1767151629778454
+        }
+      },
+      "navsim_v1": {
+        "tail_lateral": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.6625553228594216
+        },
+        "tail_stretch": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.505567900079621
+        }
+      },
+      "open_l2": {
+        "tail_lateral": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.2996941993756564
+        },
+        "tail_stretch": {
+          "verdict": "penalises benign",
+          "validated_on_reference": false,
+          "max_ratio": 0.2581197104153595
+        }
+      }
+    },
+    "validated_on": "selection half"
+  },
+  "agreement": {
+    "B": {
+      "policies": [
+        "diffusiondrive_seed0",
+        "ego_status_mlp_seed0",
+        "ego_status_mlp_seed1",
+        "ego_status_mlp_seed2",
+        "ltf_seed0",
+        "ltf_seed1",
+        "ltf_seed2",
+        "transfuser_seed0",
+        "transfuser_seed1",
+        "transfuser_seed2"
+      ],
+      "policies_by_evaluator": {
+        "open_l2": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "navsim_v1": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "bridgesim": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ]
+      },
+      "pairs": {
+        "open_l2|navsim_v1": {
+          "tau": 0.7777777777777777,
+          "tau_ci": [
+            0.6,
+            0.8222222222222221
+          ],
+          "rho": 0.8909090909090909,
+          "rho_ci": [
+            0.7818181818181817,
+            0.9393939393939393
+          ],
+          "tau_perm_p": 0.0004999750012499375,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2|bridgesim": {
+          "tau": -0.19999999999999998,
+          "tau_ci": [
+            -0.28888888888888886,
+            0.06666666666666667
+          ],
+          "rho": -0.2606060606060606,
+          "rho_ci": [
+            -0.4424242424242424,
+            0.04242424242424241
+          ],
+          "tau_perm_p": 0.8071596420178991,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|open_l2": {
+          "mmrv": 0.09131519857482184,
+          "mmrv_ci": [
+            0.0777008111163891,
+            0.10852884595605702
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v1|bridgesim": {
+          "tau": -0.06666666666666667,
+          "tau_ci": [
+            -0.15555555555555553,
+            0.19999999999999998
+          ],
+          "rho": -0.07878787878787878,
+          "rho_ci": [
+            -0.22424242424242422,
+            0.2727272727272727
+          ],
+          "tau_perm_p": 0.6371681415929203,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|navsim_v1": {
+          "mmrv": 0.09131519857482184,
+          "mmrv_ci": [
+            0.07267667506532041,
+            0.10610687165676932
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        }
+      }
+    }
+  },
+  "reliability": {},
+  "hypotheses": {
+    "H1": {
+      "statement": "closed-loop orders timing/memory degradations better than open-loop + non-reactive evaluators",
+      "groups": {
+        "closed": [
+          "bridgesim"
+        ],
+        "open_nonreactive": [
+          "open_l2",
+          "navsim_v1"
+        ]
+      },
+      "degradations": [
+        "latency"
+      ],
+      "diff": -0.0023333333333333327,
+      "ci": [
+        -0.04761904761904756,
+        0.0
+      ],
+      "verdict": "contradicted",
+      "margin": 0.1
+    }
+  }
+}

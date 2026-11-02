@@ -1,0 +1,13 @@
+evaluator,degradation,failure_class,retained,tau,tau_lo,tau_hi,pair_acc,p_full_order,n_scenarios,n_bases
+open_l2,camera_dropout,perception,False,1.0,1.0,1.0,1.0,1.0,11805,2
+open_l2,image_noise,perception,False,1.0,1.0,1.0,1.0,1.0,11805,2
+open_l2,stale_obs,timing,False,1.0,1.0,1.0,1.0,1.0,11805,2
+open_l2,latency,timing,True,1.0,1.0,1.0,1.0,1.0,11805,7
+open_l2,lateral_noise,control,True,1.0,1.0,1.0,1.0,1.0,11805,7
+open_l2,late_braking,control,False,1.0,1.0,1.0,1.0,1.0,11805,2
+navsim_v1,camera_dropout,perception,False,1.0,1.0,1.0,1.0,1.0,11805,2
+navsim_v1,image_noise,perception,False,1.0,0.8333333333333333,1.0,1.0,0.896,11805,2
+navsim_v1,stale_obs,timing,False,1.0,1.0,1.0,1.0,1.0,11805,2
+navsim_v1,latency,timing,True,1.0,1.0,1.0,1.0,1.0,11805,7
+navsim_v1,lateral_noise,control,True,1.0,1.0,1.0,1.0,1.0,11805,7
+navsim_v1,late_braking,control,False,1.0,1.0,1.0,1.0,1.0,11805,2

@@ -37,6 +37,12 @@ popA_navsim_v2_navhard.csv, popB_navsim_v2_navhard.csv
   EPDMS, with stage one and stage two separately. Latent TransFuser and Ego Status MLP only: the
   synthetic scenes have no LiDAR, which TransFuser needs.
 
+popA_bridgesim_heldout.csv, popB_bridgesim_heldout.csv
+  BridgeSim on held-out navtest scenes that are not in NavHard (wete.closed_loop.heldout: the first
+  420 converted candidates in a fixed hash order). Same protocol and policies as NavHard. NavHard
+  is used to validate degradations; every evaluator is measured on these scenes (analysis
+  --heldout). Population B rows for TransFuser, LTF and DiffusionDrive seed 0 are the clean runs.
+
 The NAVSIM v1 tables are unchanged; v1 and v2 are separate evaluators, reported side by side.
 
 Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply
