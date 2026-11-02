@@ -1,0 +1,91 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ego_status_mlp/ego_status_mlp_seed_2.ckpt",
+    "sha256": "7c5625790c86e7a5c3e10b436676e82542807f25b29e50937150d734118396a7"
+  },
+  "code": {
+    "bridgesim": "submit:ea5d45f571ad934e09152e3f9c0fbe7d4c2f37db",
+    "repo": "submit:69ec28d97c4abdd4b1e275b0537fe82743364c43"
+  },
+  "comparison": null,
+  "created_utc": "2026-11-02T08:15:16Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "value": null,
+    "wrap": false
+  },
+  "evaluator": "bridgesim_closed_loop",
+  "experiment": "heldout_bridgesim_B_ego_status_mlp_seed2",
+  "extra_evaluator_args": [],
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn171",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1220774",
+    "slurm_partition": "medium"
+  },
+  "policy": "ego_status_mlp_seed2",
+  "protocol": {
+    "controller": "pure_pursuit",
+    "ego_replay_frames": 20,
+    "eval_frames": 80,
+    "eval_mode": "closed_loop",
+    "replan_rate": 5,
+    "sim_dt": 0.1,
+    "traffic_mode": "log_replay"
+  },
+  "result": {
+    "complete": true,
+    "ds": 53.49877947494034,
+    "ds_sem": 1.1966353868431485,
+    "epdms": 70.14151097852029,
+    "epdms_sem": 1.0152250121927937,
+    "mean": {
+      "DAC": 0.8712367875894989,
+      "DDC": 1.0,
+      "DS": 0.5349877947494034,
+      "EC": 0.693594522673031,
+      "EPDMS_no_ep": 0.7014151097852028,
+      "HC": 0.9358171837708832,
+      "LK": 0.94052815274463,
+      "NC": 0.9413022816229116,
+      "RC": 0.7595426109785203,
+      "TL": 0.9922009355608592,
+      "TTC": 0.8070654224343675
+    },
+    "missing_example": [],
+    "num_blank_values": {
+      "DAC": 0,
+      "DDC": 0,
+      "DS": 0,
+      "EC": 0,
+      "EPDMS_no_ep": 0,
+      "HC": 0,
+      "LK": 0,
+      "NC": 0,
+      "RC": 0,
+      "TL": 0,
+      "TTC": 0
+    },
+    "num_expected": 419,
+    "num_missing": 0,
+    "num_scored": 419,
+    "rc": 75.95426109785203,
+    "sem": {
+      "DAC": 0.009909945685902605,
+      "DDC": 0.0,
+      "DS": 0.011966353868431485,
+      "EC": 0.010182920269748973,
+      "EPDMS_no_ep": 0.010152250121927938,
+      "HC": 0.004421689448898874,
+      "LK": 0.006811449466865537,
+      "NC": 0.005634156948654536,
+      "RC": 0.012141814750414972,
+      "TL": 0.0021075413114613898,
+      "TTC": 0.011946215582889198
+    }
+  }
+}

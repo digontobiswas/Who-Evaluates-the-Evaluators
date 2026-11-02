@@ -407,124 +407,164 @@
   },
   "bridgesim_ext": {
     "diffusiondrive_seed0:latency__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:latency__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:latency__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:lateral_noise__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:lateral_noise__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:lateral_noise__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:none__L0": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:tail_lateral__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:tail_lateral__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0:tail_lateral__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:latency__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:latency__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:latency__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:lateral_noise__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:lateral_noise__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:lateral_noise__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:none__L0": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:tail_lateral__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:tail_lateral__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0:tail_lateral__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:latency__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:latency__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:latency__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:lateral_noise__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:lateral_noise__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:lateral_noise__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:none__L0": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:tail_lateral__L1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:tail_lateral__L2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0:tail_lateral__L3": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "diffusiondrive_seed0": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ego_status_mlp_seed0": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ego_status_mlp_seed1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ego_status_mlp_seed2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed0": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "ltf_seed2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed0": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed1": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     },
     "transfuser_seed2": {
-      "missing": true
+      "n": 419,
+      "n_invalid": 0
     }
   },
   "navsim_v1": {

@@ -1,0 +1,11 @@
+policy,epdms,epdms_sem,ds,ds_sem,rc,num_scored,num_expected,complete,mean_DAC,mean_DDC,mean_DS,mean_EC,mean_EPDMS_no_ep,mean_HC,mean_LK,mean_NC,mean_RC,mean_TL,mean_TTC,source_file
+diffusiondrive_seed0,69.8185,0.9785,50.5866,1.1852,71.7493,419,419,True,0.9126,1.0000,0.5059,0.4433,0.6982,0.9073,0.8892,0.9470,0.7175,0.9894,0.8369,results/heldout_bridgesim/diffusiondrive_seed0/none__L0/summary.json
+ego_status_mlp_seed0,71.0816,1.0031,55.7656,1.2050,78.0821,419,419,True,0.8788,1.0000,0.5577,0.7086,0.7108,0.9419,0.9387,0.9448,0.7808,0.9917,0.8107,results/heldout_bridgesim_B/ego_status_mlp_seed0/summary.json
+ego_status_mlp_seed1,73.1496,0.9671,55.5076,1.1778,75.5906,419,419,True,0.8988,1.0000,0.5551,0.6885,0.7315,0.9499,0.9132,0.9485,0.7559,0.9931,0.8265,results/heldout_bridgesim_B/ego_status_mlp_seed1/summary.json
+ego_status_mlp_seed2,70.1415,1.0152,53.4988,1.1966,75.9543,419,419,True,0.8712,1.0000,0.5350,0.6936,0.7014,0.9358,0.9405,0.9413,0.7595,0.9922,0.8071,results/heldout_bridgesim_B/ego_status_mlp_seed2/summary.json
+ltf_seed0,74.0380,0.8595,60.6287,1.0447,82.1861,419,419,True,0.9216,1.0000,0.6063,0.5886,0.7404,0.9417,0.8343,0.9631,0.8219,0.9933,0.8578,results/heldout_bridgesim/ltf_seed0/none__L0/summary.json
+ltf_seed1,71.2692,0.9295,59.9541,1.0781,84.1022,419,419,True,0.8999,1.0000,0.5995,0.5336,0.7127,0.9330,0.9037,0.9554,0.8410,0.9924,0.8314,results/heldout_bridgesim_B/ltf_seed1/summary.json
+ltf_seed2,75.7308,0.8095,62.8402,1.0908,83.2406,419,419,True,0.9314,1.0000,0.6284,0.6001,0.7573,0.9446,0.8874,0.9625,0.8324,0.9927,0.8494,results/heldout_bridgesim_B/ltf_seed2/summary.json
+transfuser_seed0,71.2273,1.0151,51.4769,1.2402,72.5976,419,419,True,0.8780,1.0000,0.5148,0.5826,0.7123,0.9529,0.8821,0.9584,0.7260,0.9923,0.8532,results/heldout_bridgesim/transfuser_seed0/none__L0/summary.json
+transfuser_seed1,73.2587,0.9824,52.9528,1.2807,73.0369,419,419,True,0.8795,1.0000,0.5295,0.6118,0.7326,0.9493,0.9117,0.9657,0.7304,0.9922,0.8704,results/heldout_bridgesim_B/transfuser_seed1/summary.json
+transfuser_seed2,70.6087,0.9594,51.5508,1.2218,73.3071,419,419,True,0.8808,1.0000,0.5155,0.5267,0.7061,0.9411,0.9133,0.9555,0.7331,0.9927,0.8411,results/heldout_bridgesim_B/transfuser_seed2/summary.json

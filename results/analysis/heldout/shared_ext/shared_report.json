@@ -49,92 +49,154 @@
         "transfuser_seed0",
         "transfuser_seed1",
         "transfuser_seed2"
+      ],
+      "bridgesim_ext": [
+        "diffusiondrive_seed0",
+        "ego_status_mlp_seed0",
+        "ego_status_mlp_seed1",
+        "ego_status_mlp_seed2",
+        "ltf_seed0",
+        "ltf_seed1",
+        "ltf_seed2",
+        "transfuser_seed0",
+        "transfuser_seed1",
+        "transfuser_seed2"
       ]
     },
     "evaluators": [
       "open_l2",
       "navsim_v1",
-      "navsim_v2"
+      "navsim_v2",
+      "bridgesim_ext"
     ],
-    "n_shared": 12146,
+    "n_shared": 419,
     "n_full": {
       "open_l2": 12146,
       "navsim_v1": 12146,
-      "navsim_v2": 12146
+      "navsim_v2": 12146,
+      "bridgesim_ext": 419
     },
     "agreement": [
       {
         "pair": "open_l2|navsim_v1",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 10,
         "tau": 0.7777777777777777,
-        "tau_lo": 0.6,
-        "tau_hi": 0.8666666666666666,
+        "tau_lo": 0.4222222222222222,
+        "tau_hi": 0.911111111111111,
         "rho": 0.8909090909090909,
-        "rho_lo": 0.7939393939393938,
-        "rho_hi": 0.9515151515151514,
+        "rho_lo": 0.5878787878787878,
+        "rho_hi": 0.9636363636363635,
         "policies": "diffusiondrive_seed0 ego_status_mlp_seed0 ego_status_mlp_seed1 ego_status_mlp_seed2 ltf_seed0 ltf_seed1 ltf_seed2 transfuser_seed0 transfuser_seed1 transfuser_seed2"
       },
       {
         "pair": "open_l2|navsim_v2",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 9,
         "tau": 0.7222222222222222,
-        "tau_lo": 0.5555555555555556,
-        "tau_hi": 0.7777777777777778,
+        "tau_lo": 0.2777777777777778,
+        "tau_hi": 0.8333333333333334,
         "rho": 0.8499999999999999,
-        "rho_lo": 0.7333333333333334,
-        "rho_hi": 0.9166666666666666,
+        "rho_lo": 0.48333333333333334,
+        "rho_hi": 0.9500000000000001,
         "policies": "ego_status_mlp_seed0 ego_status_mlp_seed1 ego_status_mlp_seed2 ltf_seed0 ltf_seed1 ltf_seed2 transfuser_seed0 transfuser_seed1 transfuser_seed2"
       },
       {
+        "pair": "open_l2|bridgesim_ext",
+        "n_scenarios": 419,
+        "n_policies": 10,
+        "tau": -0.37777777777777777,
+        "tau_lo": -0.4666666666666666,
+        "tau_hi": -0.1111111111111111,
+        "rho": -0.5878787878787878,
+        "rho_lo": -0.6363636363636362,
+        "rho_hi": -0.24848484848484845,
+        "policies": "diffusiondrive_seed0 ego_status_mlp_seed0 ego_status_mlp_seed1 ego_status_mlp_seed2 ltf_seed0 ltf_seed1 ltf_seed2 transfuser_seed0 transfuser_seed1 transfuser_seed2"
+      },
+      {
         "pair": "navsim_v1|navsim_v2",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 9,
         "tau": 1.0,
-        "tau_lo": 0.8333333333333334,
+        "tau_lo": 0.6666666666666666,
         "tau_hi": 1.0,
         "rho": 1.0,
-        "rho_lo": 0.9333333333333332,
+        "rho_lo": 0.8166666666666667,
         "rho_hi": 1.0,
+        "policies": "ego_status_mlp_seed0 ego_status_mlp_seed1 ego_status_mlp_seed2 ltf_seed0 ltf_seed1 ltf_seed2 transfuser_seed0 transfuser_seed1 transfuser_seed2"
+      },
+      {
+        "pair": "navsim_v1|bridgesim_ext",
+        "n_scenarios": 419,
+        "n_policies": 10,
+        "tau": -0.15555555555555553,
+        "tau_lo": -0.4222222222222222,
+        "tau_hi": 0.06666666666666667,
+        "rho": -0.24848484848484845,
+        "rho_lo": -0.6,
+        "rho_hi": 0.11515151515151514,
+        "policies": "diffusiondrive_seed0 ego_status_mlp_seed0 ego_status_mlp_seed1 ego_status_mlp_seed2 ltf_seed0 ltf_seed1 ltf_seed2 transfuser_seed0 transfuser_seed1 transfuser_seed2"
+      },
+      {
+        "pair": "navsim_v2|bridgesim_ext",
+        "n_scenarios": 419,
+        "n_policies": 9,
+        "tau": 0.05555555555555555,
+        "tau_lo": -0.2777777777777778,
+        "tau_hi": 0.3333333333333333,
+        "rho": 0.03333333333333333,
+        "rho_lo": -0.43333333333333335,
+        "rho_hi": 0.48333333333333334,
         "policies": "ego_status_mlp_seed0 ego_status_mlp_seed1 ego_status_mlp_seed2 ltf_seed0 ltf_seed1 ltf_seed2 transfuser_seed0 transfuser_seed1 transfuser_seed2"
       }
     ],
     "policy_means": {
       "open_l2": {
-        "diffusiondrive_seed0": 0.6446317196262271,
-        "ego_status_mlp_seed0": 0.8825519920347598,
-        "ego_status_mlp_seed1": 0.887992676335505,
-        "ego_status_mlp_seed2": 0.8784942934774292,
-        "ltf_seed0": 0.6693409606901197,
-        "ltf_seed1": 0.6894977612677976,
-        "ltf_seed2": 0.6684728246281418,
-        "transfuser_seed0": 0.6586867449952637,
-        "transfuser_seed1": 0.653190431520092,
-        "transfuser_seed2": 0.6519216304702153
+        "diffusiondrive_seed0": 0.657805935069539,
+        "ego_status_mlp_seed0": 0.8883577552376432,
+        "ego_status_mlp_seed1": 0.8849573216010806,
+        "ego_status_mlp_seed2": 0.8789683480911218,
+        "ltf_seed0": 0.7065902986506684,
+        "ltf_seed1": 0.7546085827106376,
+        "ltf_seed2": 0.7101704821528729,
+        "transfuser_seed0": 0.685407640300414,
+        "transfuser_seed1": 0.6795544942757018,
+        "transfuser_seed2": 0.6801062750614523
       },
       "navsim_v1": {
-        "diffusiondrive_seed0": 0.880582076327322,
-        "ego_status_mlp_seed0": 0.6551648748007987,
-        "ego_status_mlp_seed1": 0.6738847235917211,
-        "ego_status_mlp_seed2": 0.6629176327788594,
-        "ltf_seed0": 0.8413568008476265,
-        "ltf_seed1": 0.8307977091947094,
-        "ltf_seed2": 0.8334087082335576,
-        "transfuser_seed0": 0.8338995367700286,
-        "transfuser_seed1": 0.8393637465856368,
-        "transfuser_seed2": 0.8429365319617744
+        "diffusiondrive_seed0": 0.9053632302518091,
+        "ego_status_mlp_seed0": 0.6777009160831357,
+        "ego_status_mlp_seed1": 0.6741812275306696,
+        "ego_status_mlp_seed2": 0.6858660827327915,
+        "ltf_seed0": 0.8637818667312723,
+        "ltf_seed1": 0.8528257159582733,
+        "ltf_seed2": 0.8572057268738532,
+        "transfuser_seed0": 0.8509235710720965,
+        "transfuser_seed1": 0.8675271726499656,
+        "transfuser_seed2": 0.8604407625434315
       },
       "navsim_v2": {
-        "ego_status_mlp_seed0": 0.6616981732796737,
-        "ego_status_mlp_seed1": 0.6765843704759414,
-        "ego_status_mlp_seed2": 0.6670616564520216,
-        "ltf_seed0": 0.8470774058235384,
-        "ltf_seed1": 0.8349239641943879,
-        "ltf_seed2": 0.8355681072605193,
-        "transfuser_seed0": 0.8394521470743715,
-        "transfuser_seed1": 0.8443131344505117,
-        "transfuser_seed2": 0.8478280127238118
+        "ego_status_mlp_seed0": 0.6928646602646148,
+        "ego_status_mlp_seed1": 0.6830757592657336,
+        "ego_status_mlp_seed2": 0.6945572905641926,
+        "ltf_seed0": 0.8691437084282042,
+        "ltf_seed1": 0.8589529630222309,
+        "ltf_seed2": 0.8651835610324767,
+        "transfuser_seed0": 0.8573569880110258,
+        "transfuser_seed1": 0.871850382040452,
+        "transfuser_seed2": 0.8672741114322992
+      },
+      "bridgesim_ext": {
+        "diffusiondrive_seed0": 0.5058655202863965,
+        "ego_status_mlp_seed0": 0.5576555656324583,
+        "ego_status_mlp_seed1": 0.555075911694511,
+        "ego_status_mlp_seed2": 0.5349877947494033,
+        "ltf_seed0": 0.6062869737470165,
+        "ltf_seed1": 0.5995406682577565,
+        "ltf_seed2": 0.6284022625298328,
+        "transfuser_seed0": 0.514769420047733,
+        "transfuser_seed1": 0.5295275417661098,
+        "transfuser_seed2": 0.5155077303102623
       }
     },
     "family_contrasts": [
@@ -142,11 +204,11 @@
         "contrast": "diffusiondrive - ego_status_mlp",
         "evaluator": "open_l2",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 4,
-        "mean": 0.23838126765634104,
-        "lo": 0.22612310073945016,
-        "hi": 0.2506523565871475,
+        "mean": 0.226288539907076,
+        "lo": 0.15792465833242358,
+        "hi": 0.294707966697863,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
@@ -157,8 +219,8 @@
         "n_scenarios": 12146,
         "n_policies": 4,
         "mean": 0.23838126765634104,
-        "lo": 0.22567490066837323,
-        "hi": 0.24989841338922375,
+        "lo": 0.22702471389065257,
+        "hi": 0.25057706946790426,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
@@ -166,11 +228,11 @@
         "contrast": "diffusiondrive - ego_status_mlp",
         "evaluator": "navsim_v1",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 4,
-        "mean": 0.2165929992701919,
-        "lo": 0.2097653952014333,
-        "hi": 0.22364582239974629,
+        "mean": 0.22611382146961023,
+        "lo": 0.19199294946629059,
+        "hi": 0.2641252989970828,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
@@ -181,20 +243,44 @@
         "n_scenarios": 12146,
         "n_policies": 4,
         "mean": 0.2165929992701919,
-        "lo": 0.20972076944886078,
-        "hi": 0.22329717532264537,
+        "lo": 0.20971081049377654,
+        "hi": 0.22315267104188302,
         "p_positive": 1.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "diffusiondrive - ego_status_mlp",
+        "evaluator": "bridgesim_ext",
+        "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 4,
+        "mean": -0.04337423707239459,
+        "lo": -0.06683805499204455,
+        "hi": -0.019978699562450283,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "diffusiondrive - ego_status_mlp",
+        "evaluator": "bridgesim_ext",
+        "scope": "full",
+        "n_scenarios": 419,
+        "n_policies": 4,
+        "mean": -0.04337423707239459,
+        "lo": -0.06710352748607795,
+        "hi": -0.020614643436754183,
+        "p_positive": 0.001,
         "units": "oriented: positive = first family better"
       },
       {
         "contrast": "diffusiondrive - ltf",
         "evaluator": "open_l2",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 4,
-        "mean": 0.031138795902460437,
-        "lo": 0.02476773989163442,
-        "hi": 0.03768300136548669,
+        "mean": 0.06598385276852067,
+        "lo": 0.0289679970954452,
+        "hi": 0.10190288406121172,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
@@ -205,8 +291,8 @@
         "n_scenarios": 12146,
         "n_policies": 4,
         "mean": 0.031138795902460437,
-        "lo": 0.02470124266046508,
-        "hi": 0.038298788407914695,
+        "lo": 0.024309649037520104,
+        "hi": 0.03783672091638996,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
@@ -214,11 +300,11 @@
         "contrast": "diffusiondrive - ltf",
         "evaluator": "navsim_v1",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 4,
-        "mean": 0.04539433690202377,
-        "lo": 0.04171177337415786,
-        "hi": 0.04956880455532137,
+        "mean": 0.04742546039734238,
+        "lo": 0.03112572718084166,
+        "hi": 0.06467717637649391,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
@@ -229,44 +315,68 @@
         "n_scenarios": 12146,
         "n_policies": 4,
         "mean": 0.04539433690202377,
-        "lo": 0.04142687238267886,
-        "hi": 0.049298224980675535,
+        "lo": 0.04165426274980065,
+        "hi": 0.049369318615506134,
         "p_positive": 1.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "diffusiondrive - ltf",
+        "evaluator": "bridgesim_ext",
+        "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 4,
+        "mean": -0.10554444789180588,
+        "lo": -0.12583458387032617,
+        "hi": -0.08697896326571201,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "diffusiondrive - ltf",
+        "evaluator": "bridgesim_ext",
+        "scope": "full",
+        "n_scenarios": 419,
+        "n_policies": 4,
+        "mean": -0.10554444789180588,
+        "lo": -0.12603014093078757,
+        "hi": -0.08484401825775657,
+        "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
       {
         "contrast": "diffusiondrive - transfuser",
         "evaluator": "open_l2",
         "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 4,
+        "mean": 0.02388353480965029,
+        "lo": -0.009991240993625078,
+        "hi": 0.05926903734359669,
+        "p_positive": 0.915,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "diffusiondrive - transfuser",
+        "evaluator": "open_l2",
+        "scope": "full",
         "n_scenarios": 12146,
         "n_policies": 4,
         "mean": 0.00996788270229858,
-        "lo": 0.0036021619118906337,
-        "hi": 0.016310767185866163,
+        "lo": 0.003896284457739251,
+        "hi": 0.015952262516586834,
         "p_positive": 0.997,
         "units": "oriented: positive = first family better"
       },
       {
         "contrast": "diffusiondrive - transfuser",
-        "evaluator": "open_l2",
-        "scope": "full",
-        "n_scenarios": 12146,
-        "n_policies": 4,
-        "mean": 0.00996788270229858,
-        "lo": 0.003694719566223005,
-        "hi": 0.01566921224480402,
-        "p_positive": 0.997,
-        "units": "oriented: positive = first family better"
-      },
-      {
-        "contrast": "diffusiondrive - transfuser",
         "evaluator": "navsim_v1",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 4,
-        "mean": 0.04184880455483994,
-        "lo": 0.03832114143245026,
-        "hi": 0.045559602198814955,
+        "mean": 0.045732728163310726,
+        "lo": 0.030430517780855284,
+        "hi": 0.0614442398624532,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
@@ -277,32 +387,56 @@
         "n_scenarios": 12146,
         "n_policies": 4,
         "mean": 0.04184880455483994,
-        "lo": 0.038333717531149815,
-        "hi": 0.04565924943997095,
+        "lo": 0.038525357864358144,
+        "hi": 0.04545219119274719,
         "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
       {
+        "contrast": "diffusiondrive - transfuser",
+        "evaluator": "bridgesim_ext",
+        "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 4,
+        "mean": -0.014069377088305487,
+        "lo": -0.034766219013524266,
+        "hi": 0.008040704276054094,
+        "p_positive": 0.124,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "diffusiondrive - transfuser",
+        "evaluator": "bridgesim_ext",
+        "scope": "full",
+        "n_scenarios": 419,
+        "n_policies": 4,
+        "mean": -0.014069377088305487,
+        "lo": -0.03540317667064439,
+        "hi": 0.007363079295942717,
+        "p_positive": 0.108,
+        "units": "oriented: positive = first family better"
+      },
+      {
         "contrast": "ego_status_mlp - ltf",
         "evaluator": "open_l2",
         "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": -0.16030468713855534,
+        "lo": -0.228895417717504,
+        "hi": -0.09350279771505919,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "open_l2",
+        "scope": "full",
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.2072424717538806,
-        "lo": -0.21818453790504214,
-        "hi": -0.19648271602519762,
-        "p_positive": 0.0,
-        "units": "oriented: positive = first family better"
-      },
-      {
-        "contrast": "ego_status_mlp - ltf",
-        "evaluator": "open_l2",
-        "scope": "full",
-        "n_scenarios": 12146,
-        "n_policies": 6,
-        "mean": -0.2072424717538806,
-        "lo": -0.21807983398147682,
-        "hi": -0.19590648169671326,
+        "lo": -0.21810273492240728,
+        "hi": -0.19466354413092962,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -310,11 +444,11 @@
         "contrast": "ego_status_mlp - ltf",
         "evaluator": "navsim_v1",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 6,
-        "mean": -0.1711986623681681,
-        "lo": -0.17757595050169736,
-        "hi": -0.16500566684308055,
+        "mean": -0.17868836107226785,
+        "lo": -0.21573445103515868,
+        "hi": -0.1454469451722555,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -325,8 +459,8 @@
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.1711986623681681,
-        "lo": -0.1776345323197543,
-        "hi": -0.1646133436446011,
+        "lo": -0.1775797713600779,
+        "hi": -0.16472873596419907,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -334,11 +468,11 @@
         "contrast": "ego_status_mlp - ltf",
         "evaluator": "navsim_v2",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 6,
-        "mean": -0.1707417590236024,
-        "lo": -0.17667959243432116,
-        "hi": -0.16396484888893983,
+        "mean": -0.1742608407961234,
+        "lo": -0.21421424885861096,
+        "hi": -0.14142625516916668,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -349,8 +483,32 @@
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.1707417590236024,
-        "lo": -0.1770881724871564,
-        "hi": -0.16474320637434284,
+        "lo": -0.17740734674793973,
+        "hi": -0.16413382923722947,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "bridgesim_ext",
+        "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": -0.06217021081941129,
+        "lo": -0.07851039180588704,
+        "hi": -0.04687209970167064,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "evaluator": "bridgesim_ext",
+        "scope": "full",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": -0.06217021081941129,
+        "lo": -0.07815054200477325,
+        "hi": -0.04707127559665872,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -358,23 +516,23 @@
         "contrast": "ego_status_mlp - transfuser",
         "evaluator": "open_l2",
         "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": -0.2024050050974257,
+        "lo": -0.2722898548123211,
+        "hi": -0.1341010859901394,
+        "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "open_l2",
+        "scope": "full",
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.22841338495404245,
-        "lo": -0.2391101291386284,
-        "hi": -0.21801173291843864,
-        "p_positive": 0.0,
-        "units": "oriented: positive = first family better"
-      },
-      {
-        "contrast": "ego_status_mlp - transfuser",
-        "evaluator": "open_l2",
-        "scope": "full",
-        "n_scenarios": 12146,
-        "n_policies": 6,
-        "mean": -0.22841338495404245,
-        "lo": -0.23912799624992867,
-        "hi": -0.21817959447161858,
+        "lo": -0.23908795001540822,
+        "hi": -0.21743676656909727,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -382,11 +540,11 @@
         "contrast": "ego_status_mlp - transfuser",
         "evaluator": "navsim_v1",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 6,
-        "mean": -0.17474419471535196,
-        "lo": -0.18094727403554886,
-        "hi": -0.16839134120676175,
+        "mean": -0.1803810933062995,
+        "lo": -0.2150636890530592,
+        "hi": -0.14584672355933168,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -397,8 +555,8 @@
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.17474419471535196,
-        "lo": -0.1815582133450547,
-        "hi": -0.16838260160130952,
+        "lo": -0.18120498384699843,
+        "hi": -0.16797042811779878,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -406,11 +564,11 @@
         "contrast": "ego_status_mlp - transfuser",
         "evaluator": "navsim_v2",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 6,
-        "mean": -0.1754163646803535,
-        "lo": -0.1818025604761028,
-        "hi": -0.1691229129625808,
+        "mean": -0.17532792379641185,
+        "lo": -0.2094114666608295,
+        "hi": -0.14020359702800556,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -421,20 +579,44 @@
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.1754163646803535,
-        "lo": -0.1817261786551784,
-        "hi": -0.16937544417601633,
+        "lo": -0.1817961716784236,
+        "hi": -0.16902839522236165,
         "p_positive": 0.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "bridgesim_ext",
+        "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": 0.029304859984089104,
+        "lo": 0.015309147494033417,
+        "hi": 0.04479453929992044,
+        "p_positive": 1.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "evaluator": "bridgesim_ext",
+        "scope": "full",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": 0.029304859984089104,
+        "lo": 0.014823502804295948,
+        "hi": 0.04383883637629277,
+        "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       },
       {
         "contrast": "ltf - transfuser",
         "evaluator": "open_l2",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 6,
-        "mean": -0.02117091320016186,
-        "lo": -0.02566859715022441,
-        "hi": -0.016928342185581917,
+        "mean": -0.042100317958870384,
+        "lo": -0.06987679691320513,
+        "hi": -0.016315628284010605,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -445,8 +627,8 @@
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.02117091320016186,
-        "lo": -0.02599850180546521,
-        "hi": -0.016436773314759175,
+        "lo": -0.025871750334864375,
+        "hi": -0.016609930751246952,
         "p_positive": 0.0,
         "units": "oriented: positive = first family better"
       },
@@ -454,12 +636,12 @@
         "contrast": "ltf - transfuser",
         "evaluator": "navsim_v1",
         "scope": "shared",
-        "n_scenarios": 12146,
+        "n_scenarios": 419,
         "n_policies": 6,
-        "mean": -0.003545532347183826,
-        "lo": -0.007083996546173786,
-        "hi": -0.0002749307397794142,
-        "p_positive": 0.021,
+        "mean": -0.0016927322340316443,
+        "lo": -0.019479061173854468,
+        "hi": 0.01710825529032517,
+        "p_positive": 0.43,
         "units": "oriented: positive = first family better"
       },
       {
@@ -469,33 +651,57 @@
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.003545532347183826,
-        "lo": -0.007148066456061523,
-        "hi": -0.00013745460001764016,
-        "p_positive": 0.022,
+        "lo": -0.007472573016147707,
+        "hi": 4.123113641618338e-05,
+        "p_positive": 0.026,
         "units": "oriented: positive = first family better"
       },
       {
         "contrast": "ltf - transfuser",
         "evaluator": "navsim_v2",
         "scope": "shared",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": -0.0010670830002884382,
+        "lo": -0.02031343125632492,
+        "hi": 0.016453713338522687,
+        "p_positive": 0.432,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "navsim_v2",
+        "scope": "full",
         "n_scenarios": 12146,
         "n_policies": 6,
         "mean": -0.004674605656751088,
-        "lo": -0.008164860404531096,
-        "hi": -0.0011163596077170498,
+        "lo": -0.00836808438258587,
+        "hi": -0.0012373056500334556,
         "p_positive": 0.005,
         "units": "oriented: positive = first family better"
       },
       {
         "contrast": "ltf - transfuser",
-        "evaluator": "navsim_v2",
-        "scope": "full",
-        "n_scenarios": 12146,
+        "evaluator": "bridgesim_ext",
+        "scope": "shared",
+        "n_scenarios": 419,
         "n_policies": 6,
-        "mean": -0.004674605656751088,
-        "lo": -0.008161798007078494,
-        "hi": -0.001221516414316392,
-        "p_positive": 0.004,
+        "mean": 0.0914750708035004,
+        "lo": 0.07880303273667462,
+        "hi": 0.10724928671439936,
+        "p_positive": 1.0,
+        "units": "oriented: positive = first family better"
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "evaluator": "bridgesim_ext",
+        "scope": "full",
+        "n_scenarios": 419,
+        "n_policies": 6,
+        "mean": 0.0914750708035004,
+        "lo": 0.07698748663484486,
+        "hi": 0.10704786336515512,
+        "p_positive": 1.0,
         "units": "oriented: positive = first family better"
       }
     ],
@@ -503,98 +709,218 @@
       {
         "contrast": "diffusiondrive - ego_status_mlp",
         "pair": "open_l2|navsim_v1",
-        "n_scenarios": 12146,
-        "spearman": 0.36408148358830184,
-        "sign_agreement": 0.6790071518721077,
-        "n_both_nonzero": 9508
+        "n_scenarios": 419,
+        "spearman": 0.45794210530727286,
+        "sign_agreement": 0.7151162790697675,
+        "n_both_nonzero": 344
+      },
+      {
+        "contrast": "diffusiondrive - ego_status_mlp",
+        "pair": "open_l2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.10134976190748078,
+        "sign_agreement": 0.5047846889952153,
+        "n_both_nonzero": 418
+      },
+      {
+        "contrast": "diffusiondrive - ego_status_mlp",
+        "pair": "navsim_v1|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.15794305278320483,
+        "sign_agreement": 0.5348837209302325,
+        "n_both_nonzero": 344
       },
       {
         "contrast": "diffusiondrive - ltf",
         "pair": "open_l2|navsim_v1",
-        "n_scenarios": 12146,
-        "spearman": 0.19272062609602694,
-        "sign_agreement": 0.5977683891236052,
-        "n_both_nonzero": 9231
+        "n_scenarios": 419,
+        "spearman": 0.28652618010628444,
+        "sign_agreement": 0.6666666666666666,
+        "n_both_nonzero": 318
+      },
+      {
+        "contrast": "diffusiondrive - ltf",
+        "pair": "open_l2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.065028053360296,
+        "sign_agreement": 0.46411483253588515,
+        "n_both_nonzero": 418
+      },
+      {
+        "contrast": "diffusiondrive - ltf",
+        "pair": "navsim_v1|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.05528543621389181,
+        "sign_agreement": 0.49056603773584906,
+        "n_both_nonzero": 318
       },
       {
         "contrast": "diffusiondrive - transfuser",
         "pair": "open_l2|navsim_v1",
-        "n_scenarios": 12146,
-        "spearman": 0.17420706618299917,
-        "sign_agreement": 0.5758879329362453,
-        "n_both_nonzero": 9066
+        "n_scenarios": 419,
+        "spearman": 0.2747472674274845,
+        "sign_agreement": 0.6285714285714286,
+        "n_both_nonzero": 315
+      },
+      {
+        "contrast": "diffusiondrive - transfuser",
+        "pair": "open_l2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.06408343205935074,
+        "sign_agreement": 0.5263157894736842,
+        "n_both_nonzero": 418
+      },
+      {
+        "contrast": "diffusiondrive - transfuser",
+        "pair": "navsim_v1|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.02630303538936249,
+        "sign_agreement": 0.5333333333333333,
+        "n_both_nonzero": 315
       },
       {
         "contrast": "ego_status_mlp - ltf",
         "pair": "open_l2|navsim_v1",
-        "n_scenarios": 12146,
-        "spearman": 0.3871885792719618,
-        "sign_agreement": 0.6766856214459789,
-        "n_both_nonzero": 9848
+        "n_scenarios": 419,
+        "spearman": 0.4265995451798792,
+        "sign_agreement": 0.667621776504298,
+        "n_both_nonzero": 349
       },
       {
         "contrast": "ego_status_mlp - ltf",
         "pair": "open_l2|navsim_v2",
-        "n_scenarios": 12146,
-        "spearman": 0.3677950792788292,
-        "sign_agreement": 0.6619257137010129,
-        "n_both_nonzero": 9773
+        "n_scenarios": 419,
+        "spearman": 0.3808703196096946,
+        "sign_agreement": 0.652046783625731,
+        "n_both_nonzero": 342
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "pair": "open_l2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.10287440232170794,
+        "sign_agreement": 0.5430622009569378,
+        "n_both_nonzero": 418
       },
       {
         "contrast": "ego_status_mlp - ltf",
         "pair": "navsim_v1|navsim_v2",
-        "n_scenarios": 12146,
-        "spearman": 0.8553261133462668,
-        "sign_agreement": 0.9192226890756302,
-        "n_both_nonzero": 9520
+        "n_scenarios": 419,
+        "spearman": 0.8508877508141771,
+        "sign_agreement": 0.9226190476190477,
+        "n_both_nonzero": 336
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "pair": "navsim_v1|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.20276128303529806,
+        "sign_agreement": 0.5988538681948424,
+        "n_both_nonzero": 349
+      },
+      {
+        "contrast": "ego_status_mlp - ltf",
+        "pair": "navsim_v2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.21952642700622169,
+        "sign_agreement": 0.5935672514619883,
+        "n_both_nonzero": 342
       },
       {
         "contrast": "ego_status_mlp - transfuser",
         "pair": "open_l2|navsim_v1",
-        "n_scenarios": 12146,
-        "spearman": 0.3926999902350287,
-        "sign_agreement": 0.684822899505766,
-        "n_both_nonzero": 9712
+        "n_scenarios": 419,
+        "spearman": 0.3928364816824356,
+        "sign_agreement": 0.6637426900584795,
+        "n_both_nonzero": 342
       },
       {
         "contrast": "ego_status_mlp - transfuser",
         "pair": "open_l2|navsim_v2",
-        "n_scenarios": 12146,
-        "spearman": 0.3734956674987435,
-        "sign_agreement": 0.6698475261902292,
-        "n_both_nonzero": 9641
+        "n_scenarios": 419,
+        "spearman": 0.351362884845179,
+        "sign_agreement": 0.6456456456456456,
+        "n_both_nonzero": 333
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "pair": "open_l2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.12676114238732,
+        "sign_agreement": 0.5095693779904307,
+        "n_both_nonzero": 418
       },
       {
         "contrast": "ego_status_mlp - transfuser",
         "pair": "navsim_v1|navsim_v2",
-        "n_scenarios": 12146,
-        "spearman": 0.8539353969776348,
-        "sign_agreement": 0.9225517388521443,
-        "n_both_nonzero": 9374
+        "n_scenarios": 419,
+        "spearman": 0.8494181088166557,
+        "sign_agreement": 0.9318885448916409,
+        "n_both_nonzero": 323
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "pair": "navsim_v1|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.1287240433537293,
+        "sign_agreement": 0.4853801169590643,
+        "n_both_nonzero": 342
+      },
+      {
+        "contrast": "ego_status_mlp - transfuser",
+        "pair": "navsim_v2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.08163790539740823,
+        "sign_agreement": 0.47147147147147145,
+        "n_both_nonzero": 333
       },
       {
         "contrast": "ltf - transfuser",
         "pair": "open_l2|navsim_v1",
-        "n_scenarios": 12146,
-        "spearman": 0.21951879207061958,
-        "sign_agreement": 0.5910013893341883,
-        "n_both_nonzero": 9357
+        "n_scenarios": 419,
+        "spearman": 0.2793176915739963,
+        "sign_agreement": 0.5893416927899686,
+        "n_both_nonzero": 319
       },
       {
         "contrast": "ltf - transfuser",
         "pair": "open_l2|navsim_v2",
-        "n_scenarios": 12146,
-        "spearman": 0.19451598481013796,
-        "sign_agreement": 0.5868081880212282,
-        "n_both_nonzero": 9233
+        "n_scenarios": 419,
+        "spearman": 0.2875229469474155,
+        "sign_agreement": 0.6069182389937107,
+        "n_both_nonzero": 318
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "pair": "open_l2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": -0.10124078910663512,
+        "sign_agreement": 0.43301435406698563,
+        "n_both_nonzero": 418
       },
       {
         "contrast": "ltf - transfuser",
         "pair": "navsim_v1|navsim_v2",
-        "n_scenarios": 12146,
-        "spearman": 0.7881898813351851,
-        "sign_agreement": 0.910636394139358,
-        "n_both_nonzero": 8941
+        "n_scenarios": 419,
+        "spearman": 0.7733234748533518,
+        "sign_agreement": 0.9078947368421053,
+        "n_both_nonzero": 304
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "pair": "navsim_v1|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.02786253638467675,
+        "sign_agreement": 0.5266457680250783,
+        "n_both_nonzero": 319
+      },
+      {
+        "contrast": "ltf - transfuser",
+        "pair": "navsim_v2|bridgesim_ext",
+        "n_scenarios": 419,
+        "spearman": 0.03141671934102458,
+        "sign_agreement": 0.5062893081761006,
+        "n_both_nonzero": 318
       }
     ]
   },
@@ -604,54 +930,87 @@
       "degradation": "latency",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 1.044174230982397,
-      "mean_drop_full": 1.044174230982397
+      "n_shared": 419,
+      "mean_drop_shared": 1.1125236197892399,
+      "mean_drop_full": 1.044174230982397,
+      "spearman_with_bridgesim_ext": -0.13108400204242437
     },
     {
       "base": "diffusiondrive_seed0",
       "degradation": "latency",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.11917524820055561,
-      "mean_drop_full": 0.11917524820055561
+      "n_shared": 419,
+      "mean_drop_shared": 0.15127078109073663,
+      "mean_drop_full": 0.11917524820055561,
+      "spearman_with_bridgesim_ext": -0.032076816143246215
+    },
+    {
+      "base": "diffusiondrive_seed0",
+      "degradation": "latency",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 0.1583445369928401,
+      "mean_drop_full": 0.1583445369928401
     },
     {
       "base": "diffusiondrive_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.4740226293740971,
-      "mean_drop_full": 0.4740226293740971
+      "n_shared": 419,
+      "mean_drop_shared": 0.4593974434983055,
+      "mean_drop_full": 0.4740226293740971,
+      "spearman_with_bridgesim_ext": -0.03090537147816384
     },
     {
       "base": "diffusiondrive_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.36548769845518425,
-      "mean_drop_full": 0.36548769845518425
+      "n_shared": 419,
+      "mean_drop_shared": 0.3673164030413738,
+      "mean_drop_full": 0.36548769845518425,
+      "spearman_with_bridgesim_ext": 0.11384356825783468
+    },
+    {
+      "base": "diffusiondrive_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 0.16753921479713607,
+      "mean_drop_full": 0.16753921479713607
     },
     {
       "base": "diffusiondrive_seed0",
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.14081391653689052,
-      "mean_drop_full": 0.14081391653689052
+      "n_shared": 419,
+      "mean_drop_shared": 0.1134739748774126,
+      "mean_drop_full": 0.14081391653689052,
+      "spearman_with_bridgesim_ext": -0.0472592272490608
     },
     {
       "base": "diffusiondrive_seed0",
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.24076554067227365,
-      "mean_drop_full": 0.24076554067227365
+      "n_shared": 419,
+      "mean_drop_shared": 0.22749560788282303,
+      "mean_drop_full": 0.24076554067227365,
+      "spearman_with_bridgesim_ext": -0.003400643045250195
+    },
+    {
+      "base": "diffusiondrive_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 0.00417473508353222,
+      "mean_drop_full": 0.00417473508353222
     },
     {
       "base": "diffusiondrive_seed0",
@@ -730,54 +1089,78 @@
       "degradation": "latency",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 1.066661169659174,
-      "mean_drop_full": 1.066661169659174
+      "n_shared": 419,
+      "mean_drop_shared": 1.0489182530390002,
+      "mean_drop_full": 1.066661169659174,
+      "spearman_with_bridgesim_ext": -0.041592706260015905
     },
     {
       "base": "ltf_seed0",
       "degradation": "latency",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.1263219186002503,
-      "mean_drop_full": 0.1263219186002503
+      "n_shared": 419,
+      "mean_drop_shared": 0.14750826013230162,
+      "mean_drop_full": 0.1263219186002503,
+      "spearman_with_bridgesim_ext": 0.002066991912032152
     },
     {
       "base": "ltf_seed0",
       "degradation": "latency",
       "level": 3,
       "evaluator": "navsim_v2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.14224804666313923,
-      "mean_drop_full": 0.14224804666313923
+      "n_shared": 419,
+      "mean_drop_shared": 0.16351185042221514,
+      "mean_drop_full": 0.14224804666313923,
+      "spearman_with_bridgesim_ext": -0.10847453378201545
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "latency",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 0.15658306682577566,
+      "mean_drop_full": 0.15658306682577566
     },
     {
       "base": "ltf_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.46037182786286485,
-      "mean_drop_full": 0.46037182786286485
+      "n_shared": 419,
+      "mean_drop_shared": 0.4442411480785299,
+      "mean_drop_full": 0.46037182786286485,
+      "spearman_with_bridgesim_ext": -0.02887730282529931
     },
     {
       "base": "ltf_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.32554896701365144,
-      "mean_drop_full": 0.32554896701365144
+      "n_shared": 419,
+      "mean_drop_shared": 0.3268016198634828,
+      "mean_drop_full": 0.32554896701365144,
+      "spearman_with_bridgesim_ext": 0.13499910862593165
     },
     {
       "base": "ltf_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "navsim_v2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.378546012009934,
-      "mean_drop_full": 0.378546012009934
+      "n_shared": 419,
+      "mean_drop_shared": 0.38415821156202795,
+      "mean_drop_full": 0.378546012009934,
+      "spearman_with_bridgesim_ext": 0.13329569715754103
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 0.26612923150358,
+      "mean_drop_full": 0.26612923150358
     },
     {
       "base": "ltf_seed0",
@@ -802,27 +1185,39 @@
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.13394759083643434,
-      "mean_drop_full": 0.13394759083643434
+      "n_shared": 419,
+      "mean_drop_shared": 0.11321527837231249,
+      "mean_drop_full": 0.13394759083643434,
+      "spearman_with_bridgesim_ext": -0.013617448152085305
     },
     {
       "base": "ltf_seed0",
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.20499946278494227,
-      "mean_drop_full": 0.20499946278494227
+      "n_shared": 419,
+      "mean_drop_shared": 0.1887454494429851,
+      "mean_drop_full": 0.20499946278494227,
+      "spearman_with_bridgesim_ext": -0.009322048930737488
     },
     {
       "base": "ltf_seed0",
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "navsim_v2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.23328898534459067,
-      "mean_drop_full": 0.23328898534459067
+      "n_shared": 419,
+      "mean_drop_shared": 0.21606536395325904,
+      "mean_drop_full": 0.23328898534459067,
+      "spearman_with_bridgesim_ext": -0.017226255373172728
+    },
+    {
+      "base": "ltf_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 2.0918854415276505e-05,
+      "mean_drop_full": 2.0918854415276505e-05
     },
     {
       "base": "ltf_seed0",
@@ -1018,54 +1413,78 @@
       "degradation": "latency",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 1.0649141049345527,
-      "mean_drop_full": 1.0649141049345527
+      "n_shared": 419,
+      "mean_drop_shared": 1.080726100671058,
+      "mean_drop_full": 1.0649141049345527,
+      "spearman_with_bridgesim_ext": -0.09340241469370976
     },
     {
       "base": "transfuser_seed0",
       "degradation": "latency",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.13514743358534573,
-      "mean_drop_full": 0.13514743358534573
+      "n_shared": 419,
+      "mean_drop_shared": 0.1652686547853741,
+      "mean_drop_full": 0.13514743358534573,
+      "spearman_with_bridgesim_ext": 0.012468699796062185
     },
     {
       "base": "transfuser_seed0",
       "degradation": "latency",
       "level": 3,
       "evaluator": "navsim_v2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.15183208219085217,
-      "mean_drop_full": 0.15183208219085217
+      "n_shared": 419,
+      "mean_drop_shared": 0.1832389248963223,
+      "mean_drop_full": 0.15183208219085217,
+      "spearman_with_bridgesim_ext": -0.05390082151052185
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "latency",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 0.16855645823389023,
+      "mean_drop_full": 0.16855645823389023
     },
     {
       "base": "transfuser_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.4625908868926677,
-      "mean_drop_full": 0.4625908868926677
+      "n_shared": 419,
+      "mean_drop_shared": 0.44703795275822333,
+      "mean_drop_full": 0.4625908868926677,
+      "spearman_with_bridgesim_ext": 0.020314048042406753
     },
     {
       "base": "transfuser_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.31684376077769805,
-      "mean_drop_full": 0.31684376077769805
+      "n_shared": 419,
+      "mean_drop_shared": 0.31650396136433007,
+      "mean_drop_full": 0.31684376077769805,
+      "spearman_with_bridgesim_ext": 0.009726869067641301
     },
     {
       "base": "transfuser_seed0",
       "degradation": "lateral_noise",
       "level": 3,
       "evaluator": "navsim_v2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.36559604758004177,
-      "mean_drop_full": 0.36559604758004177
+      "n_shared": 419,
+      "mean_drop_shared": 0.3685427723527407,
+      "mean_drop_full": 0.36559604758004177,
+      "spearman_with_bridgesim_ext": 0.026513829965978845
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "lateral_noise",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": 0.19327629116945108,
+      "mean_drop_full": 0.19327629116945108
     },
     {
       "base": "transfuser_seed0",
@@ -1090,27 +1509,39 @@
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "open_l2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.13466902420974233,
-      "mean_drop_full": 0.13466902420974233
+      "n_shared": 419,
+      "mean_drop_shared": 0.11495819297519069,
+      "mean_drop_full": 0.13466902420974233,
+      "spearman_with_bridgesim_ext": 0.04805165106835572
     },
     {
       "base": "transfuser_seed0",
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "navsim_v1",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.20065726293697642,
-      "mean_drop_full": 0.20065726293697642
+      "n_shared": 419,
+      "mean_drop_shared": 0.18485102271956105,
+      "mean_drop_full": 0.20065726293697642,
+      "spearman_with_bridgesim_ext": 0.09977257623391197
     },
     {
       "base": "transfuser_seed0",
       "degradation": "tail_lateral",
       "level": 3,
       "evaluator": "navsim_v2",
-      "n_shared": 12146,
-      "mean_drop_shared": 0.22452067624447067,
-      "mean_drop_full": 0.22452067624447067
+      "n_shared": 419,
+      "mean_drop_shared": 0.21309585048371196,
+      "mean_drop_full": 0.22452067624447067,
+      "spearman_with_bridgesim_ext": 0.07238048182409712
+    },
+    {
+      "base": "transfuser_seed0",
+      "degradation": "tail_lateral",
+      "level": 3,
+      "evaluator": "bridgesim_ext",
+      "n_shared": 419,
+      "mean_drop_shared": -0.0007632386634844886,
+      "mean_drop_full": -0.0007632386634844886
     },
     {
       "base": "transfuser_seed0",

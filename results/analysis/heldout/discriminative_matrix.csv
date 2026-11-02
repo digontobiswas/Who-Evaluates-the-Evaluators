@@ -11,3 +11,5 @@ navsim_v1,stale_obs,timing,False,1.0,1.0,1.0,1.0,1.0,11805,2
 navsim_v1,latency,timing,True,1.0,1.0,1.0,1.0,1.0,11805,7
 navsim_v1,lateral_noise,control,True,1.0,1.0,1.0,1.0,1.0,11805,7
 navsim_v1,late_braking,control,False,1.0,1.0,1.0,1.0,1.0,11805,2
+bridgesim_ext,latency,timing,True,1.0,1.0,1.0,1.0,0.996,419,3
+bridgesim_ext,lateral_noise,control,True,1.0,1.0,1.0,1.0,0.99,419,3

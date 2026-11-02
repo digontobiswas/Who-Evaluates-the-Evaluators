@@ -37,6 +37,7 @@
     ],
     "n_selection_scenarios": 421,
     "scenarios": {
+      "bridgesim_ext": 419,
       "navsim_v1": 11805,
       "navsim_v2": 11805,
       "navsim_v2_ph": 29,
@@ -51,7 +52,8 @@
   "monotonicity": {
     "tested": true,
     "references": [
-      "bridgesim"
+      "bridgesim",
+      "bridgesim_ext"
     ],
     "retained": [
       "latency",
@@ -70,12 +72,12 @@
       "latency": {
         "curve": {
           "10": {
-            "tau": 0.9385714285714286,
-            "p_full_order": 0.455
+            "tau": 0.955,
+            "p_full_order": 0.53
           },
           "25": {
-            "tau": 0.9933333333333334,
-            "p_full_order": 0.89
+            "tau": 0.9942857142857143,
+            "p_full_order": 0.925
           },
           "50": {
             "tau": 0.9995238095238095,
@@ -98,25 +100,25 @@
             "p_full_order": 1.0
           }
         },
-        "n_for_p90": 50
+        "n_for_p90": 25
       },
       "lateral_noise": {
         "curve": {
           "10": {
-            "tau": 0.9771428571428572,
-            "p_full_order": 0.775
+            "tau": 0.9797619047619048,
+            "p_full_order": 0.79
           },
           "25": {
-            "tau": 0.9945238095238095,
-            "p_full_order": 0.935
+            "tau": 0.9964285714285714,
+            "p_full_order": 0.94
           },
           "50": {
-            "tau": 0.9988095238095238,
-            "p_full_order": 0.975
+            "tau": 0.999047619047619,
+            "p_full_order": 0.98
           },
           "100": {
-            "tau": 0.9997619047619049,
-            "p_full_order": 0.995
+            "tau": 0.999047619047619,
+            "p_full_order": 0.98
           },
           "200": {
             "tau": 0.9997619047619049,
@@ -138,28 +140,28 @@
       "latency": {
         "curve": {
           "10": {
-            "tau": 0.4324491274631026,
+            "tau": 0.48619047619047623,
             "p_full_order": 0.005
           },
           "25": {
-            "tau": 0.69,
+            "tau": 0.6819047619047618,
             "p_full_order": 0.015
           },
           "50": {
-            "tau": 0.8076190476190476,
-            "p_full_order": 0.025
+            "tau": 0.8302380952380952,
+            "p_full_order": 0.085
           },
           "100": {
-            "tau": 0.9221428571428573,
-            "p_full_order": 0.23
+            "tau": 0.9252380952380953,
+            "p_full_order": 0.25
           },
           "200": {
             "tau": 0.9771428571428572,
-            "p_full_order": 0.665
+            "p_full_order": 0.63
           },
           "400": {
-            "tau": 0.9964285714285714,
-            "p_full_order": 0.93
+            "tau": 0.9983333333333334,
+            "p_full_order": 0.965
           },
           "800": {
             "tau": 1.0,
@@ -171,59 +173,59 @@
       "lateral_noise": {
         "curve": {
           "10": {
-            "tau": 0.8461904761904762,
-            "p_full_order": 0.21
+            "tau": 0.8785714285714286,
+            "p_full_order": 0.24
           },
           "25": {
-            "tau": 0.9152380952380953,
-            "p_full_order": 0.355
+            "tau": 0.9130952380952383,
+            "p_full_order": 0.32
           },
           "50": {
-            "tau": 0.9497619047619048,
-            "p_full_order": 0.555
+            "tau": 0.9547619047619048,
+            "p_full_order": 0.535
           },
           "100": {
-            "tau": 0.9740476190476192,
-            "p_full_order": 0.615
+            "tau": 0.9783333333333334,
+            "p_full_order": 0.67
           },
           "200": {
-            "tau": 0.9945238095238096,
-            "p_full_order": 0.905
+            "tau": 0.9930952380952381,
+            "p_full_order": 0.895
           },
           "400": {
-            "tau": 0.9988095238095238,
-            "p_full_order": 0.975
+            "tau": 0.9971428571428572,
+            "p_full_order": 0.94
           },
           "800": {
-            "tau": 1.0,
-            "p_full_order": 1.0
+            "tau": 0.9997619047619049,
+            "p_full_order": 0.995
           }
         },
-        "n_for_p90": 200
+        "n_for_p90": 400
       }
     },
     "navsim_v2": {
       "latency": {
         "curve": {
           "10": {
-            "tau": 0.5594444444444444,
-            "p_full_order": 0.01
+            "tau": 0.56,
+            "p_full_order": 0.0
           },
           "25": {
-            "tau": 0.7283333333333334,
-            "p_full_order": 0.025
+            "tau": 0.7280555555555555,
+            "p_full_order": 0.03
           },
           "50": {
-            "tau": 0.8502777777777779,
-            "p_full_order": 0.11
+            "tau": 0.8544444444444446,
+            "p_full_order": 0.085
           },
           "100": {
-            "tau": 0.9366666666666668,
-            "p_full_order": 0.385
+            "tau": 0.9383333333333335,
+            "p_full_order": 0.395
           },
           "200": {
-            "tau": 0.9866666666666667,
-            "p_full_order": 0.785
+            "tau": 0.9872222222222223,
+            "p_full_order": 0.805
           },
           "400": {
             "tau": 0.9991666666666665,
@@ -239,38 +241,98 @@
       "lateral_noise": {
         "curve": {
           "10": {
-            "tau": 0.8806881182152921,
+            "tau": 0.8690675465756987,
             "p_full_order": 0.28
           },
           "25": {
-            "tau": 0.9241666666666666,
-            "p_full_order": 0.41
+            "tau": 0.9252777777777778,
+            "p_full_order": 0.405
           },
           "50": {
-            "tau": 0.9547222222222222,
-            "p_full_order": 0.54
+            "tau": 0.9688888888888889,
+            "p_full_order": 0.615
           },
           "100": {
-            "tau": 0.9822222222222223,
+            "tau": 0.9783333333333334,
             "p_full_order": 0.745
           },
           "200": {
-            "tau": 0.9958333333333332,
-            "p_full_order": 0.93
+            "tau": 0.9927777777777778,
+            "p_full_order": 0.89
           },
           "400": {
-            "tau": 0.9977777777777778,
-            "p_full_order": 0.965
+            "tau": 0.9986111111111111,
+            "p_full_order": 0.975
           },
           "800": {
             "tau": 0.9997222222222223,
             "p_full_order": 0.995
           }
         },
-        "n_for_p90": 200
+        "n_for_p90": 400
       }
     },
-    "bridgesim": {}
+    "bridgesim": {},
+    "bridgesim_ext": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.8444444444444446,
+            "p_full_order": 0.29
+          },
+          "25": {
+            "tau": 0.9455555555555556,
+            "p_full_order": 0.61
+          },
+          "50": {
+            "tau": 0.9722222222222223,
+            "p_full_order": 0.76
+          },
+          "100": {
+            "tau": 0.9933333333333334,
+            "p_full_order": 0.94
+          },
+          "200": {
+            "tau": 0.9994444444444445,
+            "p_full_order": 0.995
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.8188888888888889,
+            "p_full_order": 0.32
+          },
+          "25": {
+            "tau": 0.9138888888888889,
+            "p_full_order": 0.485
+          },
+          "50": {
+            "tau": 0.9572222222222223,
+            "p_full_order": 0.675
+          },
+          "100": {
+            "tau": 0.9811111111111112,
+            "p_full_order": 0.85
+          },
+          "200": {
+            "tau": 0.9983333333333333,
+            "p_full_order": 0.985
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 200
+      }
+    }
   },
   "specificity": {
     "margin": 0.01,
@@ -281,6 +343,13 @@
       "tail_stretch": true
     },
     "verdicts": {
+      "bridgesim_ext": {
+        "tail_lateral": {
+          "verdict": "specific",
+          "validated_on_reference": true,
+          "max_ratio": 0.07865624225946587
+        }
+      },
       "navsim_v1": {
         "tail_lateral": {
           "verdict": "penalises benign",
@@ -381,6 +450,18 @@
           "transfuser_seed0",
           "transfuser_seed1",
           "transfuser_seed2"
+        ],
+        "bridgesim_ext": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
         ]
       },
       "pairs": {
@@ -395,7 +476,7 @@
             0.7939393939393938,
             0.9393939393939393
           ],
-          "tau_perm_p": 0.0007499625018749063,
+          "tau_perm_p": 0.00039998000099995,
           "policies": [
             "diffusiondrive_seed0",
             "ego_status_mlp_seed0",
@@ -421,7 +502,7 @@
             0.7166666666666667,
             0.9166666666666666
           ],
-          "tau_perm_p": 0.002599870006499675,
+          "tau_perm_p": 0.0029498525073746312,
           "policies": [
             "ego_status_mlp_seed0",
             "ego_status_mlp_seed1",
@@ -443,8 +524,8 @@
           ],
           "rho": -0.2606060606060606,
           "rho_ci": [
-            -0.4666666666666666,
-            0.01818181818181818
+            -0.4427272727272727,
+            0.006060606060606061
           ],
           "tau_perm_p": 0.8066596670166492,
           "policies": [
@@ -461,11 +542,37 @@
           ],
           "n_policies": 10
         },
+        "open_l2|bridgesim_ext": {
+          "tau": -0.3333333333333333,
+          "tau_ci": [
+            -0.4666666666666666,
+            -0.19999999999999998
+          ],
+          "rho": -0.5757575757575757,
+          "rho_ci": [
+            -0.6242424242424242,
+            -0.4424242424242424
+          ],
+          "tau_perm_p": 0.9192040397980101,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
         "MMRV|open_l2": {
-          "mmrv": 0.09131519857482184,
+          "mmrv": 0.08946948926014286,
           "mmrv_ci": [
-            0.07940519488123508,
-            0.11025889407957246
+            0.07712009481503523,
+            0.10648862176610928
           ],
           "policies": [
             "diffusiondrive_seed0",
@@ -489,7 +596,7 @@
           ],
           "rho": 1.0,
           "rho_ci": [
-            0.8833333333333333,
+            0.8995833333333334,
             1.0
           ],
           "tau_perm_p": 4.999750012499375e-05,
@@ -510,14 +617,40 @@
           "tau": -0.06666666666666667,
           "tau_ci": [
             -0.19999999999999998,
-            0.19999999999999998
+            0.15555555555555553
           ],
           "rho": -0.07878787878787878,
           "rho_ci": [
             -0.24848484848484845,
-            0.2606060606060606
+            0.24848484848484845
           ],
-          "tau_perm_p": 0.6344182790860456,
+          "tau_perm_p": 0.6364681765911704,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v1|bridgesim_ext": {
+          "tau": -0.28888888888888886,
+          "tau_ci": [
+            -0.37777777777777777,
+            -0.06666666666666667
+          ],
+          "rho": -0.4424242424242424,
+          "rho_ci": [
+            -0.5393939393939393,
+            -0.15121212121212146
+          ],
+          "tau_perm_p": 0.8907054647267637,
           "policies": [
             "diffusiondrive_seed0",
             "ego_status_mlp_seed0",
@@ -533,10 +666,10 @@
           "n_policies": 10
         },
         "MMRV|navsim_v1": {
-          "mmrv": 0.09131519857482184,
+          "mmrv": 0.08946948926014286,
           "mmrv_ci": [
-            0.07328651292161491,
-            0.10658610612232758
+            0.07374836315632403,
+            0.10431360436754096
           ],
           "policies": [
             "diffusiondrive_seed0",
@@ -560,10 +693,35 @@
           ],
           "rho": -0.26666666666666666,
           "rho_ci": [
-            -0.38333333333333336,
-            0.15
+            -0.39999999999999997,
+            0.11666666666666665
           ],
-          "tau_perm_p": 0.76001199940003,
+          "tau_perm_p": 0.7615619219039048,
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "navsim_v2|bridgesim_ext": {
+          "tau": -0.1111111111111111,
+          "tau_ci": [
+            -0.2777777777777778,
+            0.05555555555555555
+          ],
+          "rho": -0.2333333333333333,
+          "rho_ci": [
+            -0.38333333333333336,
+            0.03333333333333333
+          ],
+          "tau_perm_p": 0.6996150192490376,
           "policies": [
             "ego_status_mlp_seed0",
             "ego_status_mlp_seed1",
@@ -578,10 +736,10 @@
           "n_policies": 9
         },
         "MMRV|navsim_v2": {
-          "mmrv": 0.09199977038796517,
+          "mmrv": 0.08004953752320325,
           "mmrv_ci": [
-            0.06659409240564763,
-            0.10749126199524975
+            0.0638024334394055,
+            0.0950564029368867
           ],
           "policies": [
             "ego_status_mlp_seed0",
@@ -595,10 +753,81 @@
             "transfuser_seed2"
           ],
           "n_policies": 9
+        },
+        "bridgesim|bridgesim_ext": {
+          "tau": 0.6,
+          "tau_ci": [
+            0.4222222222222222,
+            0.7777777777777777
+          ],
+          "rho": 0.6969696969696969,
+          "rho_ci": [
+            0.5633333333333334,
+            0.8787878787878788
+          ],
+          "tau_perm_p": 0.0087995600219989,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|bridgesim": {
+          "mmrv": 0.022997510978520076,
+          "mmrv_ci": [
+            0.011089472559665851,
+            0.04305058922434346
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
         }
       }
     }
   },
   "reliability": {},
-  "hypotheses": {}
+  "hypotheses": {
+    "H1": {
+      "statement": "closed-loop orders timing/memory degradations better than open-loop + non-reactive evaluators",
+      "groups": {
+        "closed": [
+          "bridgesim",
+          "bridgesim_ext"
+        ],
+        "open_nonreactive": [
+          "open_l2",
+          "navsim_v1",
+          "navsim_v2"
+        ]
+      },
+      "degradations": [
+        "latency"
+      ],
+      "diff": -0.00044444444444444463,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "verdict": "contradicted",
+      "margin": 0.1
+    }
+  }
 }
