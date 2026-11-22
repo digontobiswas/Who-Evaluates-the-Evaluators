@@ -1,0 +1,17 @@
+# Revision item 3: replanning every 1.0 s with RE-DERIVED benign twins. The tail cut follows the
+# controller (degradations.tail_t_cut_for): target speed from waypoints up to (10 + 10) x 0.1 s =
+# 2.0 s, rounded up to the 0.5 s waypoint grid -> 2.0 s; distance cut unchanged (10 m). Expected:
+# driving score within +-1 point of the clean rr10 run (TOST, alpha 0.05). The clean run is the
+# rr10 one (linked by scripts/submit_revision.sh).
+#   OVERRIDES="policy.family=ltf degradation.name=tail_lateral degradation.level=2"
+
+extends:
+  - popA_bridgesim_rr10.yaml
+
+degradation:
+  tail_t_cut: 2.0
+
+experiment:
+  name: popA_bridgesim_rr10_t20_${policy.id}_${degradation.name}_L${degradation.level}
+  out_dir: ${paths.exp}/runs/bridgesim_rr10_t20/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA_bridgesim_rr10_t20/${policy.id}/${degradation.name}__L${degradation.level}

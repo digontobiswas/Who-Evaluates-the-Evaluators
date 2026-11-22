@@ -1,0 +1,15 @@
+# Revision item 1: projected NAVSIM v1 score for Population B (see popA_transfuser_navtest_proj.yaml).
+#   OVERRIDES="policy.seed=1"
+# Seed-0 TransFuser and LTF and DiffusionDrive are the Population A clean projected runs (linked).
+
+extends:
+  - popB_transfuser_navtest.yaml
+
+experiment:
+  name: popB_${policy.id}_navtest_proj
+  out_dir: ${paths.exp}/runs/navsim_v1_proj/B/${policy.id}
+  export_dir: ${paths.repo}/results/popB_proj/${policy.id}
+
+degradation:
+  wrap: true
+  projection: tail_cv

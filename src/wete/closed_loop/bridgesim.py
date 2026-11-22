@@ -41,6 +41,8 @@ def evaluator_command(
                  "--level", str(int(degradation.get("level", 0)))]
         if degradation.get("value") is not None:
             entry += ["--value", repr(float(degradation["value"]))]
+        if degradation.get("tail_t_cut") is not None:
+            entry += ["--tail-t-cut", repr(float(degradation["tail_t_cut"]))]
     else:
         entry = [sys.executable, str(Path(root) / "bridgesim/evaluation/unified_evaluator.py")]
     return [

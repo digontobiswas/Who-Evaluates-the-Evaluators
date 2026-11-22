@@ -112,6 +112,11 @@ def delayed_plan(poses: np.ndarray, old_pose: np.ndarray, k: int) -> np.ndarray:
     return np.vstack([kept, extra])
 
 
+# Optional projection of the final plan (revision, Nov 2026): "tail_cv" replaces everything beyond
+# the tail anchor by a constant-velocity extrapolation (degradations.project_tail).
+PROJECTIONS = {"none", "tail_cv"}
+
+
 class DegradedAgent(AbstractAgent):
     def __init__(
         self,
@@ -123,6 +128,7 @@ class DegradedAgent(AbstractAgent):
         log_dir: Optional[str] = None,
         also_drop_lidar: bool = False,
         stale_ego_status: bool = False,
+        projection: str = "none",
     ):
         if _ABSTRACT_TAKES_SAMPLING:
             super().__init__(trajectory_sampling=base_agent._trajectory_sampling, requires_scene=True)
@@ -135,6 +141,10 @@ class DegradedAgent(AbstractAgent):
         if self.spec.degradation in D.CLOSED_LOOP_ONLY - {"latency"}:
             raise ValueError(f"{self.spec.degradation} is closed-loop only; NAVSIM is single-shot")
         self._latency_k = latency_frames(self.spec.param) if self.spec.degradation == "latency" else 0
+        if projection not in PROJECTIONS:
+            raise ValueError(f"projection must be one of {sorted(PROJECTIONS)}, got {projection!r}")
+        # Applied AFTER the degradation: the evaluator scores only the plan's executed support.
+        self.projection = projection
         self.also_drop_lidar = bool(also_drop_lidar)
         self.stale_ego_status = bool(stale_ego_status)
         self.log_dir = Path(log_dir) if log_dir else None
@@ -155,7 +165,8 @@ class DegradedAgent(AbstractAgent):
 
     # ---- AbstractAgent API ---------------------------------------------------------------
     def name(self) -> str:
-        return f"{self.base.name()}__{self.spec.policy_suffix}"
+        suffix = "" if self.projection == "none" else f"__{self.projection}"
+        return f"{self.base.name()}__{self.spec.policy_suffix}{suffix}"
 
     def initialize(self) -> None:
         self.base.initialize()
@@ -277,6 +288,9 @@ class DegradedAgent(AbstractAgent):
         else:
             traj = self.base.compute_trajectory(ai)
         traj = self._degrade_output(traj, token, agent_input)
+        if self.projection == "tail_cv":
+            poses = D.project_tail(np.asarray(traj.poses), traj.trajectory_sampling.interval_length)
+            traj = Trajectory(np.asarray(poses, dtype=np.float32), traj.trajectory_sampling)
         self._log_plan(traj, scene, token)
         return traj
 
@@ -290,6 +304,7 @@ class DegradedAgent(AbstractAgent):
             "degradation": self.spec.degradation,
             "level": self.spec.level,
             "param": self.spec.param,
+            "projection": self.projection,
             "poses": np.round(np.asarray(traj.poses)[:, :2], 4).tolist(),
             "effective_k": D.effective_dropout(self.spec.param, len(self._used_cams))
             if self.spec.degradation == "camera_dropout"

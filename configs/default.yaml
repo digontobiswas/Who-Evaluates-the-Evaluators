@@ -28,3 +28,5 @@ degradation:
   level: 0
   value: null
   wrap: false
+  projection: none     # NAVSIM wrapper only: "tail_cv" scores the plan's executed support
+  tail_t_cut: null     # tail/head anchor time in s (null = 1.5 s, BridgeSim replanning at 0.5 s)

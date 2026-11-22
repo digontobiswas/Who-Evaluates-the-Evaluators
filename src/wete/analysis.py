@@ -218,7 +218,8 @@ def run(scores: pd.DataFrame, meta: Dict[str, Dict], out_dir: str,
     if not refs:
         report["provisional"] = ("No reference evaluator: monotonicity was not tested, so no degradation "
                                  "is validated as ground truth. Matrix cells are descriptive only.")
-    degs_all = [d for d in D.LEVELS if d in set(dfA.degradation) and d not in D.BENIGN]
+    degs_all = [d for d in D.LEVELS if d in set(dfA.degradation) and d not in D.BENIGN
+                and d not in D.DIAGNOSTIC]
 
     # ---- 1. Monotonicity on reference evaluator(s) -----------------------
     mono_rows = []

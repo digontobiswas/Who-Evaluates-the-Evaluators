@@ -1,0 +1,19 @@
+# Revision item 3 (Nov 2026): BridgeSim with replanning every 1.0 s (replan_rate 10 at sim_dt 0.1)
+# instead of 0.5 s, NavHard (421 scenes), with the ORIGINAL benign twins (tail cut 1.5 s). The
+# controller now reads the plan up to 2.0 s, so these twins are expected to change the executed
+# controls and the driving score. Clean run: degradation none (unwrapped, same as stage 1).
+#   OVERRIDES="policy.family=ltf degradation.name=tail_lateral degradation.level=2"
+
+extends:
+  - popA_bridgesim_navhard.yaml
+
+evaluator:
+  run:
+    replan_rate: 10
+
+experiment:
+  name: popA_bridgesim_rr10_${policy.id}_${degradation.name}_L${degradation.level}
+  out_dir: ${paths.exp}/runs/bridgesim_rr10/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA_bridgesim_rr10/${policy.id}/${degradation.name}__L${degradation.level}
+
+compare_with_reference: false   # not the leaderboard protocol

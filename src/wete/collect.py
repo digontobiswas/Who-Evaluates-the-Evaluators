@@ -296,9 +296,15 @@ READERS = {"navsim_v1": read_navsim_v1, "navsim_v2": read_navsim_v2, "navsim_v2_
            "bridgesim": read_bridgesim,
            # held-out navtest scenes in BridgeSim (wete.closed_loop.heldout), same reader
            "bridgesim_ext": read_bridgesim,
+           # revision (Nov 2026): projected NAVSIM v1 score, BridgeSim replanning every 1.0 s with
+           # the original (1.5 s) and the re-derived (2.0 s) benign twins
+           "navsim_v1_proj": read_navsim_v1,
+           "bridgesim_rr10": read_bridgesim,
+           "bridgesim_rr10_t20": read_bridgesim,
            "hugsim": read_hugsim, "world_model": read_world_model}
 # derived evaluators: (name, source evaluator dir, reader)
-DERIVED = [("open_l2", "navsim_v1", read_open_l2)]   # L2 is logged during the navtest run
+DERIVED = [("open_l2", "navsim_v1", read_open_l2),   # L2 is logged during the navtest run
+           ("open_l2_proj", "navsim_v1_proj", read_open_l2)]
 
 
 def collect(root: Path) -> Tuple[pd.DataFrame, pd.DataFrame, Dict]:

@@ -264,7 +264,8 @@ def action_report(cfg: Dict[str, Any]) -> Dict[str, Any]:
         "checkpoint": {"path": cfg["policy"]["checkpoint"],
                        "sha256": provenance.sha256_of(Path(cfg["policy"]["checkpoint"]))},
         "protocol": cfg["evaluator"]["run"],
-        "degradation": {k: (cfg.get("degradation") or {}).get(k) for k in ("name", "level", "value", "wrap")},
+        "degradation": {k: (cfg.get("degradation") or {}).get(k)
+                        for k in ("name", "level", "value", "wrap", "tail_t_cut")},
         "extra_evaluator_args": cfg.get("extra_evaluator_args") or [],
         "result": result,
         "code": {

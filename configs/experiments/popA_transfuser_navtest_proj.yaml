@@ -1,0 +1,18 @@
+# Revision item 1 (Nov 2026): the projected (support-restricted) NAVSIM v1 score. Same policy,
+# degradation and scenes as popA_transfuser_navtest.yaml, but the final plan is projected before
+# scoring: waypoints beyond the tail anchor (first waypoint >= 1.5 s and >= 10 m ahead) are replaced
+# by a constant-velocity extrapolation (degradations.project_tail). Unmodified PDMS; open-loop L2
+# of the projected plan is logged as usual.
+#   OVERRIDES="degradation.name=tail_lateral degradation.level=2"
+
+extends:
+  - popA_transfuser_navtest.yaml
+
+experiment:
+  name: popA_${policy.id}_${degradation.name}_L${degradation.level}_navtest_proj
+  out_dir: ${paths.exp}/runs/navsim_v1_proj/A/${policy.id}/${degradation.name}__L${degradation.level}
+  export_dir: ${paths.repo}/results/popA_proj/${policy.id}/${degradation.name}__L${degradation.level}
+
+degradation:
+  wrap: true
+  projection: tail_cv

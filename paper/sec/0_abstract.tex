@@ -1,19 +1,25 @@
 \begin{abstract}
-End-to-end driving policies are ranked almost exclusively by proxy evaluators---open-loop
-displacement, non-reactive pseudo-simulation, two-stage pseudo-simulation---whose ability to rank
-policies correctly has never been tested against a known answer.
-We build that answer by construction: graded degradations of pretrained policies whose quality must
-fall with the degradation level, admitted as ground truth only if a closed-loop reference
-evaluator confirms the ordering on a held-out half of the scenarios.
-We add the converse test that rankings need and degradations alone cannot provide: \emph{benign}
-perturbations that change the plan but not what a replanning vehicle executes, which a correct
-evaluator must not penalise.
-Running one policy population through five evaluators on shared scenarios, we find that
-(i)~of six degradation families only \num{RetainedCount} survive validation, so most popular
-perturbations do not yield a usable ground truth even in closed loop;
-(ii)~NAVSIM penalises changes to the never-executed part of a plan by up to \num{SpecMaxRatioNavsimV1}
-of the penalty for the matching harmful change, while the closed-loop reference does not move;
-and (iii)~on identical scenes the open-loop scores and closed loop disagree on which real
-policies are better, a disagreement far above the closed-loop test-retest ceiling.
+End-to-end driving policies are ranked by proxy evaluators---open-loop displacement, non-reactive
+and two-stage pseudo-simulation---whose rankings have so far only been compared with each other,
+never with a known answer.
+We construct that answer: graded degradations of pretrained policies whose driving must get worse
+with the degradation level, admitted as ground truth only after a closed-loop reference confirms the
+order on one set of scenes, and then used to measure every evaluator on disjoint scenes.
+Because sensitivity to harmful change can be achieved by penalising \emph{any} change, we add the
+converse test: benign perturbations that alter only the part of a plan that a replanning vehicle never
+executes, which a valid evaluator must ignore.
+Across four policy families with up to three seeds, five evaluators and over three hundred evaluation runs, we
+find that
+(i)~only \num{RetainedCount} of six popular degradation families (\num{RetainedFamilies}) yield a
+ground truth, even in closed loop;
+(ii)~NAVSIM v1 and v2 penalise changes to the never-executed part of the plan by up to
+\num{SpecPctNavsimVone} and \num{SpecPctNavsimVtwo} of the penalty for the matching harmful change,
+while closed loop moves by less than half a point;
+(iii)~the evaluator most sensitive to known failures, open-loop displacement, is also non-specific, so
+sensitivity alone does not certify an evaluator; and
+(iv)~on held-out scenes NAVSIM and closed loop rank real policies in opposite directions
+(Kendall $\tau={}$\num{TauNavsimBridgesim}), including a state-of-the-art diffusion planner that NAVSIM
+places \num{ContrastDDLTFNavsimVoneAbs} points above a simpler baseline and closed loop
+\num{ContrastDDLTFBridgesimAbs} points below it.
 We release the harness, all per-scenario scores and the statistical protocol.
 \end{abstract}

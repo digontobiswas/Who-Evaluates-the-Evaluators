@@ -20,14 +20,14 @@ plan; \emph{late braking} stretches the plan along its own path; \emph{latency} 
 that was computed $k$ replanning steps earlier.
 In closed loop, latency keeps the last $k$ plans in world coordinates and re-expresses the oldest in
 the current ego frame, dropping its elapsed waypoints.
-In single-shot evaluators, where no earlier plan exists, latency is reproduced exactly as what was
+In single-shot evaluators, where no earlier plan exists, latency is reproduced as what would have been
 executed: the policy plans from the full input of $k$ frames earlier (sensors and ego state), and the
 plan is moved into the current ego frame through the logged ego pose, its first $k$ waypoints dropped
 and $k$ appended at the last waypoint's velocity.
 The four-frame history of NAVSIM caps $k$ at three frames ($1.5$\,s); the closed-loop level~3 is
 $2.0$\,s.
 
-\subsection{Validating the order}
+\subsection{Validating the order on separate scenes}
 \label{sec:method:mono}
 ``Higher level is worse'' is an assumption about the world, so we test it with a reference evaluator
 $E^\star$ before using it.
@@ -35,58 +35,64 @@ For base policy $b$, family $d$ and adjacent levels $\ell,\ell+1$, let
 $\Delta_s = E^\star(\pi_{d,\ell},s) - E^\star(\pi_{d,\ell+1},s)$ be the paired score drop on scenario
 $s$.
 We resample scenarios $B=1000$ times and compute $P_{\ell} = \Pr(\bar\Delta > 0)$.
-Family $d$ is \emph{retained} if $P_\ell > 0.95$ for all three steps and for every base policy
-(an intersection--union test); otherwise it is discarded and reported, not re-levelled.
+Family $d$ is \emph{retained} if $P_\ell > 0.95$ for all three steps and for every base policy used
+for selection (an intersection--union test); otherwise it is discarded and reported, not re-levelled.
 
-\paragraph{Selection on held-out scenarios.}
-If degradations are selected on the same scenarios on which evaluators are later compared, the
-reference recovers the order of the retained families by construction.
-We therefore assign each scenario to a selection or an evaluation half by a hash of its token
-(SHA-256, fixed salt, fraction $0.5$), so that a scenario shared by several evaluators falls in the
-same half for all of them.
-Monotonicity is tested on the selection half; every other quantity, for every evaluator including
-$E^\star$, is computed on the evaluation half.
+If degradations were selected on the same scenes on which evaluators are later compared, the
+reference would recover the order of the retained families by construction.
+We therefore separate the two roles by scene.
+\emph{Selection} uses the reference on one scene set; \emph{measurement} of every evaluator, the
+reference included, uses only scenes outside it.
+In our main analysis the selection set is BridgeSim's NavHard set and the measurement set is a
+disjoint sample of navtest scenes (\cref{sec:setup}); the measurement scenes were fixed by a hash
+order before any of them was simulated.
+As a robustness check we also split a single scene set into a selection and an evaluation half by a
+salted hash of the scenario token (\cref{sec:results:robust}).
 
 \subsection{Measuring an evaluator}
 \label{sec:method:metrics}
 For an evaluator $E$ and a retained family, the true order of the four levels is known.
 \emph{Ordering recovery} is Kendall's $\tau$ between the true order and the order of $E$'s mean
-scores, averaged over base policies, with a bootstrap interval over scenarios, together with the
-probability that the full order is recovered.
-Because $\tau$ saturates when many scenarios are averaged, we also report \emph{sample efficiency}:
-the smallest number of scenarios, on a grid from 10 to 800, at which the full order is recovered in
-at least 90\% of subsamples.
+scores, averaged over base policies, together with the probability $P_\text{full}$ that the full
+order is recovered for every base.
+With thousands of scenes $\tau$ saturates at $1$ for every evaluator we study, so we compare
+evaluators by \emph{sample efficiency}: the smallest number of scenarios, on the grid
+$\{10,25,50,100,200,400,800\}$, at which the full order is recovered in at least 90\% of random
+subsamples (200 subsamples per size).
+Because $P_\text{full}$ requires every base to be ordered correctly, it falls with the number of bases;
+all evaluators are therefore measured on the same three bases.
 
 \subsection{Specificity: changes that should not count}
 \label{sec:method:spec}
 An evaluator can recover every degradation order merely by penalising any change to the plan.
 Open-loop displacement does exactly that.
 To separate sensitivity to bad driving from sensitivity to change, we construct benign twins of the
-two output families.
+two plan-level families.
 A replanning controller executes only the beginning of each plan.
-In our closed-loop protocol the plan is replaced every $0.5$\,s; the speed target is derived from the
+In our closed-loop protocol the plan is replaced every $0.5$\,s, the speed target is derived from the
 first second of waypoints after the replan offset (up to $1.4$\,s of the plan), and steering pursues
 the waypoint at distance $4+0.1v$\,m.
-We therefore define the \emph{tail} of a plan as everything beyond the first waypoint that is at least
-$1.5$\,s and $10$\,m ahead, and apply lateral noise (\emph{tail lateral}) or the path stretch
-(\emph{tail stretch}) to the tail only, with the same parameters and drift direction as the harmful
-family.
+We define the \emph{tail} of a plan as everything beyond the first waypoint that is at least $1.5$\,s
+and $10$\,m ahead, and apply lateral noise (\emph{tail lateral}) or the path stretch (\emph{tail
+stretch}) to the tail only, with the same parameters and drift direction as the harmful family.
 Under this protocol the executed controls are unchanged; we verify this against the controller's
 rules for speeds of 1--20\,m/s and curvatures up to $0.05$\,m$^{-1}$, and empirically below.
+Open-loop L2 at 1\,s is unchanged by every tail run (identical for TF and LTF, within 1\,mm for DD).
 
-A benign family is \emph{validated} if, for every base and level, the 90\% bootstrap interval of the
-reference's mean drop lies within $\pm0.01$ (one point of the reference score; a TOST equivalence test
-at $\alpha=0.05$), on the selection half.
+A benign family is \emph{validated} if, on the selection scenes and for every base and level, the 90\%
+bootstrap interval of the reference's mean drop lies within $\pm0.01$ (one point of the reference
+score; a TOST equivalence test at $\alpha=0.05$).
 An evaluator \emph{penalises} a validated benign family if, at some base and level, its drop is
 positive with probability above $0.95$ and at least 25\% of its drop for the harmful twin at the same
-level.
+level; we report the largest such ratio.
 All thresholds were fixed before the benign runs.
 
 \subsection{Policies with no known order}
 \label{sec:method:popB}
 Degradations test detection; deployment needs ranking of genuinely different policies.
 For a natural population (different architectures and training seeds) no order is known, so we
-measure agreement: Kendall's $\tau$ between evaluators' policy rankings with a paired bootstrap over
-scenarios, family-level contrasts with intervals, and the per-scenario correlation of those
-contrasts, which we compare with the closed-loop test-retest correlation obtained by re-running the
-same policies.
+measure agreement: Kendall's $\tau$ between evaluators' policy rankings with a bootstrap over
+scenarios, family-level contrasts with intervals on the scenes both evaluators share, and the
+per-scenario correlation of those contrasts, which we compare with the closed-loop test--retest
+correlation obtained by re-running the same policies.
+Each pair of evaluators is compared on the policies both of them scored.

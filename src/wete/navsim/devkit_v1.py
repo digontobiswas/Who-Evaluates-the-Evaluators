@@ -328,6 +328,9 @@ def wrapper_overrides(degradation: Mapping[str, Any], used_cameras: Optional[Seq
         out.append(f"agent.value={float(degradation['value'])!r}")
     if used_cameras:
         out.append(f"agent.used_cameras={hydra_list(used_cameras)}")
+    projection = str(degradation.get("projection") or "none")
+    if projection != "none":
+        out.append(f"agent.projection={projection}")
     return out
 
 

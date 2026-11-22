@@ -52,7 +52,16 @@ LEVELS: Dict[str, List[float]] = {
     # parameters as their harmful counterparts so the two can be compared level by level.
     "tail_lateral": [0.0, 0.3, 0.8, 1.5],
     "tail_stretch": [0.0, 0.15, 0.40, 0.70],
+    # Diagnostic (revision, Nov 2026): lateral_noise restricted to the EXECUTED part of the plan
+    # (up to the tail anchor); beyond the anchor the offset reached there is held, so the tail is
+    # carried along rigidly instead of drifting further. Same parameters and draws as
+    # lateral_noise, so drop(head) and drop(tail_lateral) can be set against drop(lateral_noise).
+    "head_lateral": [0.0, 0.3, 0.8, 1.5],
 }
+
+# Families used only for diagnostics: never part of a default Population A grid and never a
+# candidate ground truth (they are not tested for monotonicity in the reference).
+DIAGNOSTIC = {"head_lateral"}
 
 # Benign perturbation -> the harmful degradation it mirrors.
 BENIGN: Dict[str, str] = {"tail_lateral": "lateral_noise", "tail_stretch": "late_braking"}
@@ -71,6 +80,21 @@ BENIGN: Dict[str, str] = {"tail_lateral": "lateral_noise", "tail_stretch": "late
 # move. Whether it does not is TESTED on the reference evaluator (equivalence test), not assumed.
 TAIL_T_CUT = 1.5
 TAIL_S_CUT = 10.0
+SPEED_WINDOW_PAIRS = 10     # PurePursuitController._compute_desired_speed: first 10 pairs at sim_dt
+
+
+def tail_t_cut_for(replan_frames: int, sim_dt: float = 0.1, model_dt: float = 0.5,
+                   speed_pairs: int = SPEED_WINDOW_PAIRS) -> float:
+    """Time cut of the unexecuted tail for BridgeSim's controller at a given replanning interval.
+
+    Between replans the controller reads the plan from the replan offset r <= replan_frames - 1
+    onwards (interpolated to sim_dt; waypoint k at (k + 1) * sim_dt), and its target speed uses
+    the first `speed_pairs` pairs, i.e. waypoints up to (r + speed_pairs + 1) * sim_dt =
+    (replan_frames + speed_pairs) * sim_dt. The cut is that time rounded UP to the model's waypoint
+    grid, so the anchor (kept unchanged) is a model waypoint at or after it:
+    replan every 5 frames -> 1.5 s (the value used since 28 Oct), every 10 frames -> 2.0 s."""
+    t = (int(replan_frames) + int(speed_pairs)) * float(sim_dt)
+    return float(np.ceil(t / model_dt - 1e-9) * model_dt)
 
 FAILURE_CLASS: Dict[str, str] = {
     "camera_dropout": "perception",
@@ -82,6 +106,7 @@ FAILURE_CLASS: Dict[str, str] = {
     "late_braking": "control",
     "tail_lateral": "benign",
     "tail_stretch": "benign",
+    "head_lateral": "control",
 }
 
 ACTS_ON: Dict[str, str] = {
@@ -94,6 +119,7 @@ ACTS_ON: Dict[str, str] = {
     "late_braking": "output",
     "tail_lateral": "output",
     "tail_stretch": "output",
+    "head_lateral": "output",
 }
 
 CLOSED_LOOP_ONLY = {"latency"}
@@ -367,6 +393,52 @@ def tail_stretch(traj: np.ndarray, stretch: float, dt: float,
     return _keep_head(orig, out, a)[:, :shape]
 
 
+def head_lateral(traj: np.ndarray, peak_m: float, rng: np.random.Generator, dt: float,
+                 t_cut: float = TAIL_T_CUT, s_cut: float = TAIL_S_CUT) -> np.ndarray:
+    """Head-only twin of `lateral_noise`: the same drift (same direction draw, same ramp
+    peak_m * (i + 1) / n) on waypoints up to the tail anchor; beyond it the offset reached at the
+    anchor is held, so the unexecuted tail follows rigidly and does not drift further. Without an
+    anchor (the whole plan is executed) this equals `lateral_noise`."""
+    shape = np.asarray(traj).shape[-1]
+    out = _as_xyh(traj)
+    a = tail_anchor(out, dt, t_cut, s_cut)
+    if a is None:
+        return lateral_noise(traj, peak_m, rng)
+    sign = 1.0 if rng.random() < 0.5 else -1.0   # drawn first, as in lateral_noise
+    if peak_m <= 0:
+        return out[:, :shape]
+    n = len(out)
+    ramp = np.linspace(1.0 / n, 1.0, n)
+    ramp[a + 1:] = ramp[a]
+    off = sign * peak_m * ramp
+    h = out[:, 2].copy()
+    out[:, 0] += -np.sin(h) * off
+    out[:, 1] += np.cos(h) * off
+    out[:, 2] = _headings(out[:, :2])
+    return out[:, :shape]
+
+
+def project_tail(traj: np.ndarray, dt: float, t_cut: float = TAIL_T_CUT,
+                 s_cut: float = TAIL_S_CUT) -> np.ndarray:
+    """Support-restricted plan: waypoints up to the tail anchor are kept; every later waypoint is
+    replaced by a constant-velocity extrapolation from the last two kept waypoints (the origin
+    stands in for the waypoint before the first). Without an anchor the plan is returned as is.
+    An evaluator that scores the projected plan cannot see anything a replanning controller
+    would not execute."""
+    shape = np.asarray(traj).shape[-1]
+    out = _as_xyh(traj)
+    a = tail_anchor(out, dt, t_cut, s_cut)
+    if a is None:
+        return out[:, :shape]
+    prev = out[a - 1, :2] if a > 0 else np.zeros(2)
+    step = out[a, :2] - prev
+    k = np.arange(1, len(out) - a)[:, None]
+    out[a + 1:, :2] = out[a, :2] + k * step
+    heading = np.arctan2(step[1], step[0]) if np.hypot(*step) > 1e-3 else out[a, 2]
+    out[a + 1:, 2] = heading
+    return out[:, :shape]
+
+
 def apply_output(traj: np.ndarray, spec: "DegradationSpec", scenario_id: str, dt: float) -> np.ndarray:
     """Every stateless output-side operator, in one place for the NAVSIM agent and the BridgeSim
     adapter. `dt`: time between waypoints (s), waypoint i at (i + 1) * dt. Latency is stateful
@@ -378,10 +450,13 @@ def apply_output(traj: np.ndarray, spec: "DegradationSpec", scenario_id: str, dt
         return lateral_noise(traj, p, scenario_rng(scenario_id, d))
     if d == "late_braking":
         return late_braking(traj, p)
+    t_cut = spec.tail_t_cut if spec.tail_t_cut is not None else TAIL_T_CUT
     if d == "tail_lateral":
-        return tail_lateral(traj, p, scenario_rng(scenario_id, "lateral_noise"), dt)
+        return tail_lateral(traj, p, scenario_rng(scenario_id, "lateral_noise"), dt, t_cut=t_cut)
     if d == "tail_stretch":
-        return tail_stretch(traj, p, dt)
+        return tail_stretch(traj, p, dt, t_cut=t_cut)
+    if d == "head_lateral":
+        return head_lateral(traj, p, scenario_rng(scenario_id, "lateral_noise"), dt, t_cut=t_cut)
     return np.asarray(traj)
 
 
@@ -413,6 +488,7 @@ class DegradationSpec:
     degradation: str = "none"
     level: int = 0
     value: Optional[float] = None     # explicit parameter (e.g. from calibrate_levels)
+    tail_t_cut: Optional[float] = None  # tail/head anchor time (s); None = TAIL_T_CUT
 
     @property
     def param(self) -> float:
@@ -448,7 +524,7 @@ def population_a_specs(degradations: Optional[Sequence[str]] = None,
     """All (degradation, level) specs, with a single shared level-0 entry.
     `levels` overrides the default parameter table (index 0 = clean value)."""
     table = {**LEVELS, **(levels or {})}
-    degs = list(degradations or [d for d in LEVELS if d not in BENIGN])
+    degs = list(degradations or [d for d in LEVELS if d not in BENIGN and d not in DIAGNOSTIC])
     if not closed_loop:
         degs = [d for d in degs if d not in CLOSED_LOOP_ONLY]
     specs = [DegradationSpec()]

@@ -332,6 +332,7 @@ def stage_report(cfg: Dict[str, Any], out_dir: Path, chosen: Dict[str, Any], tim
             "name": degradation["name"],
             "level": int(degradation["level"]),
             "value": degradation.get("value"),
+            "projection": degradation.get("projection") or "none",
             "wrapped": devkit_v1.is_wrapped(degradation),
         },
         "split": chosen["split"],

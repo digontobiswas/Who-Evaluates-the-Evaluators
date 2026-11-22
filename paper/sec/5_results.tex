@@ -1,13 +1,17 @@
 \section{Results}
 \label{sec:results}
 
-\newcommand{\maybetable}[1]{\IfFileExists{tables/#1.tex}{\input{tables/#1}}{\TODO{table #1}}}
+% tables/*.tex are written by python -m wete.cli.paper_numbers. The TeX primitive is used because
+% LaTeX's \input is not expandable and would break the \bottomrule that follows inside a tabular.
+\makeatletter\newcommand{\tabinput}[1]{\@@input tables/#1.tex }\makeatother
+\newcommand{\figinput}[2]{\IfFileExists{figs/#1.pdf}{\includegraphics[width=#2]{figs/#1}}{\TODO{figure #1}}}
 
 \begin{table}[t]
 \centering\small
 \caption{Degradation families and their parameters at levels 1--3 (level 0 is the unmodified policy).
-Latency is in replanning steps of $0.5$\,s; single-shot evaluators cap it at three steps.}
+Latency is in replanning steps of $0.5$\,s; $^*$single-shot evaluators cap it at three steps.}
 \label{tab:degradations}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}llccc@{}}
 \toprule
 Family & Parameter & L1 & L2 & L3 \\
@@ -17,7 +21,7 @@ Image noise & $\sigma$ (pixel value) & 10 & 25 & 50 \\
 Stale observation & age (s) & 0.5 & 1.0 & 1.5 \\
 Lateral noise & peak drift (m) & 0.3 & 0.8 & 1.5 \\
 Late braking & path stretch & 0.15 & 0.40 & 0.70 \\
-Latency & steps & 1 & 2 & 4 (NAVSIM: 3) \\
+Latency & steps & 1 & 2 & 4$^*$ \\
 \midrule
 Tail lateral (benign) & peak drift (m) & 0.3 & 0.8 & 1.5 \\
 Tail stretch (benign) & path stretch & 0.15 & 0.40 & 0.70 \\
@@ -25,24 +29,214 @@ Tail stretch (benign) & path stretch & 0.15 & 0.40 & 0.70 \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\figinput{specificity}{\linewidth}
+\caption{\textbf{Penalty for changes the vehicle never executes.}
+Drop under the benign \emph{tail lateral} perturbation divided by the drop under the matching harmful
+lateral noise, per level, on the measurement scenes (bars: mean over TF, LTF and DD; whiskers: range;
+NAVSIM v2: TF and LTF).
+Both NAVSIM versions charge up to \num{SpecPctNavsimVone} of the harmful penalty for edits beyond the
+first $1.5$\,s of the plan; closed loop ignores them.}
+\label{fig:specificity}
+\end{figure}
+
 \subsection{Which degradations give a ground truth?}
 \label{sec:results:mono}
-\maybetable{monotonicity}
-\TODO{Text from the split analysis: retained families on the selection half, and the all-scenario
-analysis as a sensitivity check.}
 
-\subsection{Do evaluators recover the known order?}
+\begin{table}[t]
+\centering\small
+\caption{Monotonicity in closed loop on the \num{NavhardScenarios} selection scenes (BridgeSim DS).
+$P_{\ell}$: smallest probability over base policies that level $\ell+1$ scores below level $\ell$;
+a family is retained if every step exceeds $0.95$ for every base.}
+\label{tab:monotonicity}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Family & bases & $P_{0\to1}$ & $P_{1\to2}$ & $P_{2\to3}$ & retained \\
+\midrule
+\tabinput{monotonicity}
+\bottomrule
+\end{tabular}
+\end{table}
+
+Only \num{RetainedCount} of six families---\num{RetainedFamilies}---pass (\cref{tab:monotonicity}),
+both on all \num{MonoBases} base policies.
+The four perception and braking families fail even in closed loop: blanking one camera costs LTF a
+large drop, but blanking more barely changes the score; image noise \emph{raises} TransFuser's score
+at low levels; stale observations and late braking are not monotone.
+Popular corruption benchmarks therefore assume an ordering that the closed-loop reference does not
+confirm, and we do not use them as ground truth.
+
+On the disjoint measurement scenes the retained orders hold: BridgeSim recovers the full order of
+both families for TF, LTF and the held-out DD (Kendall $\tau=1$, $P_\text{full}\ge0.98$).
+
+\subsection{Sensitivity: how many scenes does an evaluator need?}
 \label{sec:results:order}
-\maybetable{ordering}
-\TODO{Ordering recovery and sample efficiency per evaluator on the evaluation half; H1.}
+
+\begin{table*}[t]
+\centering\small
+\caption{\textbf{Sensitivity is not validity.} Left: scenes needed to recover the full known order in at
+least 90\% of subsamples ($n_{90}$) and the probability of the full order at 100 scenes, on the
+measurement scenes and the same three bases (TF, LTF, DD). Right: largest benign-to-harmful penalty
+ratio for tail lateral and the resulting verdict (penalises: $>25\%$ with $P>0.95$).
+$^\dagger$NAVSIM v2 has no DD run (two bases), so its $n_{90}$ is not directly comparable.}
+\label{tab:efficiency}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+& \multicolumn{2}{c}{Latency} & \multicolumn{2}{c}{Lateral noise} & \multicolumn{2}{c}{Specificity (tail lateral)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+Evaluator & $n_{90}$ & $P_\text{full}@100$ & $n_{90}$ & $P_\text{full}@100$ & max ratio & verdict \\
+\midrule
+\tabinput{efficiency}
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[t]
+\centering
+\figinput{efficiency}{\linewidth}
+\caption{Probability of recovering the full known order as a function of the number of measurement
+scenes (same three bases for all evaluators; $^\dagger$two bases).}
+\label{fig:efficiency}
+\end{figure}
+
+With all measurement scenes every evaluator recovers both orders perfectly, so we compare sample
+efficiency (\cref{tab:efficiency}, \cref{fig:efficiency}).
+On latency, the timing failure, closed loop needs \num{EffLatencyBridgesim} scenes against
+\num{EffLatencyNavsimVone} for NAVSIM v1 ($P_\text{full}$ at 100 scenes \num{PfullLatencyBridgesim}
+vs.\ \num{PfullLatencyNavsimVone}).
+On lateral noise the two are equal (\num{EffLateralBridgesim} scenes).
+Open-loop L2 is the most sample-efficient on both (\num{EffLatencyLtwo} scenes): it measures the plan
+directly, and both families change the plan.
+Our pre-registered hypothesis H1, that closed loop orders timing degradations better than the open-loop
+and non-reactive evaluators, is therefore only partly supported: closed loop beats NAVSIM on latency
+but not open-loop L2.
+Read alone, sensitivity would crown L2 the best evaluator.
+The specificity test shows why it is not.
 
 \subsection{Specificity}
 \label{sec:results:spec}
-\maybetable{specificity}
-\TODO{Benign validation on the reference; verdicts per evaluator.}
+
+\begin{table}[t]
+\centering\small
+\caption{Level-3 mean drop on the measurement scenes under the benign tail lateral perturbation and
+under its harmful twin (lateral noise), per base: metres of ADE for L2, PDMS, EPDMS and DS points
+for the others. $^\dagger$No DD run.}
+\label{tab:specificity}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+& \multicolumn{3}{c}{Benign (tail)} & \multicolumn{3}{c}{Harmful (whole plan)} \\
+\cmidrule(lr){2-4}\cmidrule(l){5-7}
+Evaluator & TF & LTF & DD & TF & LTF & DD \\
+\midrule
+\tabinput{specificity}
+\bottomrule
+\end{tabular}
+\end{table}
+
+Both benign families are validated on the selection scenes: for every base and level the 90\%
+interval of the closed-loop drop lies within one DS point.
+On the measurement scenes BridgeSim's largest benign-to-harmful ratio is \num{SpecRatioBridgesim}
+(\cref{fig:specificity}); its level-3 drops lie between \num{TailDropMinBridgesim} and
+\num{TailDropMaxBridgesim} DS points (\cref{tab:specificity}).
+NAVSIM v1 loses \num{TailDropMinNavsimVone}--\num{TailDropMaxNavsimVone} PDMS points for the same
+perturbations, \num{SpecPctNavsimVone} of what it charges for the harmful version; NAVSIM v2 behaves
+the same (\num{SpecPctNavsimVtwo}).
+NAVSIM simulates the whole four-second plan without replanning, so it scores plan content that a
+replanning vehicle discards.
+Open-loop L2 also penalises the benign edits, by \num{SpecPctLtwo} of its harmful penalty: it is the
+most sensitive evaluator and not a specific one.
+The verdicts hold for DD, which was never used to design or validate the perturbations, and for tail
+stretch (NAVSIM v1 up to \num{StretchPctNavsimVone}, L2 \num{StretchPctLtwo} of the harmful penalty).
+We treat tail stretch as secondary evidence: its harmful twin, late braking, barely moves the
+closed-loop score itself (\cref{tab:monotonicity}).
 
 \subsection{Ranking real policies}
 \label{sec:results:popB}
-\maybetable{popB}
-\TODO{Family contrasts on the shared scenes; agreement; per-scenario correlation against the
-test-retest ceiling.}
+
+\begin{table}[t]
+\centering\small
+\caption{Undegraded policies. NAVSIM on all navtest scenes; BridgeSim DS on the NavHard selection scenes
+and on the \num{HeldoutScenarios} measurement scenes.}
+\label{tab:popb}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+& NAVSIM v1 & NAVSIM v2 & \multicolumn{2}{c}{BridgeSim DS} \\
+\cmidrule(l){4-5}
+Policy & PDMS & EPDMS & NavHard & held-out \\
+\midrule
+\tabinput{popb}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering\small
+\caption{Family contrasts on the \num{SharedHeldout} shared measurement scenes, oriented so that
+positive means the first family is better (L2: metres of ADE, point estimate; NAVSIM v1: PDMS;
+BridgeSim: DS; 95\% bootstrap intervals). DD: DiffusionDrive, MLP: Ego Status MLP, TF: TransFuser.}
+\label{tab:contrasts}
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Contrast & L2 & NAVSIM v1 & BridgeSim \\
+\midrule
+\tabinput{contrasts}
+\bottomrule
+\end{tabular}
+\end{table}
+
+On ten undegraded policies (\cref{tab:popb}), open-loop L2 and NAVSIM v1 agree
+($\tau={}$\num{TauLtwoNavsim}, \num{TauLtwoNavsimCi}), and closed loop agrees with itself across the two
+disjoint scene sets ($\tau={}$\num{TauNavhardHeldout}, \num{TauNavhardHeldoutCi}).
+NAVSIM v1 and closed loop on the measurement scenes rank the policies in opposite directions
+($\tau={}$\num{TauNavsimBridgesim}, \num{TauNavsimBridgesimCi}; NAVSIM v2: \num{TauNavsimVtwoBridgesim}).
+Seeds of one family are near-ties under every evaluator, so we read this at the family level
+(\cref{tab:contrasts}).
+DiffusionDrive, the strongest policy on NAVSIM, scores \num{ContrastDDLTFNavsimVoneAbs} PDMS above LTF
+but \num{ContrastDDLTFBridgesimAbs} DS below it in closed loop (95\% interval of the difference
+\num{ContrastDDLTFBridgesimCi}).
+NAVSIM places TransFuser and LTF level (difference \num{ContrastLTFTFNavsimVone}
+\num{ContrastLTFTFNavsimVoneCi}), while closed loop puts LTF \num{ContrastLTFTFBridgesimAbs} DS ahead.
+NAVSIM puts the blind Ego MLP \num{ContrastMLPTFNavsimVoneAbs} points below TransFuser; in closed loop it
+is \num{ContrastMLPTFBridgesimAbs} points above (we discuss this case in \cref{sec:discussion}).
+
+These disagreements are not simulator noise.
+Re-running the same policies in BridgeSim reproduces per-scene scores with Spearman
+\num{RetestMin}--\num{RetestMax} and per-scene policy contrasts with \num{RetestContrast}, whereas the
+per-scene contrasts of NAVSIM v1 and BridgeSim on identical scenes correlate at only
+\num{ContrastCorrMin}--\num{ContrastCorrMax}.
+
+\subsection{Robustness}
+\label{sec:results:robust}
+
+\begin{table}[t]
+\centering\small
+\caption{Retained families and benign validation under alternative selection protocols on the
+\num{NavhardScenarios} NavHard scenes: all of them, or the selection half of a hash split. Bases: TF and
+LTF, seeds 0--2 (6) or seed 0 only.}
+\label{tab:robustness}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Selection & score & retained & benign \\
+\midrule
+\tabinput{robustness}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Cref{tab:robustness} repeats the selection under protocols that split the \num{NavhardScenarios}
+NavHard scenes into a selection and an evaluation half instead of using disjoint scene sets.
+With half the scenes and all six bases, no family passes: latency misses one step for one base
+(\num{SplitWorstLatencyBase}, $P=\num{SplitWorstLatencyP}$, in the expected direction) because the
+intersection--union rule becomes stricter with every added base while halving the scenes reduces power.
+On seed~0 only, latency passes.
+The benign validation fails on the half because one interval exceeds the one-point margin, not because
+of a significant drop.
+These analyses motivated the disjoint-scene design of our main analysis, which keeps every selection
+scene; we report them in full.
+Under BridgeSim's EPDMS, which ignores progress, no family passes on the half.

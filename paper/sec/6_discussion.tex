@@ -1,14 +1,39 @@
 \section{Discussion and limitations}
 \label{sec:discussion}
 
+\paragraph{What the results mean for benchmark users.}
+A one- or two-point NAVSIM gain can come from plan content that a deployed, replanning system never
+executes: our benign perturbations alone cost policies \num{TailDropMinNavsimVone}--\num{TailDropMaxNavsimVone}
+PDMS points.
+Conversely, a planner can lead NAVSIM and trail simpler baselines in closed loop, as DiffusionDrive
+does.
+We do not claim that NAVSIM rankings are wrong in general; we claim that they reward something closed
+loop does not, and that this is measurable.
+Two practical consequences follow: plan quality beyond the replanning horizon should be scored
+separately or down-weighted, and evaluators should be checked for specificity as well as sensitivity.
+
 \paragraph{The reference is a simulator.}
-BridgeSim renders camera input in MetaDrive, so camera-based policies face a domain gap that the
-blind Ego Status MLP does not.
-Our ground-truth families are therefore restricted to orderings that BridgeSim confirms with
-confidence, and the policy-level comparisons are reported as disagreement between evaluators, not
-as proof that one evaluator is wrong.
-Our TransFuser reproduction in BridgeSim lies below the published EPDMS for all three seeds while
-LTF matches; we report this gap rather than tuning the protocol to close it.
+BridgeSim renders camera input in MetaDrive, so camera-based policies face a rendering gap that the
+blind Ego MLP does not.
+This is the most plausible explanation for the Ego MLP scoring above TransFuser and DiffusionDrive in
+closed loop, and we do not treat that comparison as evidence against NAVSIM.
+Three of our findings do not depend on it.
+The specificity test compares each policy with itself under edits that the controller provably never
+executes, so a rendering gap affects both sides equally.
+The degradation orders are validated per policy, with the same rendering on every level.
+And LTF, which uses cameras only, is the best closed-loop policy, so rendering does not simply penalise
+camera input.
+Our TransFuser reproduction lies below the published BridgeSim EPDMS for all three seeds, while its DS
+is close (\num{DsTFNavhard} vs.\ \num{DsTFPublished}); we report this rather than tuning the protocol.
+
+\paragraph{One reference.}
+Every ground-truth statement rests on one closed-loop simulator with log-replay traffic.
+Its rankings are stable across two disjoint scene sets ($\tau={}$\num{TauNavhardHeldout}) and its
+per-scene scores are reproducible (Spearman \num{RetestMin}--\num{RetestMax}), but a second reference
+(a reconstruction-based simulator or real-world tests) would make the ground truth stronger.
+HUGSIM~\cite{zhou2024hugsim} needs compiled extensions our cluster does not allow, and no openly
+available world model is both multi-camera and action-conditioned for NAVSIM policies at the memory of
+our GPUs; both are left to future work.
 
 \paragraph{Specificity depends on the controller.}
 The benign perturbations are benign for a controller that replans every $0.5$\,s and tracks the first
@@ -16,12 +41,24 @@ seconds of a plan.
 For a system that executes longer horizons, the tail of a plan matters; the test should then be
 re-derived from that system's controller.
 
-\paragraph{What we could not run.}
-A generative world model that is both multi-camera and action-conditioned for NAVSIM policies is not
-openly available at the memory of our GPUs, and HUGSIM requires compiled extensions our cluster does
-not allow; both evaluator families are left to future work.
-The reference score (DS rather than EPDMS) was chosen after observing that EPDMS rewards a policy for
-driving less; we report both.
+\paragraph{Choices made after seeing data.}
+We disclose three.
+The closed-loop score is DS rather than BridgeSim's EPDMS, chosen after observing that EPDMS rewards a
+policy for driving less; \cref{tab:robustness} reports EPDMS.
+The disjoint-scene design was adopted after the half-split analysis lost power
+(\cref{sec:results:robust}); its measurement scenes were fixed before they were simulated, and the
+split analyses are reported.
+One measurement scene that the simulator could not run for any policy was excluded for all.
+The measurement scenes are ordinary navtest scenes, easier than NavHard, so absolute closed-loop
+scores are higher there; all comparisons are within a scene set.
 
 \section{Conclusion}
-\TODO{After the final analysis.}
+We tested driving evaluators against rankings that are known by construction and validated in closed
+loop on separate scenes.
+Only latency and lateral drift yield such rankings; perception corruptions do not, even in closed loop.
+On the validated failures, the most sensitive evaluator is open-loop displacement, yet it and both
+NAVSIM versions penalise plan changes that a replanning vehicle never executes, which closed loop
+ignores.
+On real policies, NAVSIM and closed loop disagree on held-out scenes far beyond simulator noise.
+Sensitivity to known failures is not enough to validate an evaluator; specificity has to be tested too,
+and our harness makes both tests cheap to run on any new benchmark.

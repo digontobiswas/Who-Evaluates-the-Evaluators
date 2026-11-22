@@ -12,6 +12,7 @@ used_cameras: null
 log_dir: ${output_dir}/plans
 also_drop_lidar: false
 stale_ego_status: false
+projection: none        # "tail_cv": score only the executed support of the plan (revision)
 
 base_agent:
   _target_: navsim.agents.diffusiondrive.transfuser_agent.TransfuserAgent

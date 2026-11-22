@@ -3,7 +3,7 @@
     python -m wete.cli.bridgesim_degraded_eval --degradation camera_dropout --level 2 \
         [--value 0.3] <every unified_evaluator.py argument>
 
-Our three options are taken off the command line; everything else goes to BridgeSim's own
+Our options (--degradation, --level, --value, --tail-t-cut) are taken off the command line; everything else goes to BridgeSim's own
 ``main()``. The only change to BridgeSim's behaviour is that ``create_model_adapter`` returns the
 real adapter inside :class:`wete.closed_loop.degraded_adapter.DegradedAdapter`. With
 ``--degradation none`` the wrapper passes everything through unchanged.
@@ -25,8 +25,10 @@ def parse_ours(argv: List[str]):
     parser.add_argument("--degradation", default="none")
     parser.add_argument("--level", type=int, default=0)
     parser.add_argument("--value", type=float, default=None)
+    parser.add_argument("--tail-t-cut", type=float, default=None,
+                        help="anchor time of the tail/head operators (default degradations.TAIL_T_CUT)")
     ours, rest = parser.parse_known_args(argv)
-    spec = D.DegradationSpec(ours.degradation, ours.level, ours.value)
+    spec = D.DegradationSpec(ours.degradation, ours.level, ours.value, ours.tail_t_cut)
     if spec.degradation != "none":
         D.level_param(spec.degradation, spec.level)  # validates name and level
     if spec.degradation not in degraded_adapter.SUPPORTED:
@@ -54,7 +56,8 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     U.create_model_adapter = create_wrapped
     sys.argv = ["unified_evaluator.py", *rest]
-    print(f"[wete] BridgeSim with degradation {spec.policy_suffix} (param {spec.param})", flush=True)
+    cut = f", tail cut {spec.tail_t_cut} s" if spec.tail_t_cut is not None else ""
+    print(f"[wete] BridgeSim with degradation {spec.policy_suffix} (param {spec.param}{cut})", flush=True)
     U.main()
     return 0
 
