@@ -1,0 +1,78 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_0.ckpt",
+    "sha256": "d08e97ba6beb937412697d619171553041622859e026a06935a2e0e118e6309d",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:2395bda9c45ed79cf7f53d4bd206714b2e8641a5"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-11-22T14:59:09Z",
+  "degradation": {
+    "level": 2,
+    "name": "lateral_noise",
+    "projection": "tail_cv",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_ltf_seed0_lateral_noise_L2_navtest_proj",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn214",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1238396",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__lateral_noise@L2__tail_cv.plans.jsonl"
+    ],
+    "mean_ade": 0.9493738020157391,
+    "mean_fde": 2.3548668945177353,
+    "mean_l2_1s": 0.24026934734450037,
+    "mean_l2_2s": 0.6020585459170137,
+    "mean_l2_3s": 1.2583311820419751,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "ltf_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.5849080950202495,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9993413469454965,
+      "drivable_area_compliance": 0.75069981887041,
+      "driving_direction_compliance": 0.9356989955540919,
+      "ego_progress": 0.5764952252926525,
+      "no_at_fault_collisions": 0.88765848839124,
+      "score": 0.5849080950202495,
+      "time_to_collision_within_bound": 0.7658488391239915
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 58.49080950202495,
+    "score_sem": 0.003963176434735359,
+    "score_std": 0.4367772859046301
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.275258691221697,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1_proj/A/ltf_seed0/lateral_noise__L2/pdm_score/2026.11.22.20.29.02.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3708.4093639850616,
+    "select": 37.92174243927002
+  }
+}

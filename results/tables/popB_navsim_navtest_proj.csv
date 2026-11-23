@@ -1,0 +1,11 @@
+policy,pdms,pdms_sem,num_valid,num_expected,complete,open_loop_ade_m,open_loop_l2_1s_m,open_loop_l2_2s_m,open_loop_l2_3s_m,mean_comfort,mean_drivable_area_compliance,mean_driving_direction_compliance,mean_ego_progress,mean_no_at_fault_collisions,mean_score,mean_time_to_collision_within_bound,source_file
+diffusiondrive_seed0,73.1573,0.3391,12146,12146,True,0.7850,0.1143,0.4220,1.0592,0.9994,0.8432,0.9550,0.7095,0.9572,0.7316,0.8542,results/popA_proj/diffusiondrive_seed0/none__L0/summary.json
+ego_status_mlp_seed0,60.0606,0.3915,12146,12146,True,0.9730,0.1183,0.5014,1.3389,0.9990,0.7396,0.8986,0.5884,0.9130,0.6006,0.7876,results/popB_proj/ego_status_mlp_seed0/summary.json
+ego_status_mlp_seed1,61.5949,0.3860,12146,12146,True,0.9807,0.1306,0.5078,1.3478,0.9996,0.7542,0.9003,0.5981,0.9172,0.6159,0.7957,results/popB_proj/ego_status_mlp_seed1/summary.json
+ego_status_mlp_seed2,61.1788,0.3881,12146,12146,True,0.9696,0.1184,0.4984,1.3321,0.9990,0.7513,0.8953,0.5987,0.9133,0.6118,0.7886,results/popB_proj/ego_status_mlp_seed2/summary.json
+ltf_seed0,72.5471,0.3429,12146,12146,True,0.7853,0.1237,0.4235,1.0582,0.9993,0.8414,0.9594,0.7035,0.9524,0.7255,0.8495,results/popA_proj/ltf_seed0/none__L0/summary.json
+ltf_seed1,71.8760,0.3464,12146,12146,True,0.8043,0.1240,0.4375,1.0863,0.9995,0.8341,0.9563,0.6967,0.9532,0.7188,0.8483,results/popB_proj/ltf_seed1/summary.json
+ltf_seed2,71.4754,0.3498,12146,12146,True,0.7848,0.1119,0.4218,1.0630,0.9995,0.8320,0.9559,0.6928,0.9502,0.7148,0.8471,results/popB_proj/ltf_seed2/summary.json
+transfuser_seed0,70.3156,0.3557,12146,12146,True,0.7922,0.1207,0.4229,1.0707,0.9990,0.8193,0.9512,0.6854,0.9501,0.7032,0.8406,results/popA_proj/transfuser_seed0/none__L0/summary.json
+transfuser_seed1,71.9716,0.3458,12146,12146,True,0.7937,0.1124,0.4215,1.0740,0.9995,0.8385,0.9537,0.7008,0.9494,0.7197,0.8401,results/popB_proj/transfuser_seed1/summary.json
+transfuser_seed2,71.8508,0.3461,12146,12146,True,0.7955,0.1149,0.4227,1.0743,0.9995,0.8349,0.9521,0.6977,0.9511,0.7185,0.8429,results/popB_proj/transfuser_seed2/summary.json

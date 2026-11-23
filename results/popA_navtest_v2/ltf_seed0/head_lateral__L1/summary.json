@@ -1,0 +1,83 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_0.ckpt",
+    "sha256": "d08e97ba6beb937412697d619171553041622859e026a06935a2e0e118e6309d",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": "submit:0a380a9063d7162ec93d0f51e9990ebac585f720",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:2395bda9c45ed79cf7f53d4bd206714b2e8641a5"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-11-22T19:10:15Z",
+  "degradation": {
+    "level": 1,
+    "name": "head_lateral",
+    "projection": "none",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v2_epdms",
+  "experiment": "popA_ltf_seed0_head_lateral_L1_navtest_v2",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn310",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1238426",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__head_lateral@L1.plans.jsonl"
+    ],
+    "mean_ade": 0.6951380046597059,
+    "mean_fde": 1.6621933818606092,
+    "mean_l2_1s": 0.14774990110276845,
+    "mean_l2_2s": 0.45387667431546436,
+    "mean_l2_3s": 0.9721409898834218,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "ltf_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.8082728840269787,
+    "epdms": 80.82728840269787,
+    "matches_devkit_average": true,
+    "mean": {
+      "drivable_area_compliance": 0.8987320928700807,
+      "driving_direction_compliance": 0.9921784949777704,
+      "ego_progress": 0.8705347414372108,
+      "history_comfort": 0.9805697348921456,
+      "lane_keeping": 0.934052362917833,
+      "no_at_fault_collisions": 0.9737362094516714,
+      "score": 0.8082728840269787,
+      "time_to_collision_within_bound": 0.9571052198254569,
+      "traffic_light_compliance": 0.9981063724683024,
+      "two_frame_extended_comfort": 0.8568725099601594
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 80.82728840269787,
+    "score_sem": 0.0029155681090381642,
+    "score_std": 0.32132153248958717,
+    "two_stage": false
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 1.9503682183503666,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v2/A/ltf_seed0/head_lateral__L1/pdm_score/2026.11.23.00.39.53.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 6227.542002439499,
+    "select": 36.502278566360474
+  }
+}

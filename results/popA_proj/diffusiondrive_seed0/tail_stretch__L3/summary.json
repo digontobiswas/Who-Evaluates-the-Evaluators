@@ -1,0 +1,78 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/diffusiondrive/diffusiondrive_navsim_88p1_PDMS",
+    "sha256": "008ffc39cc6c57ff9007025217e601f408818afa036c0bae4e543907993a005b",
+    "size_bytes": 729518199
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:2395bda9c45ed79cf7f53d4bd206714b2e8641a5"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-11-22T16:06:28Z",
+  "degradation": {
+    "level": 3,
+    "name": "tail_stretch",
+    "projection": "tail_cv",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_diffusiondrive_seed0_tail_stretch_L3_navtest_proj",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn330",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1238407",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__tail_stretch@L3__tail_cv.plans.jsonl"
+    ],
+    "mean_ade": 0.7856493921130056,
+    "mean_fde": 2.1658186540376327,
+    "mean_l2_1s": 0.11442564487839314,
+    "mean_l2_2s": 0.4224755483745544,
+    "mean_l2_3s": 1.0603024779199448,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "diffusiondrive_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.730657212574809,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9994236785773094,
+      "drivable_area_compliance": 0.8432405730281575,
+      "driving_direction_compliance": 0.9552115922937593,
+      "ego_progress": 0.7076736558040625,
+      "no_at_fault_collisions": 0.9553762555573851,
+      "score": 0.730657212574809,
+      "time_to_collision_within_bound": 0.8541906800592788
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 73.0657212574809,
+    "score_sem": 0.0034045177676376276,
+    "score_std": 0.3752081328829733
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.0585144661666637,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1_proj/A/diffusiondrive_seed0/tail_stretch__L3/pdm_score/2026.11.22.21.36.13.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3971.2089428901672,
+    "select": 37.70047569274902
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "B": 1000,
+  "R": 1000,
+  "seed": 0,
+  "navhard_scenes": 421,
+  "tables": {
+    "projection_specificity": {
+      "rows": 72
+    },
+    "projection_agreement": {
+      "rows": 10
+    },
+    "projection_decomposition": {
+      "rows": 12
+    },
+    "head_tail": {
+      "rows": 24
+    },
+    "rr10": {
+      "rows": 24
+    },
+    "late_braking": {
+      "rows": 6
+    },
+    "contrasts": {
+      "rows": 6
+    },
+    "h1": {
+      "rows": 24
+    }
+  }
+}

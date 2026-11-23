@@ -43,6 +43,16 @@ popA_bridgesim_heldout.csv, popB_bridgesim_heldout.csv
   is used to validate degradations; every evaluator is measured on these scenes (analysis
   --heldout). Population B rows for TransFuser, LTF and DiffusionDrive seed 0 are the clean runs.
 
+popA_navsim_navtest_proj.csv, popB_navsim_navtest_proj.csv
+  Revision item 1: NAVSIM v1 PDMS of the projected plan (waypoints beyond the first one >= 1.5 s
+  and >= 10 m ahead replaced by a constant-velocity extrapolation). Open-loop columns are the L2
+  of the projected plan. head_lateral rows in popA_navsim_navtest.csv / popA_navsim_v2_navtest.csv
+  are revision item 2 (drift on the executed part only).
+
+popA_bridgesim_rr10.csv, popA_bridgesim_rr10_t20.csv
+  Revision item 3: BridgeSim on NavHard with replanning every 1.0 s, benign twins with the
+  original 1.5 s tail cut (rr10) and with the re-derived 2.0 s cut (rr10_t20).
+
 The NAVSIM v1 tables are unchanged; v1 and v2 are separate evaluators, reported side by side.
 
 Column arm: "specificity" marks the benign perturbations tail_lateral and tail_stretch, which apply

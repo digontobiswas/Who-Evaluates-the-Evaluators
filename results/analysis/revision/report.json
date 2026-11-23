@@ -1,0 +1,1289 @@
+{
+  "config": {
+    "B": 1000,
+    "mono_threshold": 0.95,
+    "mono_require_all_refs": true,
+    "h_margin": 0.1,
+    "h3_auroc": 0.7,
+    "theta": 0.5,
+    "behavior_eps": 0.1,
+    "n_sub": 25,
+    "eff_grid": [
+      10,
+      25,
+      50,
+      100,
+      200,
+      400,
+      800
+    ],
+    "seed": 0,
+    "allow_no_reference": false,
+    "spec_margin": 0.01,
+    "spec_ratio": 0.25,
+    "spec_threshold": 0.95,
+    "selection_bases": [
+      "transfuser",
+      "ltf"
+    ],
+    "split": false,
+    "heldout": true,
+    "measure_bases": [
+      "transfuser_seed0",
+      "ltf_seed0",
+      "diffusiondrive_seed0"
+    ],
+    "selection_fraction": 0.5,
+    "split_salt": "wete-selection-2026-10-31"
+  },
+  "heldout": {
+    "selection_evaluators": [
+      "bridgesim"
+    ],
+    "n_selection_scenarios": 421,
+    "scenarios": {
+      "bridgesim_ext": 419,
+      "navsim_v1": 11805,
+      "navsim_v1_proj": 11805,
+      "navsim_v2": 11805,
+      "navsim_v2_ph": 29,
+      "open_l2": 11805,
+      "open_l2_proj": 11805
+    },
+    "note": "monotonicity and benign validation on every selection scenario; everything else on scenarios outside the selection set, by evaluators other than the selection one"
+  },
+  "selection_bases": [
+    "transfuser",
+    "ltf"
+  ],
+  "monotonicity": {
+    "tested": true,
+    "references": [
+      "bridgesim",
+      "bridgesim_ext"
+    ],
+    "retained": [
+      "latency",
+      "lateral_noise"
+    ],
+    "discarded": [
+      "camera_dropout",
+      "image_noise",
+      "stale_obs",
+      "late_braking"
+    ],
+    "on": "selection evaluator, all scenarios"
+  },
+  "measure_bases": [
+    "transfuser_seed0",
+    "ltf_seed0",
+    "diffusiondrive_seed0"
+  ],
+  "sample_efficiency": {
+    "open_l2": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.9338888888888889,
+            "p_full_order": 0.61
+          },
+          "25": {
+            "tau": 0.9983333333333334,
+            "p_full_order": 0.99
+          },
+          "50": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "100": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 25
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.9716666666666667,
+            "p_full_order": 0.81
+          },
+          "25": {
+            "tau": 0.9922222222222223,
+            "p_full_order": 0.945
+          },
+          "50": {
+            "tau": 0.9983333333333333,
+            "p_full_order": 0.985
+          },
+          "100": {
+            "tau": 0.9972222222222222,
+            "p_full_order": 0.975
+          },
+          "200": {
+            "tau": 0.9994444444444445,
+            "p_full_order": 0.995
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 25
+      }
+    },
+    "open_l2_proj": {
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.9627777777777777,
+            "p_full_order": 0.795
+          },
+          "25": {
+            "tau": 0.9894444444444445,
+            "p_full_order": 0.925
+          },
+          "50": {
+            "tau": 0.9972222222222222,
+            "p_full_order": 0.98
+          },
+          "100": {
+            "tau": 0.9988888888888888,
+            "p_full_order": 0.99
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 25
+      }
+    },
+    "navsim_v1": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.4933333333333333,
+            "p_full_order": 0.05
+          },
+          "25": {
+            "tau": 0.696111111111111,
+            "p_full_order": 0.085
+          },
+          "50": {
+            "tau": 0.8405555555555556,
+            "p_full_order": 0.265
+          },
+          "100": {
+            "tau": 0.9361111111111111,
+            "p_full_order": 0.565
+          },
+          "200": {
+            "tau": 0.9805555555555557,
+            "p_full_order": 0.865
+          },
+          "400": {
+            "tau": 0.9994444444444445,
+            "p_full_order": 0.995
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 400
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.8544444444444445,
+            "p_full_order": 0.46
+          },
+          "25": {
+            "tau": 0.9361111111111111,
+            "p_full_order": 0.625
+          },
+          "50": {
+            "tau": 0.9694444444444444,
+            "p_full_order": 0.8
+          },
+          "100": {
+            "tau": 0.9922222222222223,
+            "p_full_order": 0.935
+          },
+          "200": {
+            "tau": 0.9972222222222222,
+            "p_full_order": 0.975
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      }
+    },
+    "navsim_v1_proj": {
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.7294444444444445,
+            "p_full_order": 0.25
+          },
+          "25": {
+            "tau": 0.8666666666666666,
+            "p_full_order": 0.43
+          },
+          "50": {
+            "tau": 0.9466666666666665,
+            "p_full_order": 0.66
+          },
+          "100": {
+            "tau": 0.9711111111111111,
+            "p_full_order": 0.795
+          },
+          "200": {
+            "tau": 0.99,
+            "p_full_order": 0.925
+          },
+          "400": {
+            "tau": 0.9988888888888888,
+            "p_full_order": 0.99
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 200
+      }
+    },
+    "navsim_v2": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.6258333333333332,
+            "p_full_order": 0.15
+          },
+          "25": {
+            "tau": 0.74,
+            "p_full_order": 0.255
+          },
+          "50": {
+            "tau": 0.8541666666666667,
+            "p_full_order": 0.405
+          },
+          "100": {
+            "tau": 0.9525,
+            "p_full_order": 0.75
+          },
+          "200": {
+            "tau": 0.9916666666666666,
+            "p_full_order": 0.95
+          },
+          "400": {
+            "tau": 0.9983333333333333,
+            "p_full_order": 0.99
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 200
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.8858333333333333,
+            "p_full_order": 0.6
+          },
+          "25": {
+            "tau": 0.9358333333333334,
+            "p_full_order": 0.695
+          },
+          "50": {
+            "tau": 0.9575,
+            "p_full_order": 0.8
+          },
+          "100": {
+            "tau": 0.9833333333333333,
+            "p_full_order": 0.91
+          },
+          "200": {
+            "tau": 0.9966666666666666,
+            "p_full_order": 0.98
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "800": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      }
+    },
+    "bridgesim": {},
+    "bridgesim_ext": {
+      "latency": {
+        "curve": {
+          "10": {
+            "tau": 0.87,
+            "p_full_order": 0.315
+          },
+          "25": {
+            "tau": 0.9522222222222223,
+            "p_full_order": 0.635
+          },
+          "50": {
+            "tau": 0.9822222222222223,
+            "p_full_order": 0.845
+          },
+          "100": {
+            "tau": 0.9955555555555555,
+            "p_full_order": 0.96
+          },
+          "200": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 100
+      },
+      "lateral_noise": {
+        "curve": {
+          "10": {
+            "tau": 0.8283333333333333,
+            "p_full_order": 0.3
+          },
+          "25": {
+            "tau": 0.9055555555555556,
+            "p_full_order": 0.46
+          },
+          "50": {
+            "tau": 0.9505555555555554,
+            "p_full_order": 0.63
+          },
+          "100": {
+            "tau": 0.98,
+            "p_full_order": 0.85
+          },
+          "200": {
+            "tau": 0.9977777777777778,
+            "p_full_order": 0.98
+          },
+          "400": {
+            "tau": 1.0,
+            "p_full_order": 1.0
+          }
+        },
+        "n_for_p90": 200
+      }
+    }
+  },
+  "specificity": {
+    "margin": 0.01,
+    "ratio": 0.25,
+    "threshold": 0.95,
+    "validated": {
+      "tail_lateral": true,
+      "tail_stretch": true
+    },
+    "verdicts": {
+      "bridgesim_ext": {
+        "tail_lateral": {
+          "verdict": "specific",
+          "validated_on_reference": true,
+          "max_ratio": 0.07865624225946587
+        }
+      },
+      "navsim_v1": {
+        "tail_lateral": {
+          "verdict": "penalises benign",
+          "validated_on_reference": true,
+          "max_ratio": 0.6552410990660829
+        },
+        "tail_stretch": {
+          "verdict": "penalises benign",
+          "validated_on_reference": true,
+          "max_ratio": 0.49851479067242827
+        }
+      },
+      "navsim_v1_proj": {
+        "tail_lateral": {
+          "verdict": "specific",
+          "validated_on_reference": true,
+          "max_ratio": 0.020615650568146383
+        },
+        "tail_stretch": {
+          "verdict": "specific",
+          "validated_on_reference": true,
+          "max_ratio": 0.0
+        }
+      },
+      "navsim_v2": {
+        "tail_lateral": {
+          "verdict": "penalises benign",
+          "validated_on_reference": true,
+          "max_ratio": 0.6134003906960164
+        },
+        "tail_stretch": {
+          "verdict": "no harmful twin to compare",
+          "validated_on_reference": true,
+          "max_ratio": null
+        }
+      },
+      "open_l2": {
+        "tail_lateral": {
+          "verdict": "penalises benign",
+          "validated_on_reference": true,
+          "max_ratio": 0.2965690145016754
+        },
+        "tail_stretch": {
+          "verdict": "penalises benign",
+          "validated_on_reference": true,
+          "max_ratio": 0.258642905757993
+        }
+      },
+      "open_l2_proj": {
+        "tail_lateral": {
+          "verdict": "specific",
+          "validated_on_reference": true,
+          "max_ratio": 0.005027930814839185
+        },
+        "tail_stretch": {
+          "verdict": "specific",
+          "validated_on_reference": true,
+          "max_ratio": 0.0
+        }
+      }
+    },
+    "validated_on": "selection evaluator"
+  },
+  "agreement": {
+    "B": {
+      "policies": [
+        "diffusiondrive_seed0",
+        "ego_status_mlp_seed0",
+        "ego_status_mlp_seed1",
+        "ego_status_mlp_seed2",
+        "ltf_seed0",
+        "ltf_seed1",
+        "ltf_seed2",
+        "transfuser_seed0",
+        "transfuser_seed1",
+        "transfuser_seed2"
+      ],
+      "policies_by_evaluator": {
+        "open_l2": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "open_l2_proj": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "navsim_v1": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "navsim_v1_proj": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "navsim_v2": [
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "bridgesim": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ],
+        "bridgesim_ext": [
+          "diffusiondrive_seed0",
+          "ego_status_mlp_seed0",
+          "ego_status_mlp_seed1",
+          "ego_status_mlp_seed2",
+          "ltf_seed0",
+          "ltf_seed1",
+          "ltf_seed2",
+          "transfuser_seed0",
+          "transfuser_seed1",
+          "transfuser_seed2"
+        ]
+      },
+      "pairs": {
+        "open_l2|open_l2_proj": {
+          "tau": 0.5555555555555555,
+          "tau_ci": [
+            0.4666666666666666,
+            0.6888888888888888
+          ],
+          "rho": 0.7212121212121211,
+          "rho_ci": [
+            0.6484848484848483,
+            0.8060606060606059
+          ],
+          "tau_perm_p": 0.01239938003099845,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2|navsim_v1": {
+          "tau": 0.7777777777777777,
+          "tau_ci": [
+            0.6,
+            0.8222222222222221
+          ],
+          "rho": 0.8909090909090909,
+          "rho_ci": [
+            0.7818181818181817,
+            0.9393939393939393
+          ],
+          "tau_perm_p": 0.000599970001499925,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2|navsim_v1_proj": {
+          "tau": 0.5111111111111111,
+          "tau_ci": [
+            0.4222222222222222,
+            0.6444444444444444
+          ],
+          "rho": 0.6969696969696969,
+          "rho_ci": [
+            0.6121212121212121,
+            0.8181818181818182
+          ],
+          "tau_perm_p": 0.023148842557872105,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2|navsim_v2": {
+          "tau": 0.7222222222222222,
+          "tau_ci": [
+            0.5555555555555556,
+            0.7777777777777778
+          ],
+          "rho": 0.8499999999999999,
+          "rho_ci": [
+            0.7333333333333334,
+            0.9166666666666666
+          ],
+          "tau_perm_p": 0.0028998550072496373,
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "open_l2|bridgesim": {
+          "tau": -0.19999999999999998,
+          "tau_ci": [
+            -0.28888888888888886,
+            0.022222222222222223
+          ],
+          "rho": -0.2606060606060606,
+          "rho_ci": [
+            -0.41818181818181815,
+            0.04242424242424241
+          ],
+          "tau_perm_p": 0.8061596920153993,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2|bridgesim_ext": {
+          "tau": -0.3333333333333333,
+          "tau_ci": [
+            -0.4666666666666666,
+            -0.19999999999999998
+          ],
+          "rho": -0.5757575757575757,
+          "rho_ci": [
+            -0.6242424242424242,
+            -0.4545454545454545
+          ],
+          "tau_perm_p": 0.9251537423128844,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|open_l2": {
+          "mmrv": 0.08946948926014286,
+          "mmrv_ci": [
+            0.07782051652744579,
+            0.10707775502983242
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2_proj|navsim_v1": {
+          "tau": 0.5111111111111111,
+          "tau_ci": [
+            0.4222222222222222,
+            0.7333333333333333
+          ],
+          "rho": 0.6969696969696969,
+          "rho_ci": [
+            0.6121212121212121,
+            0.8666666666666665
+          ],
+          "tau_perm_p": 0.02439878006099695,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2_proj|navsim_v1_proj": {
+          "tau": 0.5111111111111111,
+          "tau_ci": [
+            0.4222222222222222,
+            0.6888888888888888
+          ],
+          "rho": 0.6606060606060605,
+          "rho_ci": [
+            0.6242424242424242,
+            0.8303030303030302
+          ],
+          "tau_perm_p": 0.021698915054247286,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2_proj|navsim_v2": {
+          "tau": 0.4444444444444444,
+          "tau_ci": [
+            0.3888888888888889,
+            0.6666666666666666
+          ],
+          "rho": 0.6666666666666667,
+          "rho_ci": [
+            0.5666666666666667,
+            0.8166666666666667
+          ],
+          "tau_perm_p": 0.06244687765611719,
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "open_l2_proj|bridgesim": {
+          "tau": 0.24444444444444444,
+          "tau_ci": [
+            0.022222222222222223,
+            0.4222222222222222
+          ],
+          "rho": 0.3696969696969697,
+          "rho_ci": [
+            0.10272727272727274,
+            0.5518181818181815
+          ],
+          "tau_perm_p": 0.18889055547222638,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "open_l2_proj|bridgesim_ext": {
+          "tau": -0.06666666666666667,
+          "tau_ci": [
+            -0.19999999999999998,
+            0.1111111111111111
+          ],
+          "rho": -0.01818181818181818,
+          "rho_ci": [
+            -0.18818181818181814,
+            0.17575757575757575
+          ],
+          "tau_perm_p": 0.6347182640867957,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|open_l2_proj": {
+          "mmrv": 0.06634580787589474,
+          "mmrv_ci": [
+            0.0487109194152744,
+            0.09241590402744598
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v1|navsim_v1_proj": {
+          "tau": 0.7333333333333333,
+          "tau_ci": [
+            0.6444444444444444,
+            0.911111111111111
+          ],
+          "rho": 0.8545454545454544,
+          "rho_ci": [
+            0.7936363636363636,
+            0.9636363636363635
+          ],
+          "tau_perm_p": 0.0012499375031248437,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v1|navsim_v2": {
+          "tau": 1.0,
+          "tau_ci": [
+            0.7777777777777778,
+            1.0
+          ],
+          "rho": 1.0,
+          "rho_ci": [
+            0.8833333333333333,
+            1.0
+          ],
+          "tau_perm_p": 4.999750012499375e-05,
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "navsim_v1|bridgesim": {
+          "tau": -0.06666666666666667,
+          "tau_ci": [
+            -0.19999999999999998,
+            0.15555555555555553
+          ],
+          "rho": -0.07878787878787878,
+          "rho_ci": [
+            -0.24848484848484845,
+            0.2606060606060606
+          ],
+          "tau_perm_p": 0.6359682015899205,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v1|bridgesim_ext": {
+          "tau": -0.28888888888888886,
+          "tau_ci": [
+            -0.37777777777777777,
+            -0.06666666666666667
+          ],
+          "rho": -0.4424242424242424,
+          "rho_ci": [
+            -0.5272727272727272,
+            -0.1515151515151515
+          ],
+          "tau_perm_p": 0.8907554622268886,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|navsim_v1": {
+          "mmrv": 0.08946948926014286,
+          "mmrv_ci": [
+            0.0746767559367533,
+            0.10470062486276857
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v1_proj|navsim_v2": {
+          "tau": 0.6666666666666666,
+          "tau_ci": [
+            0.5555555555555556,
+            0.8888888888888888
+          ],
+          "rho": 0.7999999999999999,
+          "rho_ci": [
+            0.7166666666666667,
+            0.9500000000000001
+          ],
+          "tau_perm_p": 0.0055997200139993,
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "navsim_v1_proj|bridgesim": {
+          "tau": 0.1111111111111111,
+          "tau_ci": [
+            -0.022222222222222223,
+            0.3333333333333333
+          ],
+          "rho": 0.23636363636363633,
+          "rho_ci": [
+            0.01818181818181818,
+            0.49090909090909085
+          ],
+          "tau_perm_p": 0.368081595920204,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v1_proj|bridgesim_ext": {
+          "tau": -0.1111111111111111,
+          "tau_ci": [
+            -0.24444444444444444,
+            0.022222222222222223
+          ],
+          "rho": -0.1515151515151515,
+          "rho_ci": [
+            -0.2727272727272727,
+            0.05484848484848457
+          ],
+          "tau_perm_p": 0.7007149642517874,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|navsim_v1_proj": {
+          "mmrv": 0.08239481957040543,
+          "mmrv_ci": [
+            0.0687550794928396,
+            0.09813881347255314
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "navsim_v2|bridgesim": {
+          "tau": -0.16666666666666666,
+          "tau_ci": [
+            -0.2777777777777778,
+            0.1111111111111111
+          ],
+          "rho": -0.26666666666666666,
+          "rho_ci": [
+            -0.3666666666666667,
+            0.13333333333333333
+          ],
+          "tau_perm_p": 0.7583120843957802,
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "navsim_v2|bridgesim_ext": {
+          "tau": -0.1111111111111111,
+          "tau_ci": [
+            -0.2777777777777778,
+            0.05555555555555555
+          ],
+          "rho": -0.2333333333333333,
+          "rho_ci": [
+            -0.3666666666666667,
+            0.03333333333333333
+          ],
+          "tau_perm_p": 0.7007649617519124,
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "MMRV|navsim_v2": {
+          "mmrv": 0.08004953752320325,
+          "mmrv_ci": [
+            0.0640076181317951,
+            0.09485608538186113
+          ],
+          "policies": [
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 9
+        },
+        "bridgesim|bridgesim_ext": {
+          "tau": 0.6,
+          "tau_ci": [
+            0.4222222222222222,
+            0.7777777777777777
+          ],
+          "rho": 0.6969696969696969,
+          "rho_ci": [
+            0.5636363636363636,
+            0.8909090909090909
+          ],
+          "tau_perm_p": 0.00759962001899905,
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        },
+        "MMRV|bridgesim": {
+          "mmrv": 0.022997510978520076,
+          "mmrv_ci": [
+            0.010278081312648788,
+            0.04222983929594237
+          ],
+          "policies": [
+            "diffusiondrive_seed0",
+            "ego_status_mlp_seed0",
+            "ego_status_mlp_seed1",
+            "ego_status_mlp_seed2",
+            "ltf_seed0",
+            "ltf_seed1",
+            "ltf_seed2",
+            "transfuser_seed0",
+            "transfuser_seed1",
+            "transfuser_seed2"
+          ],
+          "n_policies": 10
+        }
+      }
+    }
+  },
+  "reliability": {},
+  "hypotheses": {
+    "H1": {
+      "statement": "closed-loop orders timing/memory degradations better than open-loop + non-reactive evaluators",
+      "groups": {
+        "closed": [
+          "bridgesim",
+          "bridgesim_ext"
+        ],
+        "open_nonreactive": [
+          "open_l2",
+          "open_l2_proj",
+          "navsim_v1",
+          "navsim_v1_proj",
+          "navsim_v2"
+        ]
+      },
+      "degradations": [
+        "latency"
+      ],
+      "diff": -0.00022222222222222231,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "verdict": "contradicted",
+      "margin": 0.1
+    }
+  }
+}

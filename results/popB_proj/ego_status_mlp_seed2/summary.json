@@ -1,0 +1,85 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ego_status_mlp/ego_status_mlp_seed_2.ckpt",
+    "sha256": "7c5625790c86e7a5c3e10b436676e82542807f25b29e50937150d734118396a7",
+    "size_bytes": 6518530
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:2395bda9c45ed79cf7f53d4bd206714b2e8641a5"
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": -4.421175960765822,
+    "reference_note": "Seed-to-seed spread is not reported for this baseline.",
+    "reference_pdms": 65.6,
+    "reference_source": "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": false
+  },
+  "created_utc": "2026-11-22T17:47:08Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "projection": "tail_cv",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popB_ego_status_mlp_seed2_navtest_proj",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn202",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1238418",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "EgoStatusMLPAgent__clean__tail_cv.plans.jsonl"
+    ],
+    "mean_ade": 0.9696349609169475,
+    "mean_fde": 2.69200753634418,
+    "mean_l2_1s": 0.11838709800898074,
+    "mean_l2_2s": 0.49837501578071564,
+    "mean_l2_3s": 1.3320637131178261,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "ego_status_mlp_seed2",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.6117882403923417,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9990120204182447,
+      "drivable_area_compliance": 0.7512761402931006,
+      "driving_direction_compliance": 0.8953153301498435,
+      "ego_progress": 0.5986626385786975,
+      "no_at_fault_collisions": 0.913263625885065,
+      "score": 0.6117882403923417,
+      "time_to_collision_within_bound": 0.7885723695043636
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 61.17882403923417,
+    "score_sem": 0.003880578372723261,
+    "score_std": 0.4276742449624128
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 5.4384418226619635,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1_proj/B/ego_status_mlp_seed2/pdm_score/2026.11.22.23.17.00.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 2233.3602888584137,
+    "select": 13.114029884338379
+  }
+}

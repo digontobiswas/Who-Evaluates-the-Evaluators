@@ -1,0 +1,85 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/transfuser/transfuser_seed_0.ckpt",
+    "sha256": "cfe7e2410a3409b3291e20b6b765e6b1a53cccd7ba5471f17dd0acb00e38faf3",
+    "size_bytes": 672447984
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:2395bda9c45ed79cf7f53d4bd206714b2e8641a5"
+  },
+  "comparison": {
+    "comparable": true,
+    "delta_pdms": -13.684390830551976,
+    "reference_note": "The paper reports a standard deviation of 0.56 PDMS across three TransFuser training seeds, and the model card says the leaderboard was populated with three seeds per model. A single seed can therefore sit about half a point from 84.0; the three-seed mean is the fairer check.",
+    "reference_pdms": 84.0,
+    "reference_source": "NAVSIM paper, arXiv:2406.15349v2, Table 1 (navtest)",
+    "tolerance_pdms": 1.0,
+    "within_tolerance": false
+  },
+  "created_utc": "2026-11-22T12:53:23Z",
+  "degradation": {
+    "level": 0,
+    "name": "none",
+    "projection": "tail_cv",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_transfuser_seed0_none_L0_navtest_proj",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn140",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1238375",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__clean__tail_cv.plans.jsonl"
+    ],
+    "mean_ade": 0.7921587771436369,
+    "mean_fde": 2.1799752608792846,
+    "mean_l2_1s": 0.12073757966902966,
+    "mean_l2_2s": 0.4229267474043294,
+    "mean_l2_3s": 1.0706903557647984,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "transfuser_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.7031560916944802,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9990120204182447,
+      "drivable_area_compliance": 0.8192820681705911,
+      "driving_direction_compliance": 0.9512185081508315,
+      "ego_progress": 0.6853628957761662,
+      "no_at_fault_collisions": 0.9500658653054503,
+      "score": 0.7031560916944802,
+      "time_to_collision_within_bound": 0.8406059608101433
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 70.31560916944802,
+    "score_sem": 0.0035571523245722775,
+    "score_std": 0.3920298183696109
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.287943300181077,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1_proj/A/transfuser_seed0/none__L0/pdm_score/2026.11.22.18.23.15.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3694.1026322841644,
+    "select": 543.6574265956879
+  }
+}

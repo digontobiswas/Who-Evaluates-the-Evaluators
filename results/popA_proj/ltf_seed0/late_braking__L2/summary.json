@@ -1,0 +1,78 @@
+{
+  "checkpoint": {
+    "path": "/scratch/scratch26/biswabandhurj/wete_work/checkpoints/navsim_baselines/ltf/ltf_seed_0.ckpt",
+    "sha256": "d08e97ba6beb937412697d619171553041622859e026a06935a2e0e118e6309d",
+    "size_bytes": 673235500
+  },
+  "code": {
+    "navsim_devkit": "submit:3e8291bfa89ff247231e0227778840cd0a036896",
+    "nuplan_devkit": "submit:ce3c323af01c0d7ec5672f7832ef53f9c679aab0",
+    "repo": "submit:2395bda9c45ed79cf7f53d4bd206714b2e8641a5"
+  },
+  "comparison": null,
+  "comparison_note": "Degraded policy: the published PDMS does not apply.",
+  "created_utc": "2026-11-23T14:06:33Z",
+  "degradation": {
+    "level": 2,
+    "name": "late_braking",
+    "projection": "tail_cv",
+    "value": null,
+    "wrapped": true
+  },
+  "evaluator": "navsim_v1_pdms",
+  "experiment": "popA_ltf_seed0_late_braking_L2_navtest_proj",
+  "machine": {
+    "cpu_count": 40,
+    "hostname": "cn106",
+    "platform": "Linux-3.10.0-957.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.9.25",
+    "slurm_cpus_per_task": "40",
+    "slurm_job_id": "1239504",
+    "slurm_partition": "medium"
+  },
+  "open_loop": {
+    "files": [
+      "TransfuserAgent__late_braking@L2__tail_cv.plans.jsonl"
+    ],
+    "mean_ade": 4.6717503860005065,
+    "mean_fde": 8.731255744363068,
+    "mean_l2_1s": 1.9483296340942706,
+    "mean_l2_2s": 3.9953894091920232,
+    "mean_l2_3s": 6.238256382677379,
+    "num_tokens": 12146,
+    "num_with_l2": 12146
+  },
+  "policy": "ltf_seed0",
+  "result": {
+    "complete": true,
+    "devkit_average_score": 0.5402289928198026,
+    "matches_devkit_average": true,
+    "mean": {
+      "comfort": 0.9002963938745266,
+      "drivable_area_compliance": 0.7609089412152149,
+      "driving_direction_compliance": 0.8895521159229376,
+      "ego_progress": 0.5752225676173109,
+      "no_at_fault_collisions": 0.8053268565782974,
+      "score": 0.5402289928198026,
+      "time_to_collision_within_bound": 0.6817882430429771
+    },
+    "num_duplicated_tokens": 0,
+    "num_expected": 12146,
+    "num_invalid": 0,
+    "num_missing": 0,
+    "num_scored": 12146,
+    "num_unexpected": 0,
+    "num_valid": 12146,
+    "pdms": 54.022899281980266,
+    "score_sem": 0.00415417424950608,
+    "score_std": 0.4578269435524963
+  },
+  "scenario_mode": "full",
+  "scenarios_per_second": 3.2320236777491242,
+  "score_csv": "/scratch/scratch26/biswabandhurj/wete_work/exp/runs/navsim_v1_proj/A/ltf_seed0/late_braking__L2/pdm_score/2026.11.23.19.36.24.csv",
+  "split": "navtest",
+  "timings_s": {
+    "score": 3758.017023086548,
+    "select": 676.7149028778076
+  }
+}
